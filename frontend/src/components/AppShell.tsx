@@ -70,6 +70,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       style={{ height: "100%" }}
     >
       <div
+        className="sidebar-brand"
         style={{
           padding: compact ? 15 : 22,
           borderBottom: `1px solid ${colors.border}`,
@@ -125,23 +126,49 @@ export function AppShell({ children }: { children: ReactNode }) {
           gap: 10,
         }}
       >
-        <Button
-          label={compact ? "Demo" : "Guided demonstration"}
-          secondary
-          onClick={() => tourStep(0)}
-        />
-        {wide ? (
-          <Button
-            label={compact ? "Expand" : "Collapse sidebar"}
-            secondary
-            onClick={() => setCollapsed(!collapsed)}
-          />
+        {compact ? (
+          <>
+            <button
+              type="button"
+              className="sidebar-icon-button"
+              title="Guided demonstration"
+              aria-label="Guided demonstration"
+              onClick={() => tourStep(0)}
+            >
+              <Icon name="play-outline" size={20} />
+            </button>
+            <button
+              type="button"
+              className="sidebar-icon-button"
+              title="Expand sidebar"
+              aria-label="Expand sidebar"
+              aria-expanded={false}
+              onClick={() => setCollapsed(false)}
+            >
+              <Icon name="arrow-forward" size={20} />
+            </button>
+          </>
         ) : (
-          <Button
-            label="Close menu"
-            secondary
-            onClick={() => setDrawer(false)}
-          />
+          <>
+            <Button
+              label={compact ? "Demo" : "Guided demonstration"}
+              secondary
+              onClick={() => tourStep(0)}
+            />
+            {wide ? (
+              <Button
+                label={compact ? "Expand" : "Collapse sidebar"}
+                secondary
+                onClick={() => setCollapsed(!collapsed)}
+              />
+            ) : (
+              <Button
+                label="Close menu"
+                secondary
+                onClick={() => setDrawer(false)}
+              />
+            )}
+          </>
         )}
       </div>
     </aside>
@@ -187,19 +214,37 @@ export function AppShell({ children }: { children: ReactNode }) {
           >
             <Icon name="notifications-outline" />
           </button>
-          {wide && (
-            <div className="stack">
-              <span style={{ ...ui.text, fontSize: 11 }}>{profile.name}</span>
-              <span style={{ ...ui.small, fontSize: 9 }}>Research Analyst</span>
-            </div>
-          )}
+          <button
+            type="button"
+            aria-label="View profile"
+            title="My profile"
+            className="profile-control"
+            onClick={() => navigate("profile")}
+          >
+            <Icon name="person-outline" size={24} color={colors.cyan} />
+            {wide && (
+              <div className="stack">
+                <span style={{ ...ui.text, fontSize: 11 }}>{profile.name}</span>
+                <span style={{ ...ui.small, fontSize: 9 }}>
+                  Research Analyst
+                </span>
+              </div>
+            )}
+          </button>
           <button
             type="button"
             aria-label="Sign out"
+            title="Log out"
             onClick={logout}
-            style={{ padding: 8 }}
+            style={{
+              padding: 8,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
           >
             <Icon name="log-out-outline" />
+            {wide && <span style={ui.muted}>Log out</span>}
           </button>
         </header>
         <main

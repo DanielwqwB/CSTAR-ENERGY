@@ -33,4 +33,4 @@ See [frontend setup and functionality](frontend/README.md) for details.
 - `deployment/`, `visualization/` — Deployment and research visualization structure.
 - `tests/` — Repository-level data quality, integration, and unit test structure.
 
-The frontend uses synthetic data and browser-local persistence. Backend integration and live satellite feeds are not connected.
+The frontend connects to a Node.js API using Supabase Auth and PostgreSQL. Configure your existing Supabase project, apply the SQL migration, and start the API with `cd backend` and `npm.cmd run dev`. See [Supabase setup, configuration, and endpoints](backend/README.md). Live satellite feeds remain unconnected; observations are synthetic.

@@ -127,7 +127,7 @@ export function RecordsScreen() {
                 setName("");
                 setError("");
                 setAdding(false);
-                notify("Demonstration record saved locally.");
+                notify("Saving demonstration record…");
               }}
             />
           </div>
@@ -405,28 +405,36 @@ export function ReportsScreen() {
     </div>
   );
 }
-export function SettingsScreen() {
-  const { profile, setProfile, region, setRegion, notify } = useWorkspace();
+export function ProfileScreen() {
+  return <SettingsScreen profileOnly />;
+}
+export function SettingsScreen({
+  profileOnly = false,
+}: { profileOnly?: boolean } = {}) {
+  const { profile, setProfile, region, setRegion, notify, logout } =
+    useWorkspace();
   const [tab, setTab] = useState("Profile");
   const [name, setName] = useState(profile.name);
   const [email, setEmail] = useState(profile.email);
   return (
     <div className="stack" style={css(ui.stack)}>
-      <Select
-        label="Administration section"
-        value={tab}
-        options={[
-          "Profile",
-          "Application preferences",
-          "Data configuration",
-          "Research configuration",
-          "User administration",
-        ]}
-        onChange={setTab}
-      />
+      {!profileOnly && (
+        <Select
+          label="Administration section"
+          value={tab}
+          options={[
+            "Profile",
+            "Application preferences",
+            "Data configuration",
+            "Research configuration",
+            "User administration",
+          ]}
+          onChange={setTab}
+        />
+      )}
       <Card
         title={tab}
-        subtitle="Demonstration controls are stored locally where practical"
+        subtitle="Your profile and preferences are saved to your private workspace"
       >
         {tab === "Profile" ? (
           <>
@@ -438,6 +446,10 @@ export function SettingsScreen() {
               type="email"
             />
             <Field label="Role" value="Research Analyst" editable={false} />
+            <span style={ui.small}>
+              This is your display profile. Editing this email does not change
+              your sign-in email.
+            </span>
             <Button
               label="Save profile"
               onClick={() => {
@@ -446,7 +458,7 @@ export function SettingsScreen() {
                   return;
                 }
                 setProfile({ name: name.trim(), email });
-                notify("Demo profile saved locally.");
+                notify("Saving profile…");
               }}
             />
           </>
@@ -459,8 +471,9 @@ export function SettingsScreen() {
               onChange={setRegion}
             />
             <Notice>
-              Region preferences save automatically on this device. The
-              interface uses a soft light theme with muted surfaces and readable text.
+              Region preferences save automatically to the backend. The
+              interface uses a bright light theme with clear surfaces and
+              readable text.
             </Notice>
           </>
         ) : tab === "User administration" ? (
@@ -479,8 +492,8 @@ export function SettingsScreen() {
               </div>
             ))}
             <Notice>
-              Illustrative user directory only. Account creation and permissions
-              require a backend.
+              Illustrative user directory only. Manage actual accounts in your
+              Supabase project's Authentication dashboard.
             </Notice>
           </>
         ) : (
@@ -507,6 +520,19 @@ export function SettingsScreen() {
           </>
         )}
       </Card>
+      {profileOnly && (
+        <Card title="Account session">
+          <span style={ui.muted}>
+            Sign out when you finish using this workspace.
+          </span>
+          <Button
+            label="Log out"
+            secondary
+            icon="log-out-outline"
+            onClick={logout}
+          />
+        </Card>
+      )}
     </div>
   );
 }

@@ -21,9 +21,11 @@ import {
   RecordsScreen,
   ReportsScreen,
   SettingsScreen,
+  ProfileScreen,
 } from "./src/screens/ResearchScreens";
 
 const screens = {
+  profile: ProfileScreen,
   overview: OverviewScreen,
   map: MapScreen,
   events: EventsScreen,

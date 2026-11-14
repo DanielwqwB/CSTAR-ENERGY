@@ -1,6 +1,6 @@
 # CSTAR—ENERGY frontend
 
-Browser-only React + TypeScript application built with Vite. The interface is adapted from the supplied [design reference](https://olive-export-07938535.figma.site/).
+React + TypeScript application connected to the local workspace API built with Vite. The interface is adapted from the supplied [design reference](https://olive-export-07938535.figma.site/).
 
 ## Development
 
@@ -14,7 +14,7 @@ npm run dev
 
 On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm.ps1`. Open the URL printed by Vite. `npm start` is also available.
 
-Choose **Open demo workspace**, or enter any valid email and a demo password of at least four characters. This is frontend-only access; no password is stored or transmitted.
+Configure Supabase using [backend setup](../backend/README.md), then start the API in a second terminal (`cd backend` then `npm.cmd run dev` from the repository root). Sign in with an email/password account from your Supabase project. **Open demo workspace** requires anonymous sign-ins and `DEMO_ACCESS=true`.
 
 ## Project layout
 
@@ -31,7 +31,7 @@ frontend/
     theme.ts                  Shared palette and typography
     components/               HTML controls, sidebar, SVG charts and map
     screens/                  Sign-in and all 14 workspace sections
-    context/                  Shared state and browser persistence
+    context/                  Shared state and API persistence
     hooks/                    Browser viewport hook
     data/                     Synthetic events, datasets, sample series
     utils/                    Filters and browser file exports
@@ -43,10 +43,10 @@ frontend/
 
 - Responsive sidebar, navigation menu for narrow windows, and guided tour.
 - Regional overview, interactive Mapbox basemap, selectable event markers, event search and filters.
-- Event review, local analyst notes, evidence charts, plume screening, CCTF assessment.
-- Data explorer, local intervention records, alerts, reports, and profile preferences.
+- Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment.
+- Data explorer, persisted intervention records, alerts, reports, and profile preferences.
 - JSON, CSV, and text file downloads through browser APIs.
-- Persistence in `localStorage` using `cstar-workspace-v1`. Sign-out clears remembered access while preserving research work.
+- Persistence through `/api/workspace` in Supabase PostgreSQL, with one private workspace per Auth user. Sign-out clears the cookie session while preserving research work. Old localStorage and SQLite data are not automatically imported.
 
 There are no React Native or Expo runtime dependencies. Charts use standard SVG, forms use HTML inputs/selects/textareas, and icons use Lucide React. This project does not produce Android or iOS apps.
 
@@ -64,7 +64,7 @@ The production site is written to `dist/`. UI tests use React Testing Library an
 
 ## Data scope
 
-The four events, five dataset entries, and historical series are synthetic reference data. Mapbox provides a real geographic basemap, but the fictional Aurelia events are placed in Bicol Region only for demonstration. Their positions, lighting cells, and atmospheric footprints are not verified observations. Comparison selectors do not run scientific models. Live satellite feeds, authentication, account management, and backend processing are not connected.
+The four events, five dataset entries, and historical series are synthetic reference data. Mapbox provides a real geographic basemap, but the fictional Aurelia events are placed in Bicol Region only for demonstration. Their positions, lighting cells, and atmospheric footprints are not verified observations. Comparison selectors do not run scientific models. Cookie sessions and optional configured account sign-in are connected. Live satellite feeds, multi-user account administration, and scientific processing remain unconnected.
 
 ## Mapbox configuration
 
@@ -72,6 +72,6 @@ Copy `.env.example` to `.env.local` and set `VITE_MAPBOX_ACCESS_TOKEN` to your p
 
 The map uses Mapbox's light basemap, zoom/compass controls, metric scale, numbered, clickable demonstration markers, and toggleable GeoJSON overlays. A resize observer keeps the canvas aligned when the sidebar or window changes size. If map resources or WebGL are unavailable, an explanation and selectable event list remain available. Demonstration geometry is defined in `src/data/mapGeometry.ts`; replace it with verified geographic coordinates when available.
 
-Browser storage is scoped to the origin. Data saved on a previous Expo web port will not automatically appear on Vite's port.
+Development API requests are proxied by Vite to port 3001. Production hosting must route `/api` to the backend under the same origin.
 
 Sign-in photograph: Dennis Kummer / Unsplash, using the image from the supplied reference.

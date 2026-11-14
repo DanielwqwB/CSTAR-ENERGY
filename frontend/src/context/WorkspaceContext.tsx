@@ -6,14 +6,23 @@ import React, {
   useState,
 } from "react";
 import seed from "../data/events.json";
+import { api, type WorkspaceData } from "../api";
 import type { Page, RegistryRecord, TransitionEvent } from "../types";
 
-const STORAGE_KEY = "cstar-workspace-v1";
 interface Workspace {
   ready: boolean;
   authenticated: boolean;
-  login: (remember: boolean) => void;
+  login: (
+    remember: boolean,
+    credentials?: { email: string; password: string },
+  ) => Promise<void>;
   logout: () => void;
+  signup: (
+    name: string,
+    email: string,
+    password: string,
+    remember: boolean,
+  ) => Promise<boolean>;
   page: Page;
   go: (page: Page) => void;
   events: TransitionEvent[];
@@ -33,7 +42,6 @@ const Context = createContext<Workspace | null>(null);
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
-  const [remember, setRemember] = useState(false);
   const [page, setPage] = useState<Page>("overview");
   const [events, setEvents] = useState<TransitionEvent[]>(
     seed as TransitionEvent[],
@@ -47,54 +55,53 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     email: "analyst@cstar.demo",
   });
   const writes = useRef(Promise.resolve());
+  const version = useRef(0);
+  const lastSaved = useRef("");
+  const saveBlocked = useRef(false);
+  function load(data: WorkspaceData) {
+    version.current = data.version;
+    setEvents(data.events);
+    setRegion(data.region);
+    setRecords(data.records);
+    setProfile(data.profile);
+    lastSaved.current = JSON.stringify({
+      events: data.events,
+      region: data.region,
+      records: data.records,
+      profile: data.profile,
+    });
+    saveBlocked.current = false;
+    setAuthenticated(true);
+  }
   useEffect(() => {
-    Promise.resolve()
-      .then(() => localStorage.getItem(STORAGE_KEY))
-      .then((raw) => {
-        if (!raw) return;
-        const saved = JSON.parse(raw);
-        if (Array.isArray(saved.events))
-          setEvents(
-            (seed as TransitionEvent[]).map((original) => {
-              const event = saved.events.find(
-                (item: TransitionEvent) => item.id === original.id,
-              );
-              return event ? { ...original, ...event } : original;
-            }),
-          );
-        if (typeof saved.region === "string") setRegion(saved.region);
-        if (Array.isArray(saved.records)) setRecords(saved.records);
-        if (saved.profile?.name && saved.profile?.email)
-          setProfile(saved.profile);
-        if (saved.remember === true) {
-          setRemember(true);
-          setAuthenticated(true);
-        }
+    api<WorkspaceData>("/workspace")
+      .then(load)
+      .catch((error) => {
+        if (error.status !== 401) notify(error.message);
       })
-      .catch(() =>
-        notify(
-          "Saved data could not be loaded. Using the demonstration dataset.",
-        ),
-      )
       .finally(() => setReady(true));
   }, []);
   useEffect(() => {
-    if (!ready) return;
-    const value = JSON.stringify({
-      events,
-      region,
-      records,
-      profile,
-      remember: remember && authenticated,
-    });
+    if (!ready || !authenticated) return;
+    const snapshot = { events, region, records, profile };
+    const value = JSON.stringify(snapshot);
+    if (value === lastSaved.current) return;
+    lastSaved.current = value;
     writes.current = writes.current
-      .then(() => localStorage.setItem(STORAGE_KEY, value))
-      .catch(() =>
-        notify(
-          "Changes are available now, but could not be saved to this device.",
-        ),
-      );
-  }, [ready, events, region, records, profile, remember, authenticated]);
+      .then(async () => {
+        if (saveBlocked.current) return;
+        const saved = await api<WorkspaceData>("/workspace", "PUT", {
+          ...snapshot,
+          version: version.current,
+        });
+        version.current = saved.version;
+        notify("Changes saved to the backend.");
+      })
+      .catch((error) => {
+        saveBlocked.current = true;
+        notify(`Changes were not saved: ${error.message} Reload to reconnect.`);
+      });
+  }, [ready, events, region, records, profile, authenticated]);
   useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => notify(""), 4000);
@@ -105,14 +112,29 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       value={{
         ready,
         authenticated,
-        login: (value) => {
-          setRemember(value);
-          setAuthenticated(true);
+        login: async (remember, credentials) => {
+          const data = await api<WorkspaceData>("/session", "POST", {
+            remember,
+            ...(credentials || { demo: true }),
+          });
+          load(data);
+        },
+        signup: async (name, email, password, remember) => {
+          const result = await api<{
+            confirmationRequired: boolean;
+            workspace?: WorkspaceData;
+          }>("/signup", "POST", { name, email, password, remember });
+          if (result.workspace) load(result.workspace);
+          return result.confirmationRequired;
         },
         logout: () => {
-          setRemember(false);
-          setAuthenticated(false);
-          setPage("overview");
+          void writes.current
+            .then(() => api("/session", "DELETE"))
+            .then(() => {
+              setAuthenticated(false);
+              setPage("overview");
+            })
+            .catch((error) => notify(error.message));
         },
         page,
         go: setPage,
