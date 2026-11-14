@@ -97,6 +97,7 @@ test("signup awaiting email confirmation does not authenticate or create a works
     });
     assert.equal(result.status, 200);
     assert.equal(result.data.confirmationRequired, true);
+    assert.equal(result.data.message, "Check your Gmail to confirm your email.");
     assert.equal(client.cookies.size, 0);
     assert.equal((await client.request("/workspace")).status, 401);
   } finally {

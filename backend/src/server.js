@@ -164,8 +164,7 @@ export function createApp({
           if (!context.session)
             return send(200, {
               confirmationRequired: true,
-              message:
-                "Check your inbox for a confirmation link, then sign in.",
+              message: "Check your Gmail to confirm your email.",
             });
           const workspace = await store.load(
             context,

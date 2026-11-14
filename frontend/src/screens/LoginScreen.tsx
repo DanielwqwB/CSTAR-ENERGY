@@ -54,7 +54,7 @@ export function LoginScreen() {
           remember,
         );
         if (confirmationRequired) {
-          setMessage("Check your inbox for a confirmation link, then sign in.");
+          setMessage("Check your Gmail to confirm your email.");
           setCreating(false);
           setPassword("");
           setConfirmPassword("");
@@ -250,9 +250,22 @@ export function LoginScreen() {
             </span>
           )}
           {message && (
-            <p role="status" style={{ ...ui.text, color: colors.green }}>
-              {message}
-            </p>
+            <div className="toast" role="status">
+              <span
+                style={{
+                  maxWidth: 600,
+                  padding: 16,
+                  borderRadius: 12,
+                  border: `1px solid ${colors.green}66`,
+                  backgroundColor: colors.panel,
+                  color: colors.green,
+                  fontSize: 12,
+                  boxShadow: "0 8px 24px #02071133",
+                }}
+              >
+                {message}
+              </span>
+            </div>
           )}
           <button
             type="submit"

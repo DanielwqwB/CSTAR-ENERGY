@@ -1287,6 +1287,14 @@ svg {
 .cctf-result > span { display: grid; place-items: center; width: 55px; height: 55px; flex: 0 0 55px; border-radius: 50%; background: #d0f1dd; color: #10854f; }
 .cctf-result h2 { color: #10854f; font-size: 16px; }
 .cctf-result p { line-height: 1.5; }
+.cctf-result-unresolved { background: #fff8e8; border-color: #f2dca8; }
+.cctf-result-unresolved > span { background: #ffefc9; color: #ae7100; }
+.cctf-result-unresolved h2 { color: #865d14; }
+.cctf-blockers { display: grid; gap: 8px; margin: 0; padding: 0 0 0 20px; color: #425b80; font-size: 11px; line-height: 1.4; }
+.cctf-provenance { display: flex; flex-direction: column; gap: 3px; color: #425b80; font-size: 11px; line-height: 1.4; }
+.cctf-provenance strong { color: #101f50; font-size: 12px; }
+.cctf-muted { color: #576d8e; font-size: 11px; }
+.cctf-limitations { display: flex; flex-wrap: wrap; gap: 8px 18px; color: #576d8e; font-size: 11px; line-height: 1.4; }
 @media (max-width: 1250px) { .cctf-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 900px) { .cctf-main { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 600px) { .cctf-picker { flex-direction: column; align-items: stretch; gap: 5px; } .cctf-picker .field { width: 100%; } .cctf-metrics { gap: 10px; } .cctf-metric { gap: 8px; padding: 12px; min-height: 100px; } .cctf-metric > span { width: 38px; height: 38px; flex-basis: 38px; } .cctf-metric svg { width: 21px; height: 21px; } .cctf-metric strong { font-size: 17px; } .cctf-rows { padding-inline: 12px; } .cctf-row { grid-template-columns: 30px minmax(90px, 1fr) minmax(70px, .8fr); gap: 7px; } .cctf-row-badge { grid-column: 2 / -1; justify-self: start; margin-bottom: 6px; } .cctf-row-detail { grid-column: 2 / -1; } .cctf-bar { grid-template-columns: minmax(90px, .8fr) minmax(0, 1.3fr) 32px; gap: 6px; } }

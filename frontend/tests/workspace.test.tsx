@@ -143,7 +143,7 @@ describe("browser workspace", () => {
     await user.type(screen.getByLabelText("Confirm password"), "test-password");
     await user.click(screen.getByRole("button", { name: "Create account" }));
     expect(
-      await screen.findByText(/Check your inbox for a confirmation link/),
+      await screen.findByText("Check your Gmail to confirm your email."),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Welcome back" })).toBeTruthy();
     expect(signedIn).toBe(false);
