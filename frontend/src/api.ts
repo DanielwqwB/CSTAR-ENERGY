@@ -14,6 +14,27 @@ export interface SeriesPoint {
   no2: number;
   counter: number;
 }
+export type EvaluationScalar = string | number | boolean | null;
+export interface EvaluationMatrix {
+  labels: string[];
+  rows: { label: string; values: EvaluationScalar[] }[];
+}
+export interface ModelEvaluation {
+  metrics: Record<string, unknown> | null;
+  data_quality?: Record<string, unknown> | null;
+  band_metrics?: Record<string, unknown> | null;
+  forward_metrics?: Record<string, unknown> | null;
+  model_comparison: Record<string, EvaluationScalar>[];
+  forward_model_comparison?: Record<string, EvaluationScalar>[];
+  band_model_comparison?: Record<string, EvaluationScalar>[];
+  confusion_matrix: EvaluationMatrix | null;
+  artifacts: string[];
+}
+export interface EvaluationBundle {
+  blackmarble: ModelEvaluation;
+  merra: ModelEvaluation;
+  tropomi: ModelEvaluation;
+}
 export interface AtmosphereManifest {
   run_id: string;
   model_name: string;

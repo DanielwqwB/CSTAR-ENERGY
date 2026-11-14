@@ -39,6 +39,7 @@ export function TransitionMap({
   height = 340,
   compact = false,
   candidates = true,
+  lightingFillColor,
   cellOpacity = 0.3,
   plumeOpacity = 0.13,
   markerOpacity = 1,
@@ -63,6 +64,7 @@ export function TransitionMap({
   height?: number;
   compact?: boolean;
   candidates?: boolean;
+  lightingFillColor?: string;
   cellOpacity?: number;
   plumeOpacity?: number;
   markerOpacity?: number;
@@ -92,6 +94,7 @@ export function TransitionMap({
   useEffect(() => {
     let disposed = false;
     let instance: MapInstance | undefined;
+    let loaded = false;
     let observer: ResizeObserver | undefined;
     let timeout: ReturnType<typeof setTimeout> | undefined;
     setMap(null);
@@ -133,8 +136,12 @@ export function TransitionMap({
             setFailed(true);
           }
         }, 20000);
-        instance.on("error", () => {
-          if (!disposed) {
+        instance.on("error", (event) => {
+          // Mapbox can emit recoverable tile/sprite errors after the style has
+          // loaded. Keep authentication/permission failures visible, but do
+          // not cover a usable map with a transient resource warning.
+          const status = (event as { error?: { status?: number } })?.error?.status;
+          if (!disposed && (!loaded || status === 401 || status === 403)) {
             setStatus(
               "Some map resources could not load. Check your connection and Mapbox token permissions.",
             );
@@ -143,6 +150,7 @@ export function TransitionMap({
         });
         instance.on("load", () => {
           if (disposed || !instance) return;
+          loaded = true;
           clearTimeout(timeout);
           instance.addSource("lighting-cells", {
             type: "geojson",
@@ -153,9 +161,9 @@ export function TransitionMap({
             type: "fill",
             source: "lighting-cells",
             paint: {
-              "fill-color": ["get", "color"],
+              "fill-color": lightingFillColor ?? (showPlumeHeatmap ? "#0787e8" : ["get", "color"]),
               "fill-opacity": 0.3,
-              "fill-outline-color": ["get", "color"],
+              "fill-outline-color": lightingFillColor ?? (showPlumeHeatmap ? "#0787e8" : ["get", "color"]),
             },
           });
           instance.addSource("atmospheric-footprints", {
@@ -183,7 +191,21 @@ export function TransitionMap({
             paint: {
               "heatmap-weight": ["get", "weight"],
               "heatmap-intensity": 1.3,
-              "heatmap-radius": 55,
+              // A fixed pixel radius makes a small local plume cover a large
+              // fraction of the globe when users zoom out. Scale in pixels
+              // with zoom so the geographic footprint stays local.
+              "heatmap-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 1,
+                3, 4,
+                5, 10,
+                7, 24,
+                9, 42,
+                11, 58,
+                13, 72,
+              ],
               "heatmap-opacity": 0.8,
               "heatmap-color": ["interpolate", ["linear"], ["heatmap-density"], 0, "rgba(90,45,220,0)", 0.15, "#6032cb", 0.4, "#b545d0", 0.65, "#f59e0b", 1, "#ffe026"],
             },
@@ -357,7 +379,7 @@ export function TransitionMap({
         .addTo(map);
     });
     return () => markers.forEach((marker) => marker.remove());
-  }, [map, events, selected, cells, plume, candidates, markerOpacity, showPlumeHeatmap, comparisonYear]);
+  }, [map, events, selected, cells, plume, candidates, markerOpacity, showPlumeHeatmap, comparisonYear, lightingFillColor]);
   useEffect(() => {
     if (!map || comparisonYear === undefined) return;
     (map.getSource("illustrative-night-lights") as GeoJSONSource).setData(illustrativeNightLights(comparisonYear));
@@ -391,6 +413,11 @@ export function TransitionMap({
     if (!map) return;
     map.setPaintProperty("lighting-cells", "fill-opacity", cellOpacity);
     map.setPaintProperty("atmospheric-footprints", "fill-opacity", plumeOpacity);
+    map.setPaintProperty(
+      "illustrative-plume-heat",
+      "heatmap-opacity",
+      Math.min(0.8, Math.max(0, plumeOpacity * 5)),
+    );
   }, [map, cellOpacity, plumeOpacity]);
   return (
     <div className="transition-map">

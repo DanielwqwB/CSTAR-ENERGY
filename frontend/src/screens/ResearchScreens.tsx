@@ -1,5 +1,5 @@
 import { css } from "../styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Badge,
   Button,
@@ -16,6 +16,7 @@ import { exportText } from "../utils/export";
 import { toCsv } from "../utils/events";
 import { EventPicker } from "./InvestigationScreen";
 import { regions } from "./OverviewScreen";
+import { api, type EvaluationBundle, type EvaluationMatrix, type EvaluationScalar, type ModelEvaluation } from "../api";
 export function DataScreen() {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState("");
@@ -179,7 +180,7 @@ export function RecordsScreen() {
     </div>
   );
 }
-export function AnalyticsScreen() {
+function PlaceholderAnalyticsScreen() {
   return (
     <div className="stack" style={css(ui.stack)}>
       <Notice warning>
@@ -257,6 +258,89 @@ export function AnalyticsScreen() {
       </Card>
     </div>
   );
+}
+export function AnalyticsScreen() {
+  const [evaluations, setEvaluations] = useState<EvaluationBundle | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    api<EvaluationBundle>("/evaluations")
+      .then((data) => {
+        if (!data?.blackmarble || !data?.merra || !data?.tropomi) {
+          throw new Error("Evaluation data is not available from the backend.");
+        }
+        if (active) setEvaluations(data);
+      })
+      .catch((reason) => active && setError(reason instanceof Error ? reason.message : "Evaluation data unavailable."));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (error) return <div className="stack" style={css(ui.stack)}><Notice warning>{error}</Notice></div>;
+  if (!evaluations) return <div className="stack" style={css(ui.stack)}><Notice>Loading model evaluation artifacts…</Notice></div>;
+
+  const models = [
+    { key: "blackmarble", label: "Black Marble", evaluation: evaluations.blackmarble },
+    { key: "merra", label: "MERRA-2", evaluation: evaluations.merra },
+    { key: "tropomi", label: "TROPOMI NO₂", evaluation: evaluations.tropomi },
+  ] as const;
+  const asRecord = (value: unknown): Record<string, unknown> | null =>
+    value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+  const formatValue = (value: unknown, key = "") => {
+    if (value === null || value === undefined || value === "") return "—";
+    if (typeof value === "boolean") return value ? "Yes" : "No";
+    if (typeof value === "number") {
+      if (key.toLowerCase().includes("percent") || key.toLowerCase().includes("accuracy")) return `${(key.toLowerCase().includes("accuracy") && value <= 1 ? value * 100 : value).toFixed(2)}%`;
+      return Math.abs(value) >= 100 ? value.toFixed(0) : value.toFixed(4);
+    }
+    return String(value);
+  };
+  const testMetrics = (evaluation: ModelEvaluation) => asRecord(evaluation.metrics?.test_metrics) ?? asRecord(evaluation.metrics?.test);
+  const comparisonColumns = (rows: Record<string, EvaluationScalar>[]) => {
+    const keys = Array.from(new Set(rows.flatMap((row) => Object.keys(row))));
+    const preferred = ["model", "split", "mae", "mae_kelvin", "mae_umol_m2", "rmse", "rmse_kelvin", "rmse_umol_m2", "r2", "bias", "accuracy", "balanced_accuracy", "macro_f1", "training_seconds"];
+    return [...preferred.filter((key) => keys.includes(key)), ...keys.filter((key) => !preferred.includes(key))];
+  };
+  const comparisonTable = (title: string, rows: Record<string, EvaluationScalar>[]) => {
+    if (!rows.length) return <p className="analytics-empty">No comparison table was produced for this model.</p>;
+    const columns = comparisonColumns(rows);
+    return <section className="analytics-subsection"><h3>{title}</h3><div className="analytics-table-wrap"><table className="analytics-table"><thead><tr>{columns.map((column) => <th key={column}>{column.replace(/_/g, " ")}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={`${String(row.model ?? "model")}-${String(row.split ?? index)}`}>{columns.map((column) => <td key={column}>{formatValue(row[column], column)}</td>)}</tr>)}</tbody></table></div></section>;
+  };
+  const matrix = (title: string, value: EvaluationMatrix | null) => <section className="analytics-subsection"><h3>{title}</h3>{value ? <div className="analytics-table-wrap"><table className="analytics-table analytics-matrix"><thead><tr><th>Actual / Predicted</th>{value.labels.map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody>{value.rows.map((row) => <tr key={row.label}><th>{row.label}</th>{row.values.map((cell, index) => <td key={`${row.label}-${index}`}>{formatValue(cell)}</td>)}</tr>)}</tbody></table></div> : <p className="analytics-empty">No labeled confusion matrix is available for this evaluation.</p>}</section>;
+  const quality = (evaluation: ModelEvaluation) => {
+    const data = asRecord(evaluation.data_quality);
+    if (!data) return null;
+    const entries = ["raw_rows", "raw_tropomi_rows", "model_rows", "train_rows", "validation_rows", "test_rows", "start_date", "end_date", "missing_values"];
+    return <div className="analytics-quality">{entries.filter((key) => data[key] !== undefined).map((key) => <span key={key}><small>{key.replace(/_/g, " ")}</small><strong>{formatValue(data[key], key)}</strong></span>)}</div>;
+  };
+  const detailTable = (title: string, value: unknown) => {
+    const data = asRecord(value);
+    if (!data) return null;
+    const entries = Object.entries(data).filter(([, item]) => item === null || ["string", "number", "boolean"].includes(typeof item));
+    if (!entries.length) return null;
+    return <section className="analytics-subsection"><h3>{title}</h3><div className="analytics-table-wrap"><table className="analytics-table analytics-detail-table"><tbody>{entries.map(([name, item]) => <tr key={name}><th>{name.replace(/_/g, " ")}</th><td>{formatValue(item, name)}</td></tr>)}</tbody></table></div></section>;
+  };
+  const limitations = (value: unknown) => {
+    if (!Array.isArray(value) || !value.length) return null;
+    return <section className="analytics-subsection"><h3>Known limitations</h3><ul className="analytics-limitations">{value.map((item, index) => <li key={`${String(item)}-${index}`}>{String(item)}</li>)}</ul></section>;
+  };
+  const panel = ({ key, label, evaluation }: (typeof models)[number]) => {
+    const metrics = testMetrics(evaluation);
+    const gate = asRecord(evaluation.metrics?.acceptance_gate);
+    const band = asRecord(evaluation.band_metrics?.selected_test);
+    const direction = asRecord(evaluation.metrics?.change_direction_diagnostic);
+    const forward = asRecord(evaluation.forward_metrics?.candidate);
+    const headline = key === "blackmarble"
+      ? [["MAE", metrics?.mae], ["RMSE", metrics?.rmse], ["MAPE", metrics?.mape_percent], ["R²", metrics?.r2]]
+      : key === "merra"
+        ? [["MAE (K)", metrics?.mae_kelvin ?? metrics?.mae], ["RMSE (K)", metrics?.rmse_kelvin ?? metrics?.rmse], ["R²", metrics?.r2], ["Direction accuracy", direction?.accuracy]]
+        : [["MAE (µmol/m²)", metrics?.mae_umol_m2 ?? metrics?.mae], ["RMSE", metrics?.rmse_umol_m2 ?? metrics?.rmse], ["R²", metrics?.r2], ["Band accuracy", band?.accuracy]];
+    return <article className="analytics-model-panel" key={key}><header className="analytics-model-header"><div><h2>{label}</h2><p>{String(evaluation.metrics?.task ?? "Evaluation artifacts")}</p></div><Badge tone={gate?.passed === true ? "green" : "amber"}>{gate?.passed === true ? "Gate passed" : key === "blackmarble" ? "Regression only" : "Review result"}</Badge></header><div className="analytics-metric-grid">{headline.map(([name, value]) => <div className="analytics-metric" key={String(name)}><small>{String(name)}</small><strong>{formatValue(value, String(name))}</strong></div>)}</div>{key === "tropomi" && forward && <div className="analytics-callout"><strong>Forward 2026 candidate</strong><span>MAE {formatValue(forward.mae_umol_m2)} · RMSE {formatValue(forward.rmse_umol_m2)} · R² {formatValue(forward.r2)} · bias {formatValue(forward.bias_umol_m2)}</span></div>}{key === "tropomi" && <div className="analytics-callout"><strong>Interpretation</strong><span>{String(evaluation.metrics?.anomaly_interpretation ?? "Evaluation result only")}</span></div>}{quality(evaluation)}{detailTable("Selected evaluation", evaluation.metrics)}{detailTable("Test metrics", metrics)}{detailTable("Persistence / climatology baseline", evaluation.metrics?.persistence_test ?? evaluation.metrics?.persistence_baseline_test_metrics ?? evaluation.metrics?.spatial_seasonal_climatology_test)}{detailTable("Change direction diagnostic", direction)}{detailTable("Concentration-band evaluation", band)}{detailTable("Acceptance gate", gate)}{key === "tropomi" && detailTable("Forward 2026 candidate", forward)}{key === "tropomi" && detailTable("Forward 2026 baseline", evaluation.forward_metrics?.baseline)}{key === "tropomi" && detailTable("Forward 2026 no-weather control", evaluation.forward_metrics?.matched_no_weather_control)}{limitations(evaluation.metrics?.limitations)}{comparisonTable("Model comparison", evaluation.model_comparison)}{evaluation.forward_model_comparison && comparisonTable("Forward holdout comparison", evaluation.forward_model_comparison)}{evaluation.band_model_comparison && comparisonTable("NO₂ concentration-band comparison", evaluation.band_model_comparison)}{matrix(key === "tropomi" ? "NO₂ concentration-band confusion matrix" : "Change-class confusion matrix", evaluation.confusion_matrix)}</article>;
+  };
+
+  return <div className="analytics-screen"><Notice warning>These values are read from the committed evaluation artifacts for each model. They are not a combined CCTF score; CCTF attribution still requires an eligible pilot event and evidence gate.</Notice><div className="analytics-overview-grid">{models.map(({ key, label, evaluation }) => <div key={key}><small>{label}</small><strong>{evaluation.model_comparison.length ? `${evaluation.model_comparison.length} comparison rows` : "Metrics available"}</strong><span>{evaluation.artifacts.length} artifact files</span></div>)}</div>{models.map(panel)}</div>;
 }
 export function AlertsScreen() {
   const { events, select, go } = useWorkspace();

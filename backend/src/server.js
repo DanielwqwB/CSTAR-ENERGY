@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { createSupabaseStore } from "./supabase.js";
 import { parseAtmosphereQuery } from "./atmosphere.js";
 import { buildCctfAssessment } from "./cctf.js";
+import { loadEvaluations } from "./evaluations.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -227,6 +228,8 @@ export function createApp({
         return send(200, await store.listDemoDatasets(context));
       if (req.method === "GET" && path === "/api/series")
         return send(200, await store.listDemoSeries(context));
+      if (req.method === "GET" && path === "/api/evaluations")
+        return send(200, loadEvaluations());
       const current = await store.load(context, initialWorkspace(context.user));
       if (path === "/api/workspace" && req.method === "GET")
         return send(200, current);

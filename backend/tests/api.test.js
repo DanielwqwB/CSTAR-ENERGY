@@ -111,6 +111,7 @@ test("Supabase SDK auth, workspace saves, validation, conflicts, and reloads", a
     assert.equal((await client.request("/workspace")).status, 401);
     assert.equal((await client.request("/datasets")).status, 401);
     assert.equal((await client.request("/series")).status, 401);
+    assert.equal((await client.request("/evaluations")).status, 401);
     assert.equal((await client.request("/health")).data.database, "supabase");
     assert.equal(
       (
@@ -172,6 +173,11 @@ test("Supabase SDK auth, workspace saves, validation, conflicts, and reloads", a
     assert.equal(series.data.length, 12);
     assert.equal(series.data[0].month, "Jan");
     assert.equal(series.data[11].month, "Dec");
+    const evaluations = await client.request("/evaluations");
+    assert.equal(evaluations.status, 200);
+    assert.equal(evaluations.data.merra.metrics.acceptance_gate.passed, true);
+    assert.equal(evaluations.data.tropomi.confusion_matrix.rows.length, 3);
+    assert.equal(evaluations.data.blackmarble.metrics.task, "next-observation radiance regression");
     assert.equal((await client.request("/session", "DELETE")).status, 200);
     assert.equal(client.cookies.size, 0);
     assert.equal((await client.request("/workspace")).status, 401);

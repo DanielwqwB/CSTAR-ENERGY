@@ -51,6 +51,26 @@ export function lightingCells(
     }),
   };
 }
+
+// The screening illustration uses a declared NE wind direction. Keep the
+// polygon and heat points in the same local coordinate system so they remain
+// aligned when the map is zoomed or panned.
+const PLUME_BEARING = Math.PI / 4;
+const PLUME_OFFSET: [number, number] = [0.012, 0.008];
+function plumeCoordinate(
+  longitude: number,
+  latitude: number,
+  along: number,
+  cross = 0,
+): [number, number] {
+  const dx = Math.cos(PLUME_BEARING);
+  const dy = Math.sin(PLUME_BEARING);
+  return [
+    longitude + PLUME_OFFSET[0] + along * dx - cross * dy,
+    latitude + PLUME_OFFSET[1] + along * dy + cross * dx,
+  ];
+}
+
 export function atmosphericFootprints(
   events: TransitionEvent[],
 ): FeatureCollection<Polygon> {
@@ -62,9 +82,10 @@ export function atmosphericFootprints(
         const [lng, lat] = demoPosition(event);
         const ring = Array.from({ length: 49 }, (_, i) => {
           const angle = ((i % 48) / 48) * 2 * Math.PI;
+          const along = 0.022 + Math.cos(angle) * 0.028;
+          const cross = Math.sin(angle) * 0.012;
           return [
-            lng + 0.015 + Math.cos(angle) * 0.025,
-            lat + 0.008 + Math.sin(angle) * 0.012,
+            ...plumeCoordinate(lng, lat, along, cross),
           ];
         });
         return {
@@ -83,14 +104,19 @@ export function plumeHeatPoints(events: TransitionEvent[]): FeatureCollection<Po
     type: "FeatureCollection",
     features: events.filter(event => event.shortType === "Industrial").flatMap(event => {
       const [lng, lat] = demoPosition(event);
-      return Array.from({ length: 18 }, (_, index) => ({
+      return Array.from({ length: 18 }, (_, index) => {
+        const progress = index / 17;
+        const along = -0.008 + progress * 0.058;
+        const cross = Math.sin(index / 2.2) * (0.002 + progress * 0.006);
+        return {
         type: "Feature" as const,
         properties: { id: event.id, weight: 1 - index / 25 },
         geometry: {
           type: "Point" as const,
-          coordinates: [lng + index * 0.035, lat + Math.sin(index / 3) * 0.06 + index * 0.006],
+          coordinates: plumeCoordinate(lng, lat, along, cross),
         },
-      }));
+        };
+      });
     }),
   };
 }
