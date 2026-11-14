@@ -1,0 +1,38 @@
+{
+  "input_directory": "BlackMarbles",
+  "tile": "h30v07",
+  "bounds": [
+    122.3,
+    11.4,
+    124.7,
+    14.6
+  ],
+  "records": 15,
+  "excluded": [
+    {
+      "file": "Unconfirmed 126981.crdownload",
+      "reason": "not_hdf5"
+    },
+    {
+      "file": "VNP46A3.A2016001.h29v07.002.2025101112534.h5",
+      "reason": "tile_not_h30v07"
+    },
+    {
+      "file": "VNP46A3.A2016001.h30v08.002.2025101112536.h5",
+      "reason": "tile_not_h30v07"
+    },
+    {
+      "file": "VNP46A3.A2016032.h30v07.002.2025101114716.h5.part",
+      "reason": "not_hdf5"
+    },
+    {
+      "file": "VNP46A3.A2018091.h30v07.002.2025113153940 (1).h5",
+      "reason": "duplicate"
+    }
+  ],
+  "limitations": [
+    "Bicol is approximated by a bounding box, not an administrative polygon.",
+    "Observation months differ across years and may introduce seasonal bias.",
+    "VNP46A3 composites are monthly; they are not daily VNP46A2 observations."
+  ]
+}

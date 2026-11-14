@@ -1,0 +1,795 @@
+{
+  "source": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3",
+  "product": "VNP46A3",
+  "collection": "002",
+  "records": 131,
+  "total_bytes": 6717368115,
+  "files": [
+    {
+      "name": "VNP46A3.A2016001.h30v07.002.2025101112553.h5",
+      "observation_date": "2016-01-01",
+      "size": 64842350,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/001/VNP46A3.A2016001.h30v07.002.2025101112553.h5"
+    },
+    {
+      "name": "VNP46A3.A2016032.h30v07.002.2025101114716.h5",
+      "observation_date": "2016-02-01",
+      "size": 53313591,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/032/VNP46A3.A2016032.h30v07.002.2025101114716.h5"
+    },
+    {
+      "name": "VNP46A3.A2016061.h30v07.002.2025101120844.h5",
+      "observation_date": "2016-03-01",
+      "size": 62406047,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/061/VNP46A3.A2016061.h30v07.002.2025101120844.h5"
+    },
+    {
+      "name": "VNP46A3.A2016092.h30v07.002.2025101172446.h5",
+      "observation_date": "2016-04-01",
+      "size": 68980644,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/092/VNP46A3.A2016092.h30v07.002.2025101172446.h5"
+    },
+    {
+      "name": "VNP46A3.A2016122.h30v07.002.2025101123835.h5",
+      "observation_date": "2016-05-01",
+      "size": 69371102,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/122/VNP46A3.A2016122.h30v07.002.2025101123835.h5"
+    },
+    {
+      "name": "VNP46A3.A2016153.h30v07.002.2025101125413.h5",
+      "observation_date": "2016-06-01",
+      "size": 49078731,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/153/VNP46A3.A2016153.h30v07.002.2025101125413.h5"
+    },
+    {
+      "name": "VNP46A3.A2016183.h30v07.002.2025101131226.h5",
+      "observation_date": "2016-07-01",
+      "size": 49201962,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/183/VNP46A3.A2016183.h30v07.002.2025101131226.h5"
+    },
+    {
+      "name": "VNP46A3.A2016214.h30v07.002.2025101132630.h5",
+      "observation_date": "2016-08-01",
+      "size": 28380586,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/214/VNP46A3.A2016214.h30v07.002.2025101132630.h5"
+    },
+    {
+      "name": "VNP46A3.A2016245.h30v07.002.2025101134354.h5",
+      "observation_date": "2016-09-01",
+      "size": 32356558,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/245/VNP46A3.A2016245.h30v07.002.2025101134354.h5"
+    },
+    {
+      "name": "VNP46A3.A2016275.h30v07.002.2025101140250.h5",
+      "observation_date": "2016-10-01",
+      "size": 50495706,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/275/VNP46A3.A2016275.h30v07.002.2025101140250.h5"
+    },
+    {
+      "name": "VNP46A3.A2016306.h30v07.002.2025101142239.h5",
+      "observation_date": "2016-11-01",
+      "size": 54302990,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/306/VNP46A3.A2016306.h30v07.002.2025101142239.h5"
+    },
+    {
+      "name": "VNP46A3.A2016336.h30v07.002.2025101143625.h5",
+      "observation_date": "2016-12-01",
+      "size": 43903308,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2016/336/VNP46A3.A2016336.h30v07.002.2025101143625.h5"
+    },
+    {
+      "name": "VNP46A3.A2017001.h30v07.002.2025101145504.h5",
+      "observation_date": "2017-01-01",
+      "size": 42994792,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/001/VNP46A3.A2017001.h30v07.002.2025101145504.h5"
+    },
+    {
+      "name": "VNP46A3.A2017032.h30v07.002.2025101151159.h5",
+      "observation_date": "2017-02-01",
+      "size": 43441940,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/032/VNP46A3.A2017032.h30v07.002.2025101151159.h5"
+    },
+    {
+      "name": "VNP46A3.A2017060.h30v07.002.2025101153013.h5",
+      "observation_date": "2017-03-01",
+      "size": 58568343,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/060/VNP46A3.A2017060.h30v07.002.2025101153013.h5"
+    },
+    {
+      "name": "VNP46A3.A2017091.h30v07.002.2025101154816.h5",
+      "observation_date": "2017-04-01",
+      "size": 65202661,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/091/VNP46A3.A2017091.h30v07.002.2025101154816.h5"
+    },
+    {
+      "name": "VNP46A3.A2017121.h30v07.002.2025101160449.h5",
+      "observation_date": "2017-05-01",
+      "size": 52288343,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/121/VNP46A3.A2017121.h30v07.002.2025101160449.h5"
+    },
+    {
+      "name": "VNP46A3.A2017152.h30v07.002.2025101162017.h5",
+      "observation_date": "2017-06-01",
+      "size": 54247484,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/152/VNP46A3.A2017152.h30v07.002.2025101162017.h5"
+    },
+    {
+      "name": "VNP46A3.A2017182.h30v07.002.2025101163515.h5",
+      "observation_date": "2017-07-01",
+      "size": 23635075,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/182/VNP46A3.A2017182.h30v07.002.2025101163515.h5"
+    },
+    {
+      "name": "VNP46A3.A2017213.h30v07.002.2025101164907.h5",
+      "observation_date": "2017-08-01",
+      "size": 36499986,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/213/VNP46A3.A2017213.h30v07.002.2025101164907.h5"
+    },
+    {
+      "name": "VNP46A3.A2017244.h30v07.002.2025102110734.h5",
+      "observation_date": "2017-09-01",
+      "size": 37393932,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/244/VNP46A3.A2017244.h30v07.002.2025102110734.h5"
+    },
+    {
+      "name": "VNP46A3.A2017274.h30v07.002.2025101171505.h5",
+      "observation_date": "2017-10-01",
+      "size": 37642089,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/274/VNP46A3.A2017274.h30v07.002.2025101171505.h5"
+    },
+    {
+      "name": "VNP46A3.A2017305.h30v07.002.2025101175237.h5",
+      "observation_date": "2017-11-01",
+      "size": 52497522,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/305/VNP46A3.A2017305.h30v07.002.2025101175237.h5"
+    },
+    {
+      "name": "VNP46A3.A2017335.h30v07.002.2025104190032.h5",
+      "observation_date": "2017-12-01",
+      "size": 35472407,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2017/335/VNP46A3.A2017335.h30v07.002.2025104190032.h5"
+    },
+    {
+      "name": "VNP46A3.A2018001.h30v07.002.2025114130746.h5",
+      "observation_date": "2018-01-01",
+      "size": 38763916,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/001/VNP46A3.A2018001.h30v07.002.2025114130746.h5"
+    },
+    {
+      "name": "VNP46A3.A2018032.h30v07.002.2025113142310.h5",
+      "observation_date": "2018-02-01",
+      "size": 52095121,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/032/VNP46A3.A2018032.h30v07.002.2025113142310.h5"
+    },
+    {
+      "name": "VNP46A3.A2018060.h30v07.002.2025113150118.h5",
+      "observation_date": "2018-03-01",
+      "size": 61661344,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/060/VNP46A3.A2018060.h30v07.002.2025113150118.h5"
+    },
+    {
+      "name": "VNP46A3.A2018091.h30v07.002.2025113153940.h5",
+      "observation_date": "2018-04-01",
+      "size": 68159848,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/091/VNP46A3.A2018091.h30v07.002.2025113153940.h5"
+    },
+    {
+      "name": "VNP46A3.A2018121.h30v07.002.2025113161347.h5",
+      "observation_date": "2018-05-01",
+      "size": 67339740,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/121/VNP46A3.A2018121.h30v07.002.2025113161347.h5"
+    },
+    {
+      "name": "VNP46A3.A2018152.h30v07.002.2025113165155.h5",
+      "observation_date": "2018-06-01",
+      "size": 37120812,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/152/VNP46A3.A2018152.h30v07.002.2025113165155.h5"
+    },
+    {
+      "name": "VNP46A3.A2018182.h30v07.002.2025113171855.h5",
+      "observation_date": "2018-07-01",
+      "size": 24969865,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/182/VNP46A3.A2018182.h30v07.002.2025113171855.h5"
+    },
+    {
+      "name": "VNP46A3.A2018213.h30v07.002.2025113174929.h5",
+      "observation_date": "2018-08-01",
+      "size": 22545720,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/213/VNP46A3.A2018213.h30v07.002.2025113174929.h5"
+    },
+    {
+      "name": "VNP46A3.A2018244.h30v07.002.2025113181932.h5",
+      "observation_date": "2018-09-01",
+      "size": 40746585,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/244/VNP46A3.A2018244.h30v07.002.2025113181932.h5"
+    },
+    {
+      "name": "VNP46A3.A2018274.h30v07.002.2025113184446.h5",
+      "observation_date": "2018-10-01",
+      "size": 65113348,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/274/VNP46A3.A2018274.h30v07.002.2025113184446.h5"
+    },
+    {
+      "name": "VNP46A3.A2018305.h30v07.002.2025113191018.h5",
+      "observation_date": "2018-11-01",
+      "size": 65121484,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/305/VNP46A3.A2018305.h30v07.002.2025113191018.h5"
+    },
+    {
+      "name": "VNP46A3.A2018335.h30v07.002.2025113193401.h5",
+      "observation_date": "2018-12-01",
+      "size": 58146710,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2018/335/VNP46A3.A2018335.h30v07.002.2025113193401.h5"
+    },
+    {
+      "name": "VNP46A3.A2019001.h30v07.002.2025134104828.h5",
+      "observation_date": "2019-01-01",
+      "size": 53892818,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/001/VNP46A3.A2019001.h30v07.002.2025134104828.h5"
+    },
+    {
+      "name": "VNP46A3.A2019032.h30v07.002.2025134104830.h5",
+      "observation_date": "2019-02-01",
+      "size": 64550228,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/032/VNP46A3.A2019032.h30v07.002.2025134104830.h5"
+    },
+    {
+      "name": "VNP46A3.A2019060.h30v07.002.2025133163241.h5",
+      "observation_date": "2019-03-01",
+      "size": 66622966,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/060/VNP46A3.A2019060.h30v07.002.2025133163241.h5"
+    },
+    {
+      "name": "VNP46A3.A2019091.h30v07.002.2025133170457.h5",
+      "observation_date": "2019-04-01",
+      "size": 66757136,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/091/VNP46A3.A2019091.h30v07.002.2025133170457.h5"
+    },
+    {
+      "name": "VNP46A3.A2019121.h30v07.002.2025133173043.h5",
+      "observation_date": "2019-05-01",
+      "size": 60416081,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/121/VNP46A3.A2019121.h30v07.002.2025133173043.h5"
+    },
+    {
+      "name": "VNP46A3.A2019152.h30v07.002.2025133175711.h5",
+      "observation_date": "2019-06-01",
+      "size": 49038584,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/152/VNP46A3.A2019152.h30v07.002.2025133175711.h5"
+    },
+    {
+      "name": "VNP46A3.A2019182.h30v07.002.2025133182232.h5",
+      "observation_date": "2019-07-01",
+      "size": 42534126,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/182/VNP46A3.A2019182.h30v07.002.2025133182232.h5"
+    },
+    {
+      "name": "VNP46A3.A2019213.h30v07.002.2025133185104.h5",
+      "observation_date": "2019-08-01",
+      "size": 24949976,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/213/VNP46A3.A2019213.h30v07.002.2025133185104.h5"
+    },
+    {
+      "name": "VNP46A3.A2019244.h30v07.002.2025133192256.h5",
+      "observation_date": "2019-09-01",
+      "size": 42359661,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/244/VNP46A3.A2019244.h30v07.002.2025133192256.h5"
+    },
+    {
+      "name": "VNP46A3.A2019274.h30v07.002.2025134110811.h5",
+      "observation_date": "2019-10-01",
+      "size": 63442678,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/274/VNP46A3.A2019274.h30v07.002.2025134110811.h5"
+    },
+    {
+      "name": "VNP46A3.A2019305.h30v07.002.2025133201111.h5",
+      "observation_date": "2019-11-01",
+      "size": 44593875,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/305/VNP46A3.A2019305.h30v07.002.2025133201111.h5"
+    },
+    {
+      "name": "VNP46A3.A2019335.h30v07.002.2025133204227.h5",
+      "observation_date": "2019-12-01",
+      "size": 53442762,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2019/335/VNP46A3.A2019335.h30v07.002.2025133204227.h5"
+    },
+    {
+      "name": "VNP46A3.A2020001.h30v07.002.2025134105326.h5",
+      "observation_date": "2020-01-01",
+      "size": 48938057,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/001/VNP46A3.A2020001.h30v07.002.2025134105326.h5"
+    },
+    {
+      "name": "VNP46A3.A2020032.h30v07.002.2025133175458.h5",
+      "observation_date": "2020-02-01",
+      "size": 52447840,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/032/VNP46A3.A2020032.h30v07.002.2025133175458.h5"
+    },
+    {
+      "name": "VNP46A3.A2020061.h30v07.002.2025133201338.h5",
+      "observation_date": "2020-03-01",
+      "size": 67757272,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/061/VNP46A3.A2020061.h30v07.002.2025133201338.h5"
+    },
+    {
+      "name": "VNP46A3.A2020092.h30v07.002.2025133210636.h5",
+      "observation_date": "2020-04-01",
+      "size": 64887506,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/092/VNP46A3.A2020092.h30v07.002.2025133210636.h5"
+    },
+    {
+      "name": "VNP46A3.A2020122.h30v07.002.2025133212923.h5",
+      "observation_date": "2020-05-01",
+      "size": 62334680,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/122/VNP46A3.A2020122.h30v07.002.2025133212923.h5"
+    },
+    {
+      "name": "VNP46A3.A2020153.h30v07.002.2025133215146.h5",
+      "observation_date": "2020-06-01",
+      "size": 48488636,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/153/VNP46A3.A2020153.h30v07.002.2025133215146.h5"
+    },
+    {
+      "name": "VNP46A3.A2020183.h30v07.002.2025133221433.h5",
+      "observation_date": "2020-07-01",
+      "size": 45494554,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/183/VNP46A3.A2020183.h30v07.002.2025133221433.h5"
+    },
+    {
+      "name": "VNP46A3.A2020214.h30v07.002.2025133223923.h5",
+      "observation_date": "2020-08-01",
+      "size": 32157028,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/214/VNP46A3.A2020214.h30v07.002.2025133223923.h5"
+    },
+    {
+      "name": "VNP46A3.A2020245.h30v07.002.2025133230525.h5",
+      "observation_date": "2020-09-01",
+      "size": 44659453,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/245/VNP46A3.A2020245.h30v07.002.2025133230525.h5"
+    },
+    {
+      "name": "VNP46A3.A2020275.h30v07.002.2025133233251.h5",
+      "observation_date": "2020-10-01",
+      "size": 32957555,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/275/VNP46A3.A2020275.h30v07.002.2025133233251.h5"
+    },
+    {
+      "name": "VNP46A3.A2020306.h30v07.002.2025133235914.h5",
+      "observation_date": "2020-11-01",
+      "size": 51556271,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/306/VNP46A3.A2020306.h30v07.002.2025133235914.h5"
+    },
+    {
+      "name": "VNP46A3.A2020336.h30v07.002.2025134002622.h5",
+      "observation_date": "2020-12-01",
+      "size": 39351317,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2020/336/VNP46A3.A2020336.h30v07.002.2025134002622.h5"
+    },
+    {
+      "name": "VNP46A3.A2021001.h30v07.002.2025147183123.h5",
+      "observation_date": "2021-01-01",
+      "size": 38133952,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/001/VNP46A3.A2021001.h30v07.002.2025147183123.h5"
+    },
+    {
+      "name": "VNP46A3.A2021032.h30v07.002.2025147190914.h5",
+      "observation_date": "2021-02-01",
+      "size": 37971089,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/032/VNP46A3.A2021032.h30v07.002.2025147190914.h5"
+    },
+    {
+      "name": "VNP46A3.A2021060.h30v07.002.2025147194752.h5",
+      "observation_date": "2021-03-01",
+      "size": 59190805,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/060/VNP46A3.A2021060.h30v07.002.2025147194752.h5"
+    },
+    {
+      "name": "VNP46A3.A2021091.h30v07.002.2025147201919.h5",
+      "observation_date": "2021-04-01",
+      "size": 56987434,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/091/VNP46A3.A2021091.h30v07.002.2025147201919.h5"
+    },
+    {
+      "name": "VNP46A3.A2021121.h30v07.002.2025147205146.h5",
+      "observation_date": "2021-05-01",
+      "size": 63442880,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/121/VNP46A3.A2021121.h30v07.002.2025147205146.h5"
+    },
+    {
+      "name": "VNP46A3.A2021152.h30v07.002.2025148154642.h5",
+      "observation_date": "2021-06-01",
+      "size": 46894476,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/152/VNP46A3.A2021152.h30v07.002.2025148154642.h5"
+    },
+    {
+      "name": "VNP46A3.A2021182.h30v07.002.2025147214122.h5",
+      "observation_date": "2021-07-01",
+      "size": 36253849,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/182/VNP46A3.A2021182.h30v07.002.2025147214122.h5"
+    },
+    {
+      "name": "VNP46A3.A2021213.h30v07.002.2025149110953.h5",
+      "observation_date": "2021-08-01",
+      "size": 44570436,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/213/VNP46A3.A2021213.h30v07.002.2025149110953.h5"
+    },
+    {
+      "name": "VNP46A3.A2021244.h30v07.002.2025148161602.h5",
+      "observation_date": "2021-09-01",
+      "size": 47457066,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/244/VNP46A3.A2021244.h30v07.002.2025148161602.h5"
+    },
+    {
+      "name": "VNP46A3.A2021274.h30v07.002.2025148170611.h5",
+      "observation_date": "2021-10-01",
+      "size": 46942063,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/274/VNP46A3.A2021274.h30v07.002.2025148170611.h5"
+    },
+    {
+      "name": "VNP46A3.A2021305.h30v07.002.2025148174322.h5",
+      "observation_date": "2021-11-01",
+      "size": 51260202,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/305/VNP46A3.A2021305.h30v07.002.2025148174322.h5"
+    },
+    {
+      "name": "VNP46A3.A2021335.h30v07.002.2025148180900.h5",
+      "observation_date": "2021-12-01",
+      "size": 38079367,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2021/335/VNP46A3.A2021335.h30v07.002.2025148180900.h5"
+    },
+    {
+      "name": "VNP46A3.A2022001.h30v07.002.2025155020047.h5",
+      "observation_date": "2022-01-01",
+      "size": 56105486,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/001/VNP46A3.A2022001.h30v07.002.2025155020047.h5"
+    },
+    {
+      "name": "VNP46A3.A2022032.h30v07.002.2025155022810.h5",
+      "observation_date": "2022-02-01",
+      "size": 46834724,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/032/VNP46A3.A2022032.h30v07.002.2025155022810.h5"
+    },
+    {
+      "name": "VNP46A3.A2022060.h30v07.002.2025155025919.h5",
+      "observation_date": "2022-03-01",
+      "size": 61844213,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/060/VNP46A3.A2022060.h30v07.002.2025155025919.h5"
+    },
+    {
+      "name": "VNP46A3.A2022091.h30v07.002.2025155033145.h5",
+      "observation_date": "2022-04-01",
+      "size": 62212117,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/091/VNP46A3.A2022091.h30v07.002.2025155033145.h5"
+    },
+    {
+      "name": "VNP46A3.A2022121.h30v07.002.2025155040429.h5",
+      "observation_date": "2022-05-01",
+      "size": 65404984,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/121/VNP46A3.A2022121.h30v07.002.2025155040429.h5"
+    },
+    {
+      "name": "VNP46A3.A2022152.h30v07.002.2025155190608.h5",
+      "observation_date": "2022-06-01",
+      "size": 59931281,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/152/VNP46A3.A2022152.h30v07.002.2025155190608.h5"
+    },
+    {
+      "name": "VNP46A3.A2022182.h30v07.002.2025155192255.h5",
+      "observation_date": "2022-07-01",
+      "size": 43788656,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/182/VNP46A3.A2022182.h30v07.002.2025155192255.h5"
+    },
+    {
+      "name": "VNP46A3.A2022213.h30v07.002.2025155221002.h5",
+      "observation_date": "2022-08-01",
+      "size": 36179237,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/213/VNP46A3.A2022213.h30v07.002.2025155221002.h5"
+    },
+    {
+      "name": "VNP46A3.A2022244.h30v07.002.2025155194322.h5",
+      "observation_date": "2022-09-01",
+      "size": 39218707,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/244/VNP46A3.A2022244.h30v07.002.2025155194322.h5"
+    },
+    {
+      "name": "VNP46A3.A2022274.h30v07.002.2025155200524.h5",
+      "observation_date": "2022-10-01",
+      "size": 46951022,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/274/VNP46A3.A2022274.h30v07.002.2025155200524.h5"
+    },
+    {
+      "name": "VNP46A3.A2022305.h30v07.002.2025155202702.h5",
+      "observation_date": "2022-11-01",
+      "size": 62580602,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/305/VNP46A3.A2022305.h30v07.002.2025155202702.h5"
+    },
+    {
+      "name": "VNP46A3.A2022335.h30v07.002.2025155204903.h5",
+      "observation_date": "2022-12-01",
+      "size": 39142167,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2022/335/VNP46A3.A2022335.h30v07.002.2025155204903.h5"
+    },
+    {
+      "name": "VNP46A3.A2023001.h30v07.002.2025160182527.h5",
+      "observation_date": "2023-01-01",
+      "size": 34935309,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/001/VNP46A3.A2023001.h30v07.002.2025160182527.h5"
+    },
+    {
+      "name": "VNP46A3.A2023032.h30v07.002.2025160191703.h5",
+      "observation_date": "2023-02-01",
+      "size": 54345622,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/032/VNP46A3.A2023032.h30v07.002.2025160191703.h5"
+    },
+    {
+      "name": "VNP46A3.A2023060.h30v07.002.2025160200310.h5",
+      "observation_date": "2023-03-01",
+      "size": 69843950,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/060/VNP46A3.A2023060.h30v07.002.2025160200310.h5"
+    },
+    {
+      "name": "VNP46A3.A2023091.h30v07.002.2025160205535.h5",
+      "observation_date": "2023-04-01",
+      "size": 85685248,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/091/VNP46A3.A2023091.h30v07.002.2025160205535.h5"
+    },
+    {
+      "name": "VNP46A3.A2023121.h30v07.002.2025160214917.h5",
+      "observation_date": "2023-05-01",
+      "size": 68603333,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/121/VNP46A3.A2023121.h30v07.002.2025160214917.h5"
+    },
+    {
+      "name": "VNP46A3.A2023152.h30v07.002.2025160222734.h5",
+      "observation_date": "2023-06-01",
+      "size": 60631532,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/152/VNP46A3.A2023152.h30v07.002.2025160222734.h5"
+    },
+    {
+      "name": "VNP46A3.A2023182.h30v07.002.2025161120000.h5",
+      "observation_date": "2023-07-01",
+      "size": 43570970,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/182/VNP46A3.A2023182.h30v07.002.2025161120000.h5"
+    },
+    {
+      "name": "VNP46A3.A2023213.h30v07.002.2025160230559.h5",
+      "observation_date": "2023-08-01",
+      "size": 58644835,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/213/VNP46A3.A2023213.h30v07.002.2025160230559.h5"
+    },
+    {
+      "name": "VNP46A3.A2023244.h30v07.002.2025160235132.h5",
+      "observation_date": "2023-09-01",
+      "size": 60299371,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/244/VNP46A3.A2023244.h30v07.002.2025160235132.h5"
+    },
+    {
+      "name": "VNP46A3.A2023274.h30v07.002.2025161003714.h5",
+      "observation_date": "2023-10-01",
+      "size": 75820630,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/274/VNP46A3.A2023274.h30v07.002.2025161003714.h5"
+    },
+    {
+      "name": "VNP46A3.A2023305.h30v07.002.2025161123948.h5",
+      "observation_date": "2023-11-01",
+      "size": 69340086,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/305/VNP46A3.A2023305.h30v07.002.2025161123948.h5"
+    },
+    {
+      "name": "VNP46A3.A2023335.h30v07.002.2025161131344.h5",
+      "observation_date": "2023-12-01",
+      "size": 65036765,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2023/335/VNP46A3.A2023335.h30v07.002.2025161131344.h5"
+    },
+    {
+      "name": "VNP46A3.A2024001.h30v07.002.2025161152938.h5",
+      "observation_date": "2024-01-01",
+      "size": 58117202,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/001/VNP46A3.A2024001.h30v07.002.2025161152938.h5"
+    },
+    {
+      "name": "VNP46A3.A2024032.h30v07.002.2025161143121.h5",
+      "observation_date": "2024-02-01",
+      "size": 65410829,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/032/VNP46A3.A2024032.h30v07.002.2025161143121.h5"
+    },
+    {
+      "name": "VNP46A3.A2024061.h30v07.002.2025132201005.h5",
+      "observation_date": "2024-03-01",
+      "size": 68774536,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/061/VNP46A3.A2024061.h30v07.002.2025132201005.h5"
+    },
+    {
+      "name": "VNP46A3.A2024092.h30v07.002.2025119200028.h5",
+      "observation_date": "2024-04-01",
+      "size": 75770549,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/092/VNP46A3.A2024092.h30v07.002.2025119200028.h5"
+    },
+    {
+      "name": "VNP46A3.A2024122.h30v07.002.2025139143247.h5",
+      "observation_date": "2024-05-01",
+      "size": 67110362,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/122/VNP46A3.A2024122.h30v07.002.2025139143247.h5"
+    },
+    {
+      "name": "VNP46A3.A2024153.h30v07.002.2025139144935.h5",
+      "observation_date": "2024-06-01",
+      "size": 50543418,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/153/VNP46A3.A2024153.h30v07.002.2025139144935.h5"
+    },
+    {
+      "name": "VNP46A3.A2024183.h30v07.002.2025139150547.h5",
+      "observation_date": "2024-07-01",
+      "size": 34491163,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/183/VNP46A3.A2024183.h30v07.002.2025139150547.h5"
+    },
+    {
+      "name": "VNP46A3.A2024214.h30v07.002.2025119202540.h5",
+      "observation_date": "2024-08-01",
+      "size": 44694317,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/214/VNP46A3.A2024214.h30v07.002.2025119202540.h5"
+    },
+    {
+      "name": "VNP46A3.A2024245.h30v07.002.2025139152539.h5",
+      "observation_date": "2024-09-01",
+      "size": 33968445,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/245/VNP46A3.A2024245.h30v07.002.2025139152539.h5"
+    },
+    {
+      "name": "VNP46A3.A2024275.h30v07.002.2025119204955.h5",
+      "observation_date": "2024-10-01",
+      "size": 50224961,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/275/VNP46A3.A2024275.h30v07.002.2025119204955.h5"
+    },
+    {
+      "name": "VNP46A3.A2024306.h30v07.002.2025139154935.h5",
+      "observation_date": "2024-11-01",
+      "size": 60755684,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/306/VNP46A3.A2024306.h30v07.002.2025139154935.h5"
+    },
+    {
+      "name": "VNP46A3.A2024336.h30v07.002.2025119210924.h5",
+      "observation_date": "2024-12-01",
+      "size": 39851973,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2024/336/VNP46A3.A2024336.h30v07.002.2025119210924.h5"
+    },
+    {
+      "name": "VNP46A3.A2025001.h30v07.002.2026071164650.h5",
+      "observation_date": "2025-01-01",
+      "size": 45204618,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/001/VNP46A3.A2025001.h30v07.002.2026071164650.h5"
+    },
+    {
+      "name": "VNP46A3.A2025032.h30v07.002.2026064130539.h5",
+      "observation_date": "2025-02-01",
+      "size": 44024279,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/032/VNP46A3.A2025032.h30v07.002.2026064130539.h5"
+    },
+    {
+      "name": "VNP46A3.A2025060.h30v07.002.2026064131926.h5",
+      "observation_date": "2025-03-01",
+      "size": 57274999,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/060/VNP46A3.A2025060.h30v07.002.2026064131926.h5"
+    },
+    {
+      "name": "VNP46A3.A2025091.h30v07.002.2026064132827.h5",
+      "observation_date": "2025-04-01",
+      "size": 71964658,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/091/VNP46A3.A2025091.h30v07.002.2026064132827.h5"
+    },
+    {
+      "name": "VNP46A3.A2025121.h30v07.002.2026064133700.h5",
+      "observation_date": "2025-05-01",
+      "size": 60239729,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/121/VNP46A3.A2025121.h30v07.002.2026064133700.h5"
+    },
+    {
+      "name": "VNP46A3.A2025152.h30v07.002.2026064134420.h5",
+      "observation_date": "2025-06-01",
+      "size": 39668050,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/152/VNP46A3.A2025152.h30v07.002.2026064134420.h5"
+    },
+    {
+      "name": "VNP46A3.A2025182.h30v07.002.2026071170146.h5",
+      "observation_date": "2025-07-01",
+      "size": 22395732,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/182/VNP46A3.A2025182.h30v07.002.2026071170146.h5"
+    },
+    {
+      "name": "VNP46A3.A2025213.h30v07.002.2026064135435.h5",
+      "observation_date": "2025-08-01",
+      "size": 38484375,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/213/VNP46A3.A2025213.h30v07.002.2026064135435.h5"
+    },
+    {
+      "name": "VNP46A3.A2025244.h30v07.002.2026064140503.h5",
+      "observation_date": "2025-09-01",
+      "size": 34154165,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/244/VNP46A3.A2025244.h30v07.002.2026064140503.h5"
+    },
+    {
+      "name": "VNP46A3.A2025274.h30v07.002.2026064141602.h5",
+      "observation_date": "2025-10-01",
+      "size": 56612591,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/274/VNP46A3.A2025274.h30v07.002.2026064141602.h5"
+    },
+    {
+      "name": "VNP46A3.A2025305.h30v07.002.2026071171141.h5",
+      "observation_date": "2025-11-01",
+      "size": 47437883,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/305/VNP46A3.A2025305.h30v07.002.2026071171141.h5"
+    },
+    {
+      "name": "VNP46A3.A2025335.h30v07.002.2026071171816.h5",
+      "observation_date": "2025-12-01",
+      "size": 46081711,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2025/335/VNP46A3.A2025335.h30v07.002.2026071171816.h5"
+    },
+    {
+      "name": "VNP46A3.A2026001.h30v07.002.2026041165903.h5",
+      "observation_date": "2026-01-01",
+      "size": 43116468,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/001/VNP46A3.A2026001.h30v07.002.2026041165903.h5"
+    },
+    {
+      "name": "VNP46A3.A2026032.h30v07.002.2026072185902.h5",
+      "observation_date": "2026-02-01",
+      "size": 46686130,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/032/VNP46A3.A2026032.h30v07.002.2026072185902.h5"
+    },
+    {
+      "name": "VNP46A3.A2026060.h30v07.002.2026099180915.h5",
+      "observation_date": "2026-03-01",
+      "size": 63212643,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/060/VNP46A3.A2026060.h30v07.002.2026099180915.h5"
+    },
+    {
+      "name": "VNP46A3.A2026091.h30v07.002.2026132235828.h5",
+      "observation_date": "2026-04-01",
+      "size": 72891956,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/091/VNP46A3.A2026091.h30v07.002.2026132235828.h5"
+    },
+    {
+      "name": "VNP46A3.A2026121.h30v07.002.2026163141018.h5",
+      "observation_date": "2026-05-01",
+      "size": 70184358,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/121/VNP46A3.A2026121.h30v07.002.2026163141018.h5"
+    },
+    {
+      "name": "VNP46A3.A2026152.h30v07.002.2026201115318.h5",
+      "observation_date": "2026-06-01",
+      "size": 58527493,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/152/VNP46A3.A2026152.h30v07.002.2026201115318.h5"
+    },
+    {
+      "name": "VNP46A3.A2026182.h30v07.002.2026223162340.h5",
+      "observation_date": "2026-07-01",
+      "size": 49373912,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/182/VNP46A3.A2026182.h30v07.002.2026223162340.h5"
+    },
+    {
+      "name": "VNP46A3.A2026213.h30v07.002.2026252142749.h5",
+      "observation_date": "2026-08-01",
+      "size": 26250346,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/213/VNP46A3.A2026213.h30v07.002.2026252142749.h5"
+    },
+    {
+      "name": "VNP46A3.A2026244.h30v07.002.2026291122008.h5",
+      "observation_date": "2026-09-01",
+      "size": 58927905,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/244/VNP46A3.A2026244.h30v07.002.2026291122008.h5"
+    },
+    {
+      "name": "VNP46A3.A2026274.h30v07.002.2026315140611.h5",
+      "observation_date": "2026-10-01",
+      "size": 60979312,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/274/VNP46A3.A2026274.h30v07.002.2026315140611.h5"
+    },
+    {
+      "name": "VNP46A3.A2026305.h30v07.002.2026317183548.h5",
+      "observation_date": "2026-11-01",
+      "size": 27893195,
+      "url": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/5200/VNP46A3/2026/305/VNP46A3.A2026305.h30v07.002.2026317183548.h5"
+    }
+  ]
+}

@@ -10,3 +10,13 @@ __pycache__/
 .venv/
 .pytest_cache/
 backend/storage/
+
+# Raw radiance downloads are large, reproducible inputs.
+BlackMarbles/
+data/raw/radiance/
+
+# Large generated radiance products.
+data/processed/radiance/*.csv.gz
+
+# Trained models and run artifacts are reproducible outputs.
+artifacts/

@@ -1,0 +1,10 @@
+{
+  "disclaimer": "PRESENTATION-ONLY SYNTHETIC DATA. Missing months are simulated and are not NASA observations, training labels, or scientific evidence.",
+  "records": 132,
+  "observed_records": 15,
+  "synthetic_records": 117,
+  "start": "2016-01-01",
+  "end": "2026-12-01",
+  "allowed_use": "UI demonstrations and presentation mockups only",
+  "prohibited_use": "model evaluation, accuracy claims, scientific inference"
+}
