@@ -13,10 +13,10 @@ import { Button } from "./ui";
 
 function markerColor(event: TransitionEvent) {
   const palette: Record<string, string> = {
-    "DEMO-001": "#176c7a", "DEMO-002": "#24716d",
-    "DEMO-003": "#865d14", "DEMO-004": "#a44356",
+    "DEMO-001": "#007f9c", "DEMO-002": "#5b50cf",
+    "DEMO-003": "#a56500", "DEMO-004": "#cf345c",
   };
-  return palette[event.id] ?? "#506761";
+  return palette[event.id] ?? "#435c76";
 }
 
 export function TransitionMap({

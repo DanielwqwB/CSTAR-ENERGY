@@ -45,7 +45,7 @@ export function OverviewScreen() {
       String(filtered.filter((e) => e.shortType === "Industrial").length),
       "Source remains unresolved",
       "events",
-      "#24716d",
+      "#5b50cf",
     ],
     [
       "Mixed / Unresolved",
@@ -106,6 +106,8 @@ export function OverviewScreen() {
               backgroundColor: colors.panel,
               borderColor: colors.border,
               borderWidth: 1,
+              borderTop: `3px solid ${color}`,
+              backgroundImage: `linear-gradient(145deg, ${color}0d, transparent 70%)`,
               borderRadius: 11,
               padding: 16,
               gap: 9,

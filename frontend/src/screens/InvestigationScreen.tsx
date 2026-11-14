@@ -94,7 +94,7 @@ export function InvestigationScreen() {
           </div>
         ))}
       </Card>
-      <Card title="Analyst notebook" subtitle="Saved locally on this device">
+      <Card title="Analyst notebook" subtitle="Saved through the workspace API">
         <Field
           label="Investigation notes"
           placeholder="Document evidence interpretation, unresolved questions, and follow-up…"
@@ -109,7 +109,7 @@ export function InvestigationScreen() {
             icon="save-outline"
             onClick={() => {
               update(selected.id, { notes });
-              notify("Analyst notes saved locally.");
+              notify("Saving analyst notes…");
             }}
           />
           <Button

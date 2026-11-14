@@ -61,10 +61,12 @@ export const navigation: {
         icon: "document-text-outline",
       },
       { id: "settings", label: "Administration", icon: "settings-outline" },
+      { id: "profile", label: "My profile", icon: "person-outline" },
     ],
   },
 ];
 export const pageTitles: Record<Page, [string, string]> = {
+  profile: ["My profile", "Manage your research profile and account session"],
   overview: [
     "Regional Intelligence Overview",
     "Cross-coupled evidence for the fictional Aurelia pilot locality",

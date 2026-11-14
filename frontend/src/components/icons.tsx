@@ -28,8 +28,10 @@ import {
   Settings,
   ShieldCheck,
   X,
+  UserCircle,
 } from "lucide-react";
 const icons = {
+  "person-outline": UserCircle,
   "pulse-outline": Activity,
   "arrow-forward": ArrowRight,
   "bar-chart-outline": BarChart3,
@@ -64,7 +66,7 @@ const icons = {
 export type IconName = keyof typeof icons;
 export function Icon({
   name,
-  color = "#506761",
+  color = "#435c76",
   size = 18,
 }: {
   name: IconName;

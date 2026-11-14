@@ -1,4 +1,5 @@
 export type Page =
+  | "profile"
   | "overview"
   | "map"
   | "events"
