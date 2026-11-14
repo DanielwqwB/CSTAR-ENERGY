@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import { createSupabaseStore } from "./supabase.js";
 import { parseAtmosphereQuery } from "./atmosphere.js";
+import { buildCctfAssessment } from "./cctf.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -195,6 +196,10 @@ export function createApp({
         return send(200, { ok: true });
       }
       sessionCookies(res, context.session, savedCookies.cstar_remember === "1");
+      if (req.method === "GET" && path === "/api/cctf/assessment") {
+        const atmosphereRun = await store.currentAtmosphereRun(context);
+        return send(200, buildCctfAssessment({ atmosphereRun }));
+      }
       if (req.method === "GET" && path.startsWith("/api/atmosphere/")) {
         if (!["/api/atmosphere/manifest", "/api/atmosphere/no2"].includes(path))
           fail(404, "Route not found");

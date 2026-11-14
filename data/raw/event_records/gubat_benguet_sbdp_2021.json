@@ -1,0 +1,40 @@
+{
+  "event_id": "ph-sorsogon-gubat-benguet-sbdp-solar-lights-2021",
+  "title": "FY 2021 SBDP solar-powered streetlights",
+  "event_type": "solar_streetlight_installation",
+  "mechanism_hypothesis": "lighting_modernization",
+  "country": "Philippines",
+  "region": "Bicol Region",
+  "province": "Sorsogon",
+  "municipality": "Gubat",
+  "barangay": "Benguet",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [124.1158, 12.8801],
+    "precision": "approximate_barangay_centroid",
+    "affected_path_km": 1
+  },
+  "treatment_window": {
+    "start": null,
+    "end": "2022-06-01",
+    "start_precision": "unknown",
+    "end_precision": "month"
+  },
+  "project_facts": {
+    "solar_light_count": 27,
+    "reported_cost_php": 2000000,
+    "program": "FY 2021 Support to Barangay Development Program"
+  },
+  "source": {
+    "publisher": "DILG Regional Office No. 5",
+    "title": "Completed FY 2021 SBDP Project in Barangay Benguet, Gubat, Sorsogon",
+    "url": "https://region5.dilg.gov.ph/completed-fy-2021-sbdp-project-in-barangay-benguet-gubat-sorsogon/",
+    "record_type": "official_completion_record"
+  },
+  "status": "record_assisted",
+  "limitations": [
+    "The official record gives a completion month but not a confirmed construction start date.",
+    "The official record describes an approximately one-kilometre path; exact road geometry is not yet available.",
+    "The point is an approximate barangay reference location and must not be treated as the light-path geometry."
+  ]
+}
