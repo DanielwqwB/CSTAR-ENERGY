@@ -94,9 +94,9 @@ export function Card({
   style?: CSSProperties;
 }) {
   return (
-    <section style={css(styles.card, style)}>
+    <section className="panel" style={css(styles.card, style)}>
       {title && (
-        <header style={styles.cardHeader}>
+        <header className="panel-header" style={styles.cardHeader}>
           <div className="stack" style={{ flex: 1, gap: 5 }}>
             <h2 style={{ ...ui.title, margin: 0 }}>{title}</h2>
             {subtitle && <span style={ui.small}>{subtitle}</span>}
@@ -248,7 +248,7 @@ export function Notice({
     </aside>
   );
 }
-export function Brand() {
+export function Brand({ inverse = false }: { inverse?: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <div
@@ -264,18 +264,18 @@ export function Brand() {
       <div className="stack">
         <span
           style={{
-            color: colors.text,
+            color: inverse ? "#e7efea" : colors.text,
             fontSize: 15,
             fontWeight: 800,
             letterSpacing: 1,
             whiteSpace: "nowrap",
           }}
         >
-          CSTAR<span style={{ color: colors.cyan }}>—ENERGY</span>
+          CSTAR<span style={{ color: inverse ? "#9ad0d5" : colors.cyan }}>—ENERGY</span>
         </span>
         <span
           style={{
-            color: colors.dim,
+            color: inverse ? "#b8c9c3" : colors.dim,
             fontSize: 8,
             letterSpacing: 2,
             marginTop: 5,
@@ -291,6 +291,7 @@ const styles: Record<string, CSSProperties> = {
   button: {
     display: "inline-flex",
     minHeight: 42,
+    flexShrink: 0,
     borderRadius: 8,
     padding: "10px 14px",
     alignItems: "center",
@@ -299,6 +300,7 @@ const styles: Record<string, CSSProperties> = {
     borderWidth: 1,
     fontSize: 12,
     fontWeight: 600,
+    lineHeight: 1.4,
   },
   card: {
     backgroundColor: colors.panel,

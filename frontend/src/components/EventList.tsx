@@ -73,104 +73,81 @@ export function EventList({
         ))}
       </div>
     );
-  const widths = [100, 190, 220, 120, 110, 210, 50];
   return (
-    <div className="stack scroll-area">
-      <div className="stack" style={css({ minWidth: 1000 })}>
-        <div
-          className="stack"
-          style={css([
-            ui.row,
-            {
-              paddingBlock: 12,
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
-              gap: 8,
-            },
-          ])}
-        >
-          {[
-            "EVENT",
-            "LOCATION / ZONE",
-            "CANDIDATE MECHANISM",
-            "ONSET",
-            "ADEQUACY",
-            "REVIEW STATUS",
-            "",
-          ].map((label, i) => (
-            <span
-              key={i}
-              style={css([ui.label, { width: widths[i], fontSize: 9 }])}
-            >
-              {label}
-            </span>
+    <div
+      className="event-table-scroll"
+      tabIndex={0}
+      aria-label="Scrollable event catalogue"
+    >
+      <table className="event-table">
+        <thead>
+          <tr>
+            {[
+              "Event",
+              "Location / Zone",
+              "Candidate mechanism",
+              "Onset",
+              "Adequacy",
+              "Review status",
+              "Open",
+            ].map((label) => (
+              <th key={label} scope="col">
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {events.map((event) => (
+            <tr key={event.id}>
+              <td>
+                <button
+                  type="button"
+                  className="event-link"
+                  onClick={() => open(event)}
+                >
+                  {event.id}
+                </button>
+              </td>
+              <td>
+                <div className="stack">
+                  <span>{event.location}</span>
+                  <span style={ui.small}>{event.zone}</span>
+                </div>
+              </td>
+              <td>{event.mechanism}</td>
+              <td>{event.onset}</td>
+              <td>
+                <Status value={event.adequacy} />
+              </td>
+              <td>
+                {editable ? (
+                  <Select
+                    label={`Review status for ${event.id}`}
+                    value={event.status}
+                    options={statuses}
+                    onChange={(value) =>
+                      update(event.id, { status: value as EventStatus })
+                    }
+                  />
+                ) : (
+                  <Status value={event.status} />
+                )}
+              </td>
+              <td>
+                <button
+                  type="button"
+                  aria-label={`Open ${event.id}`}
+                  className="event-open"
+                  onClick={() => open(event)}
+                >
+                  <Icon name="arrow-forward" size={15} />
+                </button>
+              </td>
+            </tr>
           ))}
-        </div>
-        {events.map((event) => (
-          <div
-            className="stack"
-            key={event.id}
-            style={css([
-              ui.row,
-              {
-                gap: 8,
-                paddingBlock: 15,
-                borderBottomWidth: 1,
-                borderBottomColor: colors.border,
-              },
-            ])}
-          >
-            <button
-              className="stack"
-              type="button"
-              onClick={() => open(event)}
-              style={css({ width: widths[0] })}
-            >
-              <span style={css({ color: colors.cyan, fontSize: 11 })}>
-                {event.id}
-              </span>
-            </button>
-            <div className="stack" style={css({ width: widths[1] })}>
-              <span style={css([ui.text, { fontSize: 11 }])}>
-                {event.location}
-              </span>
-              <span style={css(ui.small)}>{event.zone}</span>
-            </div>
-            <span style={css([ui.muted, { width: widths[2], fontSize: 11 }])}>
-              {event.mechanism}
-            </span>
-            <span style={css([ui.small, { width: widths[3] }])}>
-              {event.onset}
-            </span>
-            <div className="stack" style={css({ width: widths[4] })}>
-              <Status value={event.adequacy} />
-            </div>
-            <div className="stack" style={css({ width: widths[5] })}>
-              {editable ? (
-                <Select
-                  value={event.status}
-                  options={statuses}
-                  onChange={(value) =>
-                    update(event.id, { status: value as EventStatus })
-                  }
-                />
-              ) : (
-                <Status value={event.status} />
-              )}
-            </div>
-            <button
-              className="stack"
-              type="button"
-              role="button"
-              aria-label={`Open ${event.id}`}
-              onClick={() => open(event)}
-              style={css({ padding: 12 })}
-            >
-              <Icon name="arrow-forward" size={15} />
-            </button>
-          </div>
-        ))}
-      </div>
+        </tbody>
+      </table>
     </div>
   );
 }

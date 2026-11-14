@@ -42,7 +42,7 @@ frontend/
 ## Functionality
 
 - Responsive sidebar, navigation menu for narrow windows, and guided tour.
-- Regional overview, selectable SVG map, event search and filters.
+- Regional overview, interactive Mapbox basemap, selectable event markers, event search and filters.
 - Event review, local analyst notes, evidence charts, plume screening, CCTF assessment.
 - Data explorer, local intervention records, alerts, reports, and profile preferences.
 - JSON, CSV, and text file downloads through browser APIs.
@@ -64,7 +64,13 @@ The production site is written to `dist/`. UI tests use React Testing Library an
 
 ## Data scope
 
-The four events, five dataset entries, and historical series are synthetic reference data. Maps are illustrative diagrams, not geographic basemaps. Comparison selectors do not run scientific models. Live satellite feeds, authentication, account management, and backend processing are not connected. Replace bundled fixtures and local persistence with backend services before production use.
+The four events, five dataset entries, and historical series are synthetic reference data. Mapbox provides a real geographic basemap, but the fictional Aurelia events are placed in Bicol Region only for demonstration. Their positions, lighting cells, and atmospheric footprints are not verified observations. Comparison selectors do not run scientific models. Live satellite feeds, authentication, account management, and backend processing are not connected.
+
+## Mapbox configuration
+
+Copy `.env.example` to `.env.local` and set `VITE_MAPBOX_ACCESS_TOKEN` to your public Mapbox browser token. Restart Vite after changing it. The supplied token is configured locally; `.env.local` is ignored by Git. For deployment, set the same variable before building. Vite exposes this public token to the browser as required by Mapbox.
+
+The map uses Mapbox's light basemap, zoom/compass controls, metric scale, numbered, clickable demonstration markers, and toggleable GeoJSON overlays. A resize observer keeps the canvas aligned when the sidebar or window changes size. If map resources or WebGL are unavailable, an explanation and selectable event list remain available. Demonstration geometry is defined in `src/data/mapGeometry.ts`; replace it with verified geographic coordinates when available.
 
 Browser storage is scoped to the origin. Data saved on a previous Expo web port will not automatically appear on Vite's port.
 

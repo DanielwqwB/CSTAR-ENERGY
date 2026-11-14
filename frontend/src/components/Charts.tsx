@@ -132,7 +132,7 @@ export function TrendChart({
 }
 export function Distribution({ events }: { events: TransitionEvent[] }) {
   const types = ["Lighting", "Industrial", "Mixed", "Unresolved"];
-  const palette = [colors.cyan, "#22d3ee", colors.amber, colors.rose];
+  const palette = [colors.cyan, "#24716d", colors.amber, colors.rose];
   let offset = 0;
   return (
     <div

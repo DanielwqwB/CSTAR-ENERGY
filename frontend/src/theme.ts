@@ -1,17 +1,17 @@
 import type { CSSProperties } from "react";
 
 export const colors = {
-  bg: "#07111f",
-  panel: "#0b1728",
-  raised: "#101f32",
-  border: "#24364d",
-  text: "#f1f5f9",
-  muted: "#94a3b8",
-  dim: "#64748b",
-  cyan: "#38bdf8",
-  green: "#34d399",
-  amber: "#fbbf24",
-  rose: "#fb7185",
+  bg: "#eef1ed",
+  panel: "#f8f9f5",
+  raised: "#e5ebe5",
+  border: "#ccd6d0",
+  text: "#263b39",
+  muted: "#506761",
+  dim: "#60736d",
+  cyan: "#176c7a",
+  green: "#286b4c",
+  amber: "#865d14",
+  rose: "#a44356",
 };
 export const ui = {
   row: { flexDirection: "row", alignItems: "center", gap: 12 },

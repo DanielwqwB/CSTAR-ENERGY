@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cleanup,
   render,
@@ -8,6 +8,8 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
+
+vi.mock("mapbox-gl", () => ({ default: { supported: () => false } }));
 
 beforeEach(() => {
   localStorage.clear();

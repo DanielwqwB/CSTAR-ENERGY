@@ -64,7 +64,7 @@ const icons = {
 export type IconName = keyof typeof icons;
 export function Icon({
   name,
-  color = "#94a3b8",
+  color = "#506761",
   size = 18,
 }: {
   name: IconName;

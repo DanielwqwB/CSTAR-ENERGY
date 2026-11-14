@@ -460,7 +460,7 @@ export function SettingsScreen() {
             />
             <Notice>
               Region preferences save automatically on this device. The
-              interface follows the reference’s dark theme.
+              interface uses a soft light theme with muted surfaces and readable text.
             </Notice>
           </>
         ) : tab === "User administration" ? (

@@ -38,13 +38,14 @@ export function LoginScreen() {
   return (
     <main className="login">
       <section className="login-hero">
-        <Brand />
+        <Brand inverse />
         <div className="stack" style={{ gap: 26, maxWidth: 580 }}>
-          <Badge>✦ NASA SPACE APPS DEMONSTRATION</Badge>
+          <span style={{ color: "#9ad0d5", fontSize: 11 }}> ✦ NASA SPACE APPS DEMONSTRATION</span>
           <h1
             style={{
               margin: 0,
               fontSize: 48,
+              color: "#e7efea",
               lineHeight: 1.12,
               fontWeight: 600,
               letterSpacing: -1.7,
@@ -84,10 +85,10 @@ export function LoginScreen() {
                   gap: 6,
                 }}
               >
-                <span style={{ fontSize: 23, fontWeight: 600 }}>{value}</span>
+                <span style={{ fontSize: 23, fontWeight: 600, color: "#e7efea" }}>{value}</span>
                 <span
                   style={{
-                    color: colors.muted,
+                    color: "#b8c9c3",
                     fontSize: 9,
                     letterSpacing: 0.6,
                   }}
@@ -98,7 +99,7 @@ export function LoginScreen() {
             ))}
           </div>
         </div>
-        <span style={ui.small}>
+        <span style={{ ...ui.small, color: "#b8c9c3" }}>
           Photo: Dennis Kummer / Unsplash · Synthetic demonstration data
         </span>
       </section>

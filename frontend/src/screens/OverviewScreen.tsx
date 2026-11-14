@@ -1,5 +1,4 @@
 import { css } from "../styles";
-import { useViewport } from "../hooks/useViewport";
 import React from "react";
 import {
   Badge,
@@ -25,8 +24,6 @@ export const regions = [
 ];
 export function OverviewScreen() {
   const { events, region, setRegion, go, select } = useWorkspace();
-  const { width } = useViewport();
-  const wide = width > 1200;
   const filtered = filterEvents(events, "", undefined, undefined, region);
   const metrics: [string, string, string, Page, string][] = [
     [
@@ -48,7 +45,7 @@ export function OverviewScreen() {
       String(filtered.filter((e) => e.shortType === "Industrial").length),
       "Source remains unresolved",
       "events",
-      "#22d3ee",
+      "#24716d",
     ],
     [
       "Mixed / Unresolved",
@@ -97,7 +94,7 @@ export function OverviewScreen() {
         5 data sources connected in demonstration mode · Last sample processing:
         18 Jun 2025, 14:32 UTC
       </Notice>
-      <div className="stack" style={css(ui.wrap)}>
+      <div className="metrics-grid">
         {metrics.map(([label, value, note, page, color]) => (
           <button
             className="stack"
@@ -106,8 +103,6 @@ export function OverviewScreen() {
             key={label}
             onClick={() => go(page)}
             style={css({
-              flexGrow: 1,
-              flexBasis: wide ? 145 : 140,
               backgroundColor: colors.panel,
               borderColor: colors.border,
               borderWidth: 1,
@@ -126,17 +121,13 @@ export function OverviewScreen() {
           </button>
         ))}
       </div>
-      <div
-        className="stack"
-        style={css({ flexDirection: wide ? "row" : "column", gap: 18 })}
-      >
+      <div className="overview-grid">
         <Card
           title="Regional transition map"
           subtitle="Select a zone to open its event investigation"
           action={
             <Button secondary label="Open map" onClick={() => go("map")} />
           }
-          style={css({ flex: wide ? 2 : undefined })}
         >
           <TransitionMap
             events={filtered}
@@ -146,10 +137,7 @@ export function OverviewScreen() {
             }}
           />
         </Card>
-        <div
-          className="stack"
-          style={css({ flex: wide ? 1 : undefined, gap: 18 })}
-        >
+        <div className="stack" style={css({ gap: 18 })}>
           <Card
             title="Candidate distribution"
             subtitle="Current demonstration dataset"

@@ -1,7 +1,24 @@
-import { css } from "../styles";
-import React from "react";
+import { useEffect, useRef, useState } from "react";
+import type { Map as MapInstance, Marker, GeoJSONSource } from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import type { TransitionEvent } from "../types";
-import { colors, ui } from "../theme";
+import {
+  atmosphericFootprints,
+  DEMO_CENTER,
+  BICOL_VIEW_BOUNDS,
+  demoPosition,
+  lightingCells,
+} from "../data/mapGeometry";
+import { Button } from "./ui";
+
+function markerColor(event: TransitionEvent) {
+  const palette: Record<string, string> = {
+    "DEMO-001": "#176c7a", "DEMO-002": "#24716d",
+    "DEMO-003": "#865d14", "DEMO-004": "#a44356",
+  };
+  return palette[event.id] ?? "#506761";
+}
+
 export function TransitionMap({
   events,
   selected,
@@ -17,219 +34,223 @@ export function TransitionMap({
   cells?: boolean;
   height?: number;
 }) {
+  const container = useRef<HTMLDivElement>(null);
+  const sdk = useRef<typeof import("mapbox-gl").default | null>(null);
+  const [map, setMap] = useState<MapInstance | null>(null);
+  const [status, setStatus] = useState("Loading Mapbox basemap…");
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const callback = useRef(onSelect);
+  callback.current = onSelect;
+  useEffect(() => {
+    let disposed = false;
+    let instance: MapInstance | undefined;
+    let observer: ResizeObserver | undefined;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    setMap(null);
+    setFailed(false);
+    setStatus("Loading Mapbox basemap…");
+    const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+    if (!token || token === "pk.your_public_mapbox_token") {
+      setFailed(true);
+      setStatus(
+        "Mapbox token is missing. Set VITE_MAPBOX_ACCESS_TOKEN in frontend/.env.local.",
+      );
+      return;
+    }
+    async function initialize() {
+      try {
+        const { default: mapbox } = await import("mapbox-gl");
+        if (disposed || !container.current) return;
+        if (!mapbox.supported()) throw new Error("WebGL unavailable");
+        sdk.current = mapbox;
+        instance = new mapbox.Map({
+          container: container.current,
+          accessToken: token,
+          style: "mapbox://styles/mapbox/light-v11",
+          center: DEMO_CENTER,
+          zoom: 7,
+          attributionControl: true,
+        });
+        instance.addControl(new mapbox.NavigationControl(), "top-right");
+        instance.addControl(
+          new mapbox.ScaleControl({ unit: "metric" }),
+          "bottom-left",
+        );
+        instance.scrollZoom.disable();
+        timeout = setTimeout(() => {
+          if (!disposed) {
+            setStatus(
+              "Map is taking longer to load. Check your connection and Mapbox token restrictions.",
+            );
+            setFailed(true);
+          }
+        }, 20000);
+        instance.on("error", () => {
+          if (!disposed) {
+            setStatus(
+              "Some map resources could not load. Check your connection and Mapbox token permissions.",
+            );
+            setFailed(true);
+          }
+        });
+        instance.on("load", () => {
+          if (disposed || !instance) return;
+          clearTimeout(timeout);
+          instance.addSource("lighting-cells", {
+            type: "geojson",
+            data: lightingCells([]),
+          });
+          instance.addLayer({
+            id: "lighting-cells",
+            type: "fill",
+            source: "lighting-cells",
+            paint: {
+              "fill-color": ["get", "color"],
+              "fill-opacity": 0.3,
+              "fill-outline-color": ["get", "color"],
+            },
+          });
+          instance.addSource("atmospheric-footprints", {
+            type: "geojson",
+            data: atmosphericFootprints([]),
+          });
+          instance.addLayer({
+            id: "atmospheric-footprints",
+            type: "fill",
+            source: "atmospheric-footprints",
+            paint: {
+              "fill-color": "#fbbf24",
+              "fill-opacity": 0.13,
+              "fill-outline-color": "#fbbf24",
+            },
+          });
+          setStatus("");
+          setFailed(false);
+          setMap(instance);
+        });
+        if (typeof ResizeObserver !== "undefined") {
+          observer = new ResizeObserver(() => instance?.resize());
+          observer.observe(container.current);
+        }
+      } catch {
+        if (!disposed) {
+          setFailed(true);
+          setStatus(
+            "Mapbox could not start. Check WebGL support, your connection, and token configuration. Events remain available below.",
+          );
+        }
+      }
+    }
+    void initialize();
+    return () => {
+      disposed = true;
+      clearTimeout(timeout);
+      observer?.disconnect();
+      instance?.remove();
+    };
+  }, [attempt]);
+  useEffect(() => {
+    if (!map || !sdk.current) return;
+    (map.getSource("lighting-cells") as GeoJSONSource).setData(
+      lightingCells(events),
+    );
+    (map.getSource("atmospheric-footprints") as GeoJSONSource).setData(
+      atmosphericFootprints(events),
+    );
+    map.setLayoutProperty(
+      "lighting-cells",
+      "visibility",
+      cells ? "visible" : "none",
+    );
+    map.setLayoutProperty(
+      "atmospheric-footprints",
+      "visibility",
+      plume ? "visible" : "none",
+    );
+    const markers: Marker[] = events.map((event) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "map-event-marker";
+      button.style.setProperty("--event-color", markerColor(event));
+      button.setAttribute(
+        "aria-label",
+        `Investigate ${event.id}, ${event.location}`,
+      );
+      button.setAttribute("aria-pressed", String(selected === event.id));
+      button.title = `${event.id} · ${event.location} (synthetic location)`;
+      const dot = document.createElement("span");
+      dot.className = "map-event-number";
+      dot.textContent = event.id.slice(-2);
+      dot.setAttribute("aria-hidden", "true");
+      const label = document.createElement("span");
+      label.className = "map-event-label";
+      label.textContent = event.id;
+      button.append(dot, label);
+      button.addEventListener("click", () => callback.current(event));
+      return new sdk.current!.Marker({ element: button, anchor: "center" })
+        .setLngLat(demoPosition(event))
+        .addTo(map);
+    });
+    return () => markers.forEach((marker) => marker.remove());
+  }, [map, events, selected, cells, plume]);
+  useEffect(() => {
+    if (!map) return;
+    map.fitBounds(BICOL_VIEW_BOUNDS, { padding: 36, duration: 0 });
+  }, [map]);
   return (
-    <div className="stack" style={css({ gap: 12 })}>
-      <div
-        className="stack"
-        style={css({
-          height,
-          backgroundColor: "#0a1824",
-          borderRadius: 8,
-          overflow: "hidden",
-          borderWidth: 1,
-          borderColor: "#1e3543",
-        })}
-      >
-        <svg
-          width="100%"
-          height="100%"
-          viewBox="0 0 800 430"
-          preserveAspectRatio="none"
-        >
-          <rect width={800} height={430} fill="#0c1b29" />
-          {Array.from({ length: 18 }, (_, i) => (
-            <line
-              key={"v" + i}
-              x1={i * 50}
-              x2={i * 50}
-              y1={0}
-              y2={430}
-              stroke="#213646"
-              strokeWidth={0.5}
-            />
-          ))}
-          {Array.from({ length: 10 }, (_, i) => (
-            <line
-              key={"h" + i}
-              x1={0}
-              x2={800}
-              y1={i * 48}
-              y2={i * 48}
-              stroke="#213646"
-              strokeWidth={0.5}
-            />
-          ))}
-          <path
-            d="M-20 110 C170 30 205 270 370 225 S560 320 820 170"
-            stroke="#133e52"
-            strokeWidth={28}
-            fill="none"
-          />
-          <path
-            d="M-20 110 C170 30 205 270 370 225 S560 320 820 170"
-            stroke="#1d5469"
-            strokeWidth={2}
-            fill="none"
-          />
-          <path
-            d="M0 340 L800 60 M140 0 L560 430 M0 180 L800 370 M370 0 L330 430"
-            stroke="#52606a"
-            strokeWidth={3}
-            fill="none"
-            opacity={0.45}
-          />
-          <path
-            d="M0 340 L800 60 M140 0 L560 430"
-            stroke="#b5ac7a"
-            strokeWidth={1}
-            fill="none"
-            opacity={0.35}
-          />
-          {cells &&
-            Array.from({ length: 62 }, (_, i) => (
-              <rect
-                key={i}
-                x={80 + ((i * 83) % 630)}
-                y={50 + ((i * 61) % 320)}
-                width={8 + (i % 3) * 5}
-                height={8 + (i % 2) * 5}
-                fill={i % 3 ? "#647a65" : "#e2b968"}
-                opacity={0.17 + (i % 4) * 0.06}
-              />
-            ))}
-          {plume && (
-            <>
-              <ellipse
-                cx={580}
-                cy={225}
-                rx={125}
-                ry={65}
-                fill="#fbbf24"
-                fillOpacity={0.08}
-                stroke="#fbbf24"
-                strokeOpacity={0.32}
-                strokeDasharray="7 5"
-                transform="rotate(-22 580 225)"
-              />
-              <ellipse
-                cx={645}
-                cy={185}
-                rx={110}
-                ry={55}
-                fill="#fbbf24"
-                fillOpacity={0.04}
-                stroke="#fbbf24"
-                strokeOpacity={0.18}
-                strokeDasharray="7 5"
-                transform="rotate(-22 645 185)"
-              />
-            </>
-          )}
-          <text x={85} y={70} fill="#627b8b" fontSize={13} letterSpacing={3}>
-            NORTH DISTRICT
-          </text>
-          <text x={490} y={360} fill="#627b8b" fontSize={13} letterSpacing={3}>
-            EASTPORT
-          </text>
-          <text x={260} y={390} fill="#627b8b" fontSize={11}>
-            AURELIA PILOT LOCALITY
-          </text>
-        </svg>
+    <div className="transition-map">
+      <div className="map-frame" style={{ height }}>
         <div
-          className="stack"
-          style={css({
-            position: "absolute",
-            top: 12,
-            left: 12,
-            backgroundColor: "#07111fe8",
-            padding: 8,
-            borderRadius: 5,
-          })}
-        >
-          <span style={css([ui.small, { color: colors.muted }])}>
-            SYNTHETIC SPATIAL VIEW
-          </span>
-        </div>
-        <div
-          className="stack"
-          style={css({ position: "absolute", top: 12, right: 14 })}
-        >
-          <span
-            style={css({
-              color: colors.muted,
-              textAlign: "center",
-              fontSize: 10,
-            })}
-          >
-            N{"\n"}↑
-          </span>
-        </div>
-        {events.map((event) => (
-          <button
-            className="stack"
-            type="button"
-            key={event.id}
-            role="button"
-            aria-label={`Investigate ${event.id}, ${event.location}`}
-            onClick={() => onSelect(event)}
-            style={css({
-              position: "absolute",
-              left: `${event.coords[0]}%`,
-              top: `${event.coords[1]}%`,
-              marginLeft: -22,
-              marginTop: -22,
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              borderColor: event.color,
-              borderWidth: selected === event.id ? 2 : 1,
-              backgroundColor: event.color + "22",
-              alignItems: "center",
-              justifyContent: "center",
-            })}
-          >
-            <div
-              className="stack"
-              style={css({
-                backgroundColor: event.color,
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-              })}
-            />
-            <span
-              style={css({
-                position: "absolute",
-                top: 46,
-                fontSize: 8,
-                color: event.color,
-                width: 80,
-                textAlign: "center",
-              })}
-            >
-              {event.id}
-            </span>
-          </button>
-        ))}
+          ref={container}
+          className="map-canvas"
+          aria-label="Mapbox demonstration event map"
+        />
+        <span className="map-caption">BICOL REGION - DEMONSTRATION</span>
+        {status && (
+          <div className="map-status" role="status">
+            <span>{status}</span>
+            {failed && (
+              <Button
+                label="Retry map"
+                secondary
+                onClick={() => setAttempt((value) => value + 1)}
+              />
+            )}
+          </div>
+        )}
       </div>
-      <div className="stack" style={css(ui.wrap)}>
-        <span style={css(ui.small)}>
-          ●{" "}
-          <span style={css({ color: colors.cyan })}>
-            Lighting transition cells
-          </span>
-        </span>
-        {plume && (
-          <span style={css(ui.small)}>
-            ◌{" "}
-            <span style={css({ color: colors.amber })}>
-              Atmospheric footprint
-            </span>
+      <div className="map-legend">
+        {cells && (
+          <span>
+            <i style={{ background: "#38bdf8" }} />
+            Sample lighting cells (~500 m)
           </span>
         )}
-        <span style={css(ui.small)}>
-          Illustrative geometry · not a geographic basemap
-        </span>
+        {plume && (
+          <span>
+            <i style={{ background: "#fbbf24" }} />
+            Illustrative atmospheric footprint
+          </span>
+        )}
+      </div>
+      <p className="map-disclaimer">
+        Mapbox basemap · Fictional Aurelia events placed in Bicol Region for
+        demonstration. Positions and overlays are not verified observations.
+      </p>
+      <div className="map-event-list" aria-label="Map events">
+        {events.map((event) => (
+          <button
+            key={event.id}
+            type="button"
+            aria-pressed={selected === event.id}
+            onClick={() => onSelect(event)}
+          >
+            <i style={{ background: markerColor(event) }} />
+            {event.id}
+            <span>{event.location}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
