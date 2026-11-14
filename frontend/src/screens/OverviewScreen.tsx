@@ -3,6 +3,7 @@ import { Map, MapPin, CalendarDays, Layers, TriangleAlert, Wind, Database, Satel
 import { TransitionMap } from "../components/TransitionMap";
 import { Distribution } from "../components/Charts";
 import { Status } from "../components/ui";
+import { AIAnalyticsChecklist } from "../components/AIAnalyticsChecklist";
 import { useWorkspace } from "../context/WorkspaceContext";
 import { useResearchData } from "../context/ResearchDataContext";
 import { filterEvents } from "../utils/events";
@@ -38,7 +39,7 @@ export function OverviewScreen() {
     <div className="overview-columns">
       <div className="overview-primary">
         <Panel title="Regional Transition Map" subtitle="Monitored study areas and detected changes." icon={<Map />} action={<button className="overview-action" onClick={() => go("map")}>Open Map <ArrowUpRight size={16} /></button>} className="overview-map">
-          <TransitionMap events={filtered} height={250} compact onSelect={event => investigate(event.id)} />
+          <div className="overview-comparison-preview"><div><span>2016</span><TransitionMap events={filtered} height={250} compact onSelect={event => investigate(event.id)} basemapStyle="mapbox://styles/mapbox/dark-v11" comparisonYear={2016} cells={false} plume={false} candidates={false} showLegend={false} showDetails={false} /></div><div><span>2026</span><TransitionMap events={filtered} height={250} compact onSelect={event => investigate(event.id)} basemapStyle="mapbox://styles/mapbox/dark-v11" comparisonYear={2026} cells={false} plume={false} candidates={false} showLegend={false} showDetails={false} /></div></div><p className="overview-map-comparison-note">Illustrative year comparison · Open Map to choose a year.</p>
         </Panel>
         <Panel title="Data Readiness" subtitle="Status of sample datasets for analysis and modeling." icon={<Database />} action={<button className="overview-action" onClick={() => go("data")}>View Details <ArrowRight size={16} /></button>}>
           {datasetResource.loading ? <p role="status">Loading sample dataset catalog…</p> : datasetResource.error ? <p role="alert">Dataset catalog unavailable: {datasetResource.error}</p> : datasets && <div className="readiness-content"><div className="readiness-ring" style={{ "--readiness": `${readiness}%` } as CSSProperties}><div><strong>{readiness}%</strong><span>Ready</span></div></div><div className="readiness-sources">{datasets.map(([name, product, , status], index) => { const Glyph = datasetIcons[index % datasetIcons.length]; return <button key={name} onClick={() => go("data")} title={name}><span><Glyph size={23} />{product}</span><Status value={status} /></button>; })}</div></div>}
@@ -48,6 +49,7 @@ export function OverviewScreen() {
         </Panel>
       </div>
       <div className="overview-secondary">
+        <AIAnalyticsChecklist />
         <Panel title="Candidate Mechanisms" subtitle="Potential explanations from integrated evidence." icon={<ChartPie />} className="mechanisms-panel"><Distribution events={filtered} /></Panel>
         <Panel title="Research Status" icon={<Layers />}><div className="research-status-list">{([
           ["Current pipeline", "Active", "data"], ["CCTF model", "Not calibrated", "attribution"], ["Independent validation", "Not evaluated", "analytics"], ["Coverage summary", `${filtered.filter(e => e.adequacy !== "Insufficient").length} of ${filtered.length}`, "data"],

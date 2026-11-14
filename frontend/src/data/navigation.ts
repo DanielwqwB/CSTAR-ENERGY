@@ -72,8 +72,8 @@ export const pageTitles: Record<Page, [string, string]> = {
     "Cross-coupled evidence for the fictional Aurelia pilot locality",
   ],
   map: [
-    "Localized Transition Monitoring",
-    "Explore fine-scale lighting cells and separate atmospheric footprints",
+    "Regional Transition Comparison",
+    "Compare illustrative nighttime light patterns across years in Bicol",
   ],
   events: [
     "Transition Event Catalogue",

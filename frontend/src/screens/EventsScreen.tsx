@@ -12,7 +12,7 @@ export function EventsScreen() {
   const [status, setStatus] = useState("All statuses");
   const [period, setPeriod] = useState("All observation periods");
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
+  const [size, setSize] = useState(3);
   const [sort, setSort] = useState<keyof TransitionEvent>("id");
   const [descending, setDescending] = useState(false);
   const years = [...new Set(events.flatMap(event => event.onset.match(/\b20\d{2}\b/g) ?? []))].sort();
@@ -28,7 +28,7 @@ export function EventsScreen() {
       <select aria-label="Filter by observation year" value={period} onChange={e => { setPeriod(e.target.value); setPage(1); }}>{["All observation periods", ...years].map(value => <option key={value}>{value}</option>)}</select>
       <button onClick={reset}><RotateCcw size={18} />Reset Filters</button><button className="catalogue-export" onClick={() => { exportText("cstar-events.csv", toCsv(filtered), "text/csv").catch(() => notify("The export could not be opened. Please try again.")); }}><Download size={18} />Export CSV</button>
     </section>
-    <section className="catalogue-queue"><header><span className="overview-panel-icon"><FileText /></span><div><h2>Event Review Queue</h2><p>{filtered.length} of {events.length} synthetic candidates</p></div><span className="queue-count">Showing {filtered.length ? start + 1 : 0}–{Math.min(start + size, filtered.length)} of {filtered.length} events</span><label>View: <select aria-label="Events per page" value={size} onChange={e => { setSize(Number(e.target.value)); setPage(1); }}>{[5,10,20,50].map(value => <option key={value} value={value}>{value} per page</option>)}</select></label></header>
+    <section className="catalogue-queue"><header><span className="overview-panel-icon"><FileText /></span><div><h2>Event Review Queue</h2><p>{filtered.length} of {events.length} synthetic candidates</p></div><span className="queue-count" role="status">Showing {filtered.length ? start + 1 : 0}–{Math.min(start + size, filtered.length)} of {filtered.length} events</span><label>View: <select aria-label="Events per page" value={size} onChange={e => { setSize(Number(e.target.value)); setPage(1); }}>{[3,5,10,20].map(value => <option key={value} value={value}>{value} per page</option>)}</select></label></header>
       <EventList events={filtered.slice(start, start + size)} editable sortKey={sort} descending={descending} onSort={key => { setSort(key); setDescending(key === sort ? !descending : false); setPage(1); }} />
       <footer><p><Info size={20} />Synthetic demonstration data for system evaluation and illustration only.</p><nav aria-label="Catalogue pagination"><button aria-label="Previous catalogue page" disabled={current === 1} onClick={() => setPage(current - 1)}><ChevronLeft size={18} /></button>{Array.from({length: pages}, (_,i) => i + 1).filter(n => n === 1 || n === pages || Math.abs(n-current) <= 1).map(n => <button key={n} aria-label={`Catalogue page ${n}`} aria-current={n === current ? "page" : undefined} onClick={() => setPage(n)}>{n}</button>)}<button aria-label="Next catalogue page" disabled={current === pages} onClick={() => setPage(current + 1)}><ChevronRight size={18} /></button></nav></footer>
     </section>

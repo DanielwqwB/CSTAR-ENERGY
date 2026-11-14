@@ -121,7 +121,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           className="workspace-main"
           style={{ paddingBottom: step === null ? 36 : 290 }}
         >
-          <div className="workspace-content">
+          <div className="workspace-content" data-page={page}>
             {page !== "overview" && <div className="page-heading stack" style={{ gap: 8 }}>
               <span className="page-eyebrow">{activeGroup?.group}</span>
               <h1

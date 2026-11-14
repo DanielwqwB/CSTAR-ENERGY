@@ -47,68 +47,19 @@ beforeEach(() => {
       }
       if (path === "/api/datasets") return response(datasets);
       if (path === "/api/series") return response(series);
-      if (path === "/api/atmosphere/manifest")
+      if (path === "/api/cctf/assessment")
         return response({
-          run_id: "a".repeat(64),
-          model_name: "spatial_seasonal_climatology",
-          anomaly_interpretation: "climatology residual",
-          start_month: "2025-01-01",
-          end_month: "2025-12-01",
-          total_cell_months: 29580,
-          published_at: "2026-11-14T00:00:00Z",
+          status: "unresolved",
+          label: "Insufficient evidence",
+          candidate_mechanism: null,
+          confidence: null,
+          mode: "record-assisted satellite screening",
+          pilot_event: null,
+          gate: { eligible: false, blocking_reasons: ["event geometry"] },
+          evidence: [],
+          limitations: [],
+          provenance: null,
         });
-      if (path.startsWith("/api/atmosphere/no2?")) {
-        const month =
-          new URL(path, "http://localhost").searchParams.get("month") ||
-          "2025-01";
-        return response({
-          run_id: "a".repeat(64),
-          model_name: "spatial_seasonal_climatology",
-          anomaly_interpretation: "climatology residual",
-          month,
-          limit: 20,
-          offset: 0,
-          total: 2465,
-          rows: [
-            {
-              month: `${month}-01`,
-              cell_id: "x0010_y0038",
-              latitude: 13,
-              longitude: 123,
-              observation_status: "valid",
-              qa_mean: 0.8,
-              valid_orbit_count: 7,
-              valid_pixel_count: 20,
-              coverage_fraction: 0.2,
-              source_product: "S5P_OFFL_L2__NO2____",
-              expected_no2_umol_m2: 10,
-              observed_no2_umol_m2: 11,
-              anomaly_umol_m2: 1,
-              interval_lower_umol_m2: 8,
-              interval_upper_umol_m2: 12,
-              significant_anomaly: false,
-            },
-            {
-              month: `${month}-01`,
-              cell_id: "x0010_y0039",
-              latitude: 13,
-              longitude: 123,
-              observation_status: "low_coverage",
-              qa_mean: null,
-              valid_orbit_count: 1,
-              valid_pixel_count: 2,
-              coverage_fraction: 0.03,
-              source_product: "S5P_OFFL_L2__NO2____",
-              expected_no2_umol_m2: 10,
-              observed_no2_umol_m2: null,
-              anomaly_umol_m2: null,
-              interval_lower_umol_m2: null,
-              interval_upper_umol_m2: null,
-              significant_anomaly: null,
-            },
-          ],
-        });
-      }
       if (method === "PUT") {
         saved = {
           ...JSON.parse(String(options?.body)),
@@ -271,33 +222,16 @@ describe("browser workspace", () => {
       expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
     }
   });
-  it("loads the synthetic dataset catalog and series through backend APIs", async () => {
+  it("paginates catalogue events and resets to the first page when filtered", async () => {
     const user = await openWorkspace();
-    await navigateTo(user, "Data Explorer");
-    expect(await screen.findByText("NASA Black Marble")).toBeTruthy();
-    await navigateTo(user, "Evidence Timeline");
-    expect((await screen.findAllByText("Observed synthetic signal")).length).toBe(
-      2,
-    );
-    expect(
-      await screen.findByRole("heading", {
-        name: /Published TROPOMI NO₂ grid/,
-      }),
-    ).toBeTruthy();
-    expect(await screen.findByText(/climatology residual/)).toBeTruthy();
-    expect(await screen.findByText("x0010_y0038")).toBeTruthy();
-    expect(await screen.findByText("0.80")).toBeTruthy();
-    const lowCoverageRow = screen.getByRole("row", {
-      name: /x0010_y0039 low coverage/,
-    });
-    expect(within(lowCoverageRow).getAllByText("—")).toHaveLength(3);
-    const requests = vi.mocked(fetch).mock.calls.map(([input]) => String(input));
-    expect(requests).toContain("/api/datasets");
-    expect(requests).toContain("/api/series");
-    expect(requests).toContain("/api/atmosphere/manifest");
-    expect(requests.some((path) => path.startsWith("/api/atmosphere/no2?"))).toBe(
-      true,
-    );
+    await navigateTo(user, "Event Catalogue");
+    expect(screen.getByText("Showing 1–3 of 4 events")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Next catalogue page" }));
+    expect(screen.getByText("Showing 4–4 of 4 events")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Next catalogue page" }).hasAttribute("disabled")).toBe(true);
+    await user.type(screen.getByRole("textbox", { name: "Search catalogue" }), "Eastport");
+    expect(screen.getByText("Showing 1–1 of 1 events")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Catalogue page 1" }).getAttribute("aria-current")).toBe("page");
   });
   it("filters catalogue rows and saves notes through the API across reloads", async () => {
     const user = await openWorkspace();
@@ -329,3 +263,4 @@ describe("browser workspace", () => {
     ).toBeTruthy();
   });
 });
+

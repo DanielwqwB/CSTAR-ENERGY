@@ -1,4 +1,4 @@
-import type { FeatureCollection, Polygon } from "geojson";
+import type { FeatureCollection, Point, Polygon } from "geojson";
 import type { TransitionEvent } from "../types";
 
 // Fictional demonstration positions in Bicol, not verified event locations.
@@ -74,4 +74,46 @@ export function atmosphericFootprints(
         };
       }),
   };
+}
+
+// Broad synthetic plume samples for the screening illustration. These points
+// are intentionally not derived from satellite observations or facility data.
+export function plumeHeatPoints(events: TransitionEvent[]): FeatureCollection<Point> {
+  return {
+    type: "FeatureCollection",
+    features: events.filter(event => event.shortType === "Industrial").flatMap(event => {
+      const [lng, lat] = demoPosition(event);
+      return Array.from({ length: 18 }, (_, index) => ({
+        type: "Feature" as const,
+        properties: { id: event.id, weight: 1 - index / 25 },
+        geometry: {
+          type: "Point" as const,
+          coordinates: [lng + index * 0.035, lat + Math.sin(index / 3) * 0.06 + index * 0.006],
+        },
+      }));
+    }),
+  };
+}
+
+// Deterministic sample lights for the regional year-comparison UI. The year
+// changes an illustration, not a real VIIRS/Black Marble observation.
+export function illustrativeNightLights(year: number): FeatureCollection<Point> {
+  const progress = Math.max(0, Math.min(1, (year - 2016) / 10));
+  const hubs: [number, number, number][] = [
+    [123.19, 13.62, 1], [123.74, 13.14, .82], [123.33, 13.16, .7],
+    [123.49, 13.31, .6], [122.95, 14.11, .48], [123.62, 12.37, .58],
+  ];
+  const features = hubs.flatMap(([lng, lat, size], hub) =>
+    Array.from({ length: 32 }, (_, index) => {
+      const angle = index * 2.39996 + hub;
+      const radius = Math.sqrt((index + .5) / 32) * (.18 + progress * .09) * size;
+      const weight = Math.max(.12, Math.min(1, (.42 + progress * .44) * size + (index % 7) * .045));
+      return {
+        type: "Feature" as const,
+        properties: { weight },
+        geometry: { type: "Point" as const, coordinates: [lng + Math.cos(angle) * radius, lat + Math.sin(angle) * radius * .7] },
+      };
+    }),
+  );
+  return { type: "FeatureCollection", features };
 }
