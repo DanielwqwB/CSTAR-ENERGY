@@ -1,0 +1,100 @@
+{
+  "scope": "Bicol Region monthly mean radiance",
+  "period": {
+    "start": "2019-01",
+    "end": "2025-12"
+  },
+  "testSamples": 14,
+  "testMetrics": {
+    "mae": 0.05385987701087257,
+    "rmse": 0.06834020575945732,
+    "mape_percent": 28.691513933885442
+  },
+  "classificationMetrics": {
+    "accuracy": 0.6666666666666666,
+    "balanced_accuracy": 0.675,
+    "precision": 0.75,
+    "recall": 0.6,
+    "specificity": 0.75,
+    "f1": 0.6666666666666666,
+    "matthews_correlation": 0.35,
+    "tn": 3,
+    "fp": 1,
+    "fn": 2,
+    "tp": 3,
+    "brier_score": 0.22188933817910594
+  },
+  "predictions": [
+    {
+      "month": "2024-03",
+      "actual": 0.23869465211403254,
+      "predicted": 0.32893740192286325
+    },
+    {
+      "month": "2024-08",
+      "actual": 0.2984777803328538,
+      "predicted": 0.34966698460114665
+    },
+    {
+      "month": "2024-09",
+      "actual": 0.18022667565059083,
+      "predicted": 0.13794666340214862
+    },
+    {
+      "month": "2024-10",
+      "actual": 0.21812033598449274,
+      "predicted": 0.20056215916165243
+    },
+    {
+      "month": "2024-12",
+      "actual": 0.1729151571220537,
+      "predicted": 0.17370329136489643
+    },
+    {
+      "month": "2025-02",
+      "actual": 0.19798285090125736,
+      "predicted": 0.1548107591342819
+    },
+    {
+      "month": "2025-03",
+      "actual": 0.20430451250721787,
+      "predicted": 0.15853676630235264
+    },
+    {
+      "month": "2025-06",
+      "actual": 0.254570877113061,
+      "predicted": 0.13653729655332636
+    },
+    {
+      "month": "2025-07",
+      "actual": 0.12407901852106397,
+      "predicted": 0.1492944439750994
+    },
+    {
+      "month": "2025-08",
+      "actual": 0.20527874540861754,
+      "predicted": 0.1404896030842383
+    },
+    {
+      "month": "2025-09",
+      "actual": 0.07639844134592386,
+      "predicted": 0.13565472954444208
+    },
+    {
+      "month": "2025-10",
+      "actual": 0.2111747028495096,
+      "predicted": 0.05124517491983894
+    },
+    {
+      "month": "2025-11",
+      "actual": 0.18813032687213455,
+      "predicted": 0.1642758454427129
+    },
+    {
+      "month": "2025-12",
+      "actual": 0.18905282821574307,
+      "predicted": 0.17709111132237648
+    }
+  ],
+  "disclaimer": "Historical held-out predictions for the regional mean; not a current forecast or a cell-level prediction."
+}

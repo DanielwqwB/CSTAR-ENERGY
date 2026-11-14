@@ -7,6 +7,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { TransitionMap } from "../src/components/TransitionMap";
+import { parseBlackMarbleCellCsv } from "../src/data/blackMarble";
 import seed from "../src/data/events.json";
 import type { TransitionEvent } from "../src/types";
 
@@ -28,19 +29,30 @@ vi.mock("mapbox-gl", () => ({
       setLayoutProperty = vi.fn();
       setPaintProperty = vi.fn();
       addLayer = vi.fn();
-      handlers: Record<string, () => void> = {};
+      handlers: Record<string, (event?: any) => void> = {};
       constructor(public options: any) {
         state.maps.push(this);
       }
-      on(name: string, callback: () => void) {
-        this.handlers[name] = callback;
-        if (name === "load") queueMicrotask(callback);
+      on(
+        name: string,
+        layerOrCallback: string | ((event?: any) => void),
+        callback?: (event?: any) => void,
+      ) {
+        const layer = typeof layerOrCallback === "string" ? layerOrCallback : "";
+        const handler =
+          callback ??
+          (typeof layerOrCallback === "function" ? layerOrCallback : () => {});
+        this.handlers[layer ? `${name}:${layer}` : name] = handler;
+        if (name === "load") queueMicrotask(handler);
       }
       addSource(name: string) {
         this.sources[name] = { setData: vi.fn() };
       }
       getSource(name: string) {
         return this.sources[name];
+      }
+      getCanvas() {
+        return { style: { cursor: "" } };
       }
     },
     Marker: class {
@@ -138,4 +150,68 @@ it("shows configuration guidance without constructing a map if the token is abse
   render(<TransitionMap events={events} onSelect={() => {}} />);
   expect(screen.getByText(/Mapbox token is missing/)).toBeTruthy();
   expect(state.maps).toHaveLength(0);
+});
+
+it("parses Black Marble coordinates into longitude-latitude map points", () => {
+  const cells = parseBlackMarbleCellCsv(
+    "latitude,longitude,radiance,observation_count\r\n14.5,122.9,1.25,4\r\n",
+  );
+  expect(cells.features).toHaveLength(1);
+  expect(cells.features[0].geometry.coordinates).toEqual([122.9, 14.5]);
+  expect(cells.features[0].properties).toEqual({
+    latitude: 14.5,
+    longitude: 122.9,
+    radiance: 1.25,
+    observationCount: 4,
+  });
+  expect(() =>
+    parseBlackMarbleCellCsv(
+      "latitude,longitude,radiance,observation_count\nnot-a-number,122.9,1.25,4",
+    ),
+  ).toThrow(/Invalid Black Marble cell row/);
+});
+
+it("renders observed Black Marble cells and reports the clicked cell", async () => {
+  const cells = parseBlackMarbleCellCsv(
+    "latitude,longitude,radiance,observation_count\n14.5,122.9,1.25,4",
+  );
+  const onObservedCellSelect = vi.fn();
+  render(
+    <TransitionMap
+      events={[]}
+      onSelect={() => {}}
+      observedRadianceCells={cells}
+      showObservedRadianceCells
+      onObservedCellSelect={onObservedCellSelect}
+      mapCaption="BICOL REGION · BLACK MARBLE · 2026-06"
+      disclaimerText="Observed cells."
+    />,
+  );
+  await waitFor(() =>
+    expect(state.maps[0].addLayer).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "blackmarble-radiance-cells" }),
+    ),
+  );
+  const clickCell = state.maps[0].handlers[
+    "click:blackmarble-radiance-cells"
+  ];
+  clickCell({
+    features: [
+      {
+        geometry: { type: "Point", coordinates: [122.9, 14.5] },
+        properties: {
+          latitude: 14.5,
+          longitude: 122.9,
+          radiance: 1.25,
+          observationCount: 4,
+        },
+      },
+    ],
+  });
+  expect(onObservedCellSelect).toHaveBeenCalledWith({
+    latitude: 14.5,
+    longitude: 122.9,
+    radiance: 1.25,
+    observationCount: 4,
+  });
 });
