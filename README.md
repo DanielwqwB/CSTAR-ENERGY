@@ -1,1 +1,0 @@
-# CSTAR-ENERGY
