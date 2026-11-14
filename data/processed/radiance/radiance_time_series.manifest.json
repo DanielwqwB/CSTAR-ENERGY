@@ -7,7 +7,7 @@
     124.7,
     14.6
   ],
-  "records": 15,
+  "records": 76,
   "excluded": [
     {
       "file": "Unconfirmed 126981.crdownload",
@@ -24,10 +24,6 @@
     {
       "file": "VNP46A3.A2016032.h30v07.002.2025101114716.h5.part",
       "reason": "not_hdf5"
-    },
-    {
-      "file": "VNP46A3.A2018091.h30v07.002.2025113153940 (1).h5",
-      "reason": "duplicate"
     }
   ],
   "limitations": [

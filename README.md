@@ -121,16 +121,25 @@ python -m modules.radiance.demo
 The output preserves real VNP46A3 observations and explicitly labels every
 filled month as `synthetic_demo` with uncertainty bounds and a disclaimer. It
 must not be used for model training, evaluation, accuracy claims, or scientific
-inference. The training script rejects presentation-only synthetic rows.
+inference.
 
-Train the explicitly labelled multimodal presentation demo and generate charts:
+Train the multimodal prototype using only the observed radiance time series:
 
 ```powershell
 python experiments/radiance_multimodal_demo.py
 ```
 
 This joins Bicol-cropped monthly TROPOMI NO2, monthly Giovanni/MERRA-2 weather
-aggregates, and the presentation radiance series. Outputs under
-`artifacts/radiance_multimodal_demo/` are prototype visuals only. XGBoost is
-included as a validation-selected candidate when the optional dependency is
-installed; the script falls back to scikit-learn candidates otherwise.
+aggregates, and `radiance_time_series.csv`. Synthetic and presentation-only
+radiance rows are excluded even if supplied as input. Outputs under
+`artifacts/radiance_multimodal_real/` are exploratory results on a small,
+irregular observed sample, not validated performance claims. Increase/decrease
+labels use consecutive calendar-month radiance pairs only, not independent
+transition records. Candidate models are selected with expanding-window
+time-series validation and the classifier uses a fixed `0.5` decision threshold.
+Charts for MAPE, F1, accuracy, confusion matrix, ROC AUC, precision, and MAE are
+written to `models/evaluation/blackmarble/`. Finalized regression and
+classification pipelines are written as joblib files under
+`models/training/blackmarble/`. XGBoost is included as a candidate when the
+optional dependency is installed; the script falls back to scikit-learn
+candidates otherwise.
