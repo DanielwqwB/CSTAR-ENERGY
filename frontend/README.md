@@ -64,13 +64,31 @@ The production site is written to `dist/`. UI tests use React Testing Library an
 
 ## Data scope
 
-The four sample events, five dataset entries, and historical series are synthetic reference data. The Map screen also includes quality-screened VNP46A3 Black Marble cell observations for Bicol Region (June 2026) and historical held-out predictions from the trained regional-mean model. Selecting a cell displays its observed radiance; the existing model has no location inputs and does not produce cell-level predictions. Event pins and atmospheric footprints elsewhere in the interface remain illustrative. Cookie sessions and optional configured account sign-in are connected. Live satellite feeds and multi-user account administration remain unconnected.
+The map uses quality-screened monthly NASA VNP46A3 Collection 2 Black Marble
+observations for Bicol Region (75 usable months from 2016-01 through 2026-10).
+The 2026-11 source granule contains no valid cells and is excluded. Its Random
+Forest makes an exploratory one-calendar-month-ahead
+prediction at each fixed land cell, with chronological held-out results
+included in the map data. This screening model is not a causal impact model,
+its probabilities are not calibrated, and its performance is not a guarantee
+for an individual location. Only months present in the irregular source archive
+are selectable; forecast months are identified in the controls. Click a map
+cell to view its coordinates, radiance, source observation count, and available
+forecast screening values. Event pins and atmospheric footprints elsewhere in
+the interface remain illustrative. Cookie sessions and optional configured
+account sign-in are connected. Live satellite feeds and multi-user account
+administration remain unconnected.
 
 ## Mapbox configuration
 
 Create `frontend/.env.local` with `VITE_MAPBOX_ACCESS_TOKEN=<your-public-token>`. Restart Vite after changing it. `.env.local` is ignored by Git. For Render or another deployment, set `VITE_MAPBOX_ACCESS_TOKEN` in the hosting service's build environment and redeploy; a local `.env.local` does not configure the hosted site. Restrict the public token to the required URL origins in Mapbox.
 
-The map uses Mapbox's dark basemap, zoom/compass controls, metric scale, and a clickable observed-radiance cell layer. The regional prediction panel reports historical holdout predictions and metrics; it is not a current forecast or a cell-level result. A resize observer keeps the canvas aligned when the window changes size. If map resources or WebGL are unavailable, an explanation remains available. Demonstration event geometry is defined in `src/data/mapGeometry.ts`.
+The shared overview and full-screen map use synchronized, resizable Mapbox
+panels, scroll zoom, zoom/compass controls, a metric scale, and connected
+radiance layers. The month selectors distinguish observed data from held-out
+and next-month forecasts. If map resources or WebGL are unavailable, an
+explanation remains available. Demonstration event geometry is defined in
+`src/data/mapGeometry.ts`.
 
 Development API requests are proxied by Vite to port 3001. Production hosting must route `/api` to the backend under the same origin.
 

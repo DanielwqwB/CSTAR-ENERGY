@@ -1,0 +1,80 @@
+{
+  "model": "spatial_random_forest",
+  "target": "one-calendar-month-ahead cell radiance and direction",
+  "training_period": {
+    "start": "2017-02",
+    "end": "2023-10"
+  },
+  "test_period": {
+    "start": "2024-09",
+    "end": "2026-10"
+  },
+  "training_pairs": 33,
+  "test_pairs": 15,
+  "training_samples": 396000,
+  "test_samples": 180000,
+  "excluded_empty_months": [
+    "2026-11"
+  ],
+  "test_months": [
+    "2024-09",
+    "2024-10",
+    "2025-03",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-07",
+    "2026-08",
+    "2026-09",
+    "2026-10"
+  ],
+  "regression": {
+    "mae": 0.11677408923677257,
+    "rmse": 0.37137233651669155
+  },
+  "direction": {
+    "accuracy": 0.7189166666666666,
+    "balanced_accuracy": 0.6727971587227626,
+    "precision": 0.1780046814235951,
+    "recall": 0.6169669094161236,
+    "f1": 0.27629414541345426,
+    "roc_auc": 0.7500674133666689
+  },
+  "feature_names": [
+    "longitude",
+    "latitude",
+    "previous_month_radiance",
+    "target_month_sin",
+    "target_month_cos"
+  ],
+  "forecast_months": [
+    "2024-09",
+    "2024-10",
+    "2025-03",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-07",
+    "2026-08",
+    "2026-09",
+    "2026-10",
+    "2026-11"
+  ],
+  "disclaimer": "Exploratory cell-level radiance screening. Probabilities are not calibrated; predictions do not establish causal impact.",
+  "future_forecast": {
+    "month": "2026-11",
+    "based_on_observation_month": "2026-10",
+    "training_pairs": 48,
+    "training_samples": 576000
+  }
+}

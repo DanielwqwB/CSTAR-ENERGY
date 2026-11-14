@@ -1,6 +1,6 @@
 import type { ReactNode, CSSProperties } from "react";
 import { Map, MapPin, CalendarDays, Layers, TriangleAlert, Wind, Database, Satellite, Factory, Building2, FileCheck2, ChevronRight, ArrowUpRight, ArrowRight, ChartPie } from "lucide-react";
-import { TransitionMap } from "../components/TransitionMap";
+import { BlackMarbleTransition } from "../components/BlackMarbleTransition";
 import { Distribution } from "../components/Charts";
 import { Status } from "../components/ui";
 import { AIAnalyticsChecklist } from "../components/AIAnalyticsChecklist";
@@ -30,14 +30,14 @@ export function OverviewScreen() {
     <section className="overview-hero">
       <span className="overview-hero-icon"><Map size={34} /></span>
       <div className="overview-heading"><span className="page-eyebrow">MONITOR</span><h1>Regional Intelligence Overview</h1><p>Cross-coupled satellite intelligence for municipal lighting and industrial energy transitions.</p></div>
-      <div className="overview-filters"><label><MapPin size={20} /><select aria-label="Study region" value={region} onChange={event => setRegion(event.target.value)}>{regions.map(item => <option key={item}>{item}</option>)}</select></label><span className="overview-date"><CalendarDays size={20} />Jan 2023 ? Dec 2024</span></div>
+      <div className="overview-filters"><label><MapPin size={20} /><select aria-label="Study region" value={region} onChange={event => setRegion(event.target.value)}>{regions.map(item => <option key={item}>{item}</option>)}</select></label><span className="overview-date"><CalendarDays size={20} />VNP46A3 · 2016–2026</span></div>
       <Satellite className="hero-satellite" size={100} aria-hidden="true" />
     </section>
     <div className="overview-metrics">{metrics.map(metric => <button key={metric.label} className={`overview-metric ${metric.tone}`} onClick={() => go(metric.page as Page)}><span className="metric-symbol">{metric.icon}</span><span className="metric-copy"><strong>{metric.label}</strong><b>{metric.value}</b><small>{metric.note}</small></span></button>)}</div>
     <div className="overview-columns">
       <div className="overview-primary">
-        <Panel title="Regional Transition Map" subtitle="Monitored study areas and detected changes." icon={<Map />} action={<button className="overview-action" onClick={() => go("map")}>Open Map <ArrowUpRight size={16} /></button>} className="overview-map">
-          <div className="overview-comparison-preview"><div><span>2016</span><TransitionMap events={filtered} height={250} compact onSelect={event => investigate(event.id)} basemapStyle="mapbox://styles/mapbox/dark-v11" comparisonYear={2016} cells={false} plume={false} candidates={false} showLegend={false} showDetails={false} /></div><div><span>2026</span><TransitionMap events={filtered} height={250} compact onSelect={event => investigate(event.id)} basemapStyle="mapbox://styles/mapbox/dark-v11" comparisonYear={2026} cells={false} plume={false} candidates={false} showLegend={false} showDetails={false} /></div></div><p className="overview-map-comparison-note">Illustrative year comparison · Open Map to choose a year.</p>
+        <Panel title="Regional Transition Map" subtitle="Observed Black Marble radiance and one-month cell screening for Bicol." icon={<Map />} action={<button className="overview-action" onClick={() => go("map")}>Open Map <ArrowUpRight size={16} /></button>} className="overview-map">
+          <BlackMarbleTransition compact />
         </Panel>
         <Panel title="Data Readiness" subtitle="Status of sample datasets for analysis and modeling." icon={<Database />} action={<button className="overview-action" onClick={() => go("data")}>View Details <ArrowRight size={16} /></button>}>
           <div className="readiness-content"><div className="readiness-ring" style={{ "--readiness": `${readiness}%` } as CSSProperties}><div><strong>{readiness}%</strong><span>Ready</span></div></div><div className="readiness-sources">{datasets.map(([name, product, , status], index) => { const Glyph = datasetIcons[index]; return <button key={name} onClick={() => go("data")} title={name}><span><Glyph size={23} />{product}</span><Status value={status} /></button>; })}</div></div>
