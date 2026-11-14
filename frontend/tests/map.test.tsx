@@ -7,6 +7,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { TransitionMap } from "../src/components/TransitionMap";
+import { IntelligenceGlobe } from "../src/components/IntelligenceGlobe";
 import {
   parseBlackMarbleCellCsv,
   parseBlackMarbleForecast,
@@ -31,10 +32,13 @@ vi.mock("mapbox-gl", () => ({
       remove = vi.fn();
       resize = vi.fn();
       fitBounds = vi.fn();
+      easeTo = vi.fn();
       setLayoutProperty = vi.fn();
       setPaintProperty = vi.fn();
       addLayer = vi.fn();
       handlers: Record<string, (event?: any) => void> = {};
+      center = { lng: 123.3, lat: 13.05 };
+      zoom = 1.65;
       constructor(public options: any) {
         state.maps.push(this);
       }
@@ -58,6 +62,16 @@ vi.mock("mapbox-gl", () => ({
       }
       getCanvas() {
         return { style: { cursor: "" } };
+      }
+      getCenter() {
+        return this.center;
+      }
+      getZoom() {
+        return this.zoom;
+      }
+      setCenter(center: [number, number]) {
+        this.center = { lng: center[0], lat: center[1] };
+        return this;
       }
     },
     Marker: class {
@@ -253,4 +267,24 @@ it("renders observed Black Marble cells and reports the clicked cell", async () 
     observationCount: 4,
   });
   expect(state.maps[0].scrollZoom.enable).toHaveBeenCalledOnce();
+});
+
+it("pauses the globe and explains when a click is outside Bicol coverage", async () => {
+  render(<IntelligenceGlobe />);
+  await waitFor(() =>
+    expect(state.maps[0].addLayer).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "globe-blackmarble-glow" }),
+    ),
+  );
+  expect(screen.getByText("AUTOROTATING")).toBeTruthy();
+
+  state.maps[0].handlers.click({
+    lngLat: { lat: 40.7, lng: -73.9 },
+  });
+
+  expect(await screen.findByText("Outside data coverage")).toBeTruthy();
+  expect(screen.getByText("ROTATION PAUSED")).toBeTruthy();
+  expect(
+    screen.getByText(/current Black Marble grid covers Bicol only/i),
+  ).toBeTruthy();
 });

@@ -1444,6 +1444,57 @@ svg {
 @media (max-width: 700px) { .radiance-transition { padding: 10px; } .radiance-transition-maps { grid-template-columns: minmax(0, 1fr); gap: 8px; } .radiance-transition-divider { justify-self: center; transform: rotate(90deg); } .radiance-transition-map-panel .map-frame { height: clamp(290px, 48dvh, 430px) !important; } .radiance-transition-controls > label { flex: 1 1 140px; } .radiance-transition-modes { width: 100%; justify-content: center; } .radiance-transition-selection dl { grid-template-columns: minmax(0, 1fr); } .radiance-transition.expanded { inset: 4px; padding: 8px; } .radiance-transition.expanded .radiance-transition-map-panel .map-frame { height: 42dvh !important; } }
 @media (max-width: 420px) { .radiance-transition-header h2 { font-size: 14px; } .radiance-transition-controls > label { flex-basis: 100%; } .radiance-transition-legend { gap: 4px; font-size: 8px; } .radiance-transition-legend i { width: 18%; } .radiance-transition-legend small { font-size: 7px; } .radiance-transition.compact .radiance-transition-map-panel .map-frame { height: 245px !important; } }
 
+/* Three-column intelligence dashboard with a rotating geographic globe */
+.intelligence-globe { display: grid; gap: 14px; min-width: 0; padding: 16px; overflow: hidden; border: 1px solid #29394b; border-radius: 20px; background: radial-gradient(ellipse at 50% 40%, #142334 0, #080f18 66%); color: #e7eef7; box-shadow: 0 12px 32px #07111d24; }
+.intelligence-globe-header { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.intelligence-globe-title { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.intelligence-globe-title > span { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border: 1px solid #496277; border-radius: 50%; background: #102130; color: #72d8e6; }
+.intelligence-globe-title h2 { margin: 0; color: #f0f6fc; font-size: 17px; line-height: 1.3; }
+.intelligence-globe-title p { margin: 3px 0 0; color: #a4b5c5; font-size: 10px; line-height: 1.45; }
+.intelligence-globe-open-map, .intelligence-globe-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 6px 10px; border: 1px solid #3b5267; border-radius: 7px; background: #101f2d; color: #e8f1fa; font-size: 10px; font-weight: 650; }
+.intelligence-globe-controls { display: flex; align-items: end; gap: 7px; }
+.intelligence-globe-controls > label { display: grid; gap: 3px; min-width: 125px; color: #a7b8c8; font-size: 9px; }
+.intelligence-globe-controls select { min-height: 32px; padding: 5px 8px; border: 1px solid #3b5267; border-radius: 7px; background: #101f2d; color: #f0f6fc; font-size: 10px; }
+.intelligence-globe-modes { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid #3b5267; border-radius: 8px; background: #0c1823; }
+.intelligence-globe-modes button { min-height: 25px; padding: 4px 8px; border: 0; color: #aab8c7; font-size: 9px; }
+.intelligence-globe-modes button[aria-pressed="true"] { background: #1a687b; color: #fff; }
+.intelligence-globe-grid { display: grid; grid-template-columns: minmax(205px, .9fr) minmax(360px, 1.7fr) minmax(205px, .9fr); align-items: stretch; gap: 12px; min-width: 0; }
+.intelligence-globe-side { display: flex; flex-direction: column; min-width: 0; min-height: 380px; padding: 15px; border: 1px solid #2a3d50; border-radius: 13px; background: linear-gradient(160deg, #0d1a26ed, #08121dde); }
+.intelligence-globe-eyebrow { display: inline-flex; align-items: center; gap: 6px; color: #79d3df; font-size: 9px; font-weight: 750; letter-spacing: .09em; }
+.intelligence-globe-side h3 { margin: 13px 0 5px; color: #f0f6fc; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.intelligence-globe-coordinates { margin: 0; color: #a6b8c8; font-variant-numeric: tabular-nums; font-size: 10px; }
+.intelligence-globe-values { display: grid; gap: 0; margin: 13px 0 0; }
+.intelligence-globe-values > div { display: flex; align-items: start; justify-content: space-between; gap: 9px; padding: 9px 0; border-top: 1px solid #26384a; }
+.intelligence-globe-values dt { color: #a6b5c4; font-size: 9px; line-height: 1.4; }
+.intelligence-globe-values dd { margin: 0; color: #f0f6fc; font-size: 10px; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+.intelligence-globe-values .intelligence-globe-probability { padding-top: 2px; }
+.intelligence-globe-probability progress { width: 100%; height: 7px; accent-color: #69d6e2; }
+.intelligence-globe-prompt, .intelligence-globe-no-coverage { margin: 8px 0; color: #b1c0cf; font-size: 10px; line-height: 1.6; }
+.intelligence-globe-no-coverage { color: #f2c77f; }
+.intelligence-globe-place-error { margin: 4px 0 0; color: #f2c77f; font-size: 9px; line-height: 1.4; }
+.intelligence-globe-source { margin-top: auto; padding-top: 12px; color: #8193a5; font-size: 8px; line-height: 1.5; }
+.intelligence-globe-center { position: relative; min-width: 0; min-height: 380px; overflow: hidden; border: 1px solid #34495e; border-radius: 15px; background: radial-gradient(circle at 50% 47%, #192b3c 0, #070c12 65%); }
+.intelligence-globe-canvas { width: 100%; height: clamp(380px, 35vw, 540px); }
+.intelligence-globe-map-tools { position: absolute; z-index: 3; top: 10px; right: 10px; display: flex; align-items: center; gap: 5px; }
+.intelligence-globe-map-tools > span { padding: 5px 7px; border: 1px solid #ffffff25; border-radius: 6px; background: #07121ddd; color: #b4c6d6; font-size: 8px; font-weight: 750; letter-spacing: .08em; }
+.intelligence-globe-map-tools button { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; padding: 5px 7px; border: 1px solid #ffffff35; border-radius: 6px; background: #07121ddd; color: #eef6ff; font-size: 9px; }
+.intelligence-globe-map-caption { position: absolute; right: 10px; bottom: 10px; left: 10px; display: flex; align-items: center; gap: 7px; padding: 7px 9px; border: 1px solid #ffffff20; border-radius: 7px; background: #07121ddd; color: #c4d2df; font-size: 9px; pointer-events: none; }
+.intelligence-globe-light-key { width: 9px; height: 9px; flex: 0 0 9px; border-radius: 50%; background: #ffc248; box-shadow: 0 0 10px 3px #f47b1680; }
+.intelligence-globe-caption-date { margin-left: auto; color: #e9f1f8; font-size: 8px; font-weight: 750; }
+.intelligence-globe-model-metrics { display: grid; gap: 7px; margin-top: auto; padding: 11px 0 0; }
+.intelligence-globe-model-metrics strong { color: #8edbe4; font-size: 9px; }
+.intelligence-globe-model-metrics span { display: flex; justify-content: space-between; gap: 6px; color: #a6b5c4; font-size: 9px; }
+.intelligence-globe-model-metrics b { color: #edf5fb; font-variant-numeric: tabular-nums; }
+.intelligence-globe-model-metrics small { color: #8193a5; font-size: 8px; line-height: 1.5; }
+.intelligence-globe-action { margin: 9px 0 0; padding: 8px; border-left: 2px solid #e6ad51; border-radius: 4px; background: #211b13; color: #edd4a7; font-size: 9px; line-height: 1.55; }
+.intelligence-globe-change, .intelligence-globe-footnote { display: flex; align-items: center; gap: 5px; margin: 0; color: #a0b0bf; font-size: 9px; line-height: 1.5; }
+.intelligence-globe-change { color: #e4c47f; }
+.intelligence-globe-footnote { color: #8394a5; }
+.intelligence-globe-error { margin: 0; padding: 8px 10px; border: 1px solid #84474d; border-radius: 7px; background: #29161b; color: #ffb8bf; font-size: 10px; line-height: 1.45; overflow-wrap: anywhere; }
+@media (max-width: 1100px) { .intelligence-globe-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .intelligence-globe-center { grid-column: 1 / -1; grid-row: 1; } .intelligence-globe-side { min-height: 300px; } }
+@media (max-width: 650px) { .intelligence-globe { padding: 10px; gap: 10px; } .intelligence-globe-header { flex-wrap: wrap; } .intelligence-globe-title { flex-basis: 100%; } .intelligence-globe-open-map { margin-left: 48px; } .intelligence-globe-controls { flex: 1; flex-wrap: wrap; } .intelligence-globe-controls > label { flex: 1 1 140px; } .intelligence-globe-grid { grid-template-columns: minmax(0, 1fr); } .intelligence-globe-center { grid-column: auto; grid-row: auto; min-height: 360px; } .intelligence-globe-canvas { height: 380px; } .intelligence-globe-side { min-height: 0; } .intelligence-globe-source { margin-top: 14px; } }
+@media (max-width: 420px) { .intelligence-globe-title h2 { font-size: 15px; } .intelligence-globe-map-tools { top: 7px; right: 7px; flex-wrap: wrap; justify-content: end; max-width: 90%; } .intelligence-globe-map-tools > span { display: none; } .intelligence-globe-map-tools button { font-size: 8px; } .intelligence-globe-canvas { height: 340px; } .intelligence-globe-side { padding: 12px; } }
+
 /* AI Analytics checklist beside the overview map */
 .overview-secondary { display: flex; flex-direction: column; }
 .ai-checklist { min-width: 0; overflow: hidden; border: 1px solid #cbdff9; border-radius: 18px; background: linear-gradient(125deg, #f9fbff, #f5f9ff); box-shadow: 0 4px 12px #306ba00d; }
