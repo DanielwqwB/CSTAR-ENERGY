@@ -1,6 +1,6 @@
 import type { ReactNode, CSSProperties } from "react";
 import { Map, MapPin, CalendarDays, Layers, TriangleAlert, Wind, Database, Satellite, Factory, Building2, FileCheck2, ChevronRight, ArrowUpRight, ArrowRight, ChartPie } from "lucide-react";
-import { BlackMarbleTransition } from "../components/BlackMarbleTransition";
+import { IntelligenceGlobe } from "../components/IntelligenceGlobe";
 import { Distribution } from "../components/Charts";
 import { Status } from "../components/ui";
 import { AIAnalyticsChecklist } from "../components/AIAnalyticsChecklist";
@@ -36,11 +36,9 @@ export function OverviewScreen() {
       <Satellite className="hero-satellite" size={100} aria-hidden="true" />
     </section>
     <div className="overview-metrics">{metrics.map(metric => <button key={metric.label} className={`overview-metric ${metric.tone}`} onClick={() => go(metric.page as Page)}><span className="metric-symbol">{metric.icon}</span><span className="metric-copy"><strong>{metric.label}</strong><b>{metric.value}</b><small>{metric.note}</small></span></button>)}</div>
+    <IntelligenceGlobe onOpenMap={() => go("map")} />
     <div className="overview-columns">
       <div className="overview-primary">
-        <Panel title="Regional Transition Map" subtitle="Observed Black Marble radiance and one-month cell screening for Bicol." icon={<Map />} action={<button className="overview-action" onClick={() => go("map")}>Open Map <ArrowUpRight size={16} /></button>} className="overview-map">
-          <BlackMarbleTransition compact />
-        </Panel>
         <Panel title="Data Readiness" subtitle="Status of sample datasets for analysis and modeling." icon={<Database />} action={<button className="overview-action" onClick={() => go("data")}>View Details <ArrowRight size={16} /></button>}>
           {datasetResource.loading ? <p role="status">Loading sample dataset catalog…</p> : datasetResource.error ? <p role="alert">Dataset catalog unavailable: {datasetResource.error}</p> : datasets && <div className="readiness-content"><div className="readiness-ring" style={{ "--readiness": `${readiness}%` } as CSSProperties}><div><strong>{readiness}%</strong><span>Ready</span></div></div><div className="readiness-sources">{datasets.map(([name, product, , status], index) => { const Glyph = datasetIcons[index % datasetIcons.length]; return <button key={name} onClick={() => go("data")} title={name}><span><Glyph size={23} />{product}</span><Status value={status} /></button>; })}</div></div>}
         </Panel>

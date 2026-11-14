@@ -42,7 +42,7 @@ frontend/
 ## Functionality
 
 - Responsive sidebar, navigation menu for narrow windows, and guided tour.
-- Regional overview, interactive Mapbox basemap, selectable event markers, event search and filters.
+- Regional overview with a rotating Black Marble globe, location-linked cell details, interactive Mapbox maps, selectable event markers, event search and filters.
 - Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment.
 - Data explorer, persisted intervention records, alerts, reports, and profile preferences.
 - JSON, CSV, and text file downloads through browser APIs.
@@ -83,10 +83,12 @@ administration remain unconnected.
 
 Create `frontend/.env.local` with `VITE_MAPBOX_ACCESS_TOKEN=<your-public-token>`. Restart Vite after changing it. `.env.local` is ignored by Git. For Render or another deployment, set `VITE_MAPBOX_ACCESS_TOKEN` in the hosting service's build environment and redeploy; a local `.env.local` does not configure the hosted site. Restrict the public token to the required URL origins in Mapbox.
 
-The shared overview and full-screen map use synchronized, resizable Mapbox
-panels, scroll zoom, zoom/compass controls, a metric scale, and connected
-radiance layers. The month selectors distinguish observed data from held-out
-and next-month forecasts. If map resources or WebGL are unavailable, an
+The overview uses a slowly rotating Mapbox globe; clicking pauses it and updates
+the side panels for a selected cell. The full-screen map retains synchronized,
+resizable comparison panels, scroll zoom, zoom/compass controls, a metric scale,
+and connected radiance layers. Month selectors distinguish observations from
+forecasts. The Black Marble cell data covers Bicol only; other globe locations
+show that coverage limitation. If map resources or WebGL are unavailable, an
 explanation remains available. Demonstration event geometry is defined in
 `src/data/mapGeometry.ts`.
 
