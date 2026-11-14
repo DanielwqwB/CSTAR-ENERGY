@@ -2,30 +2,30 @@
 
 Multi-satellite transition research workspace.
 
-## React Native frontend
+## React frontend
 
-The Expo / React Native application lives in **`app/mobile`**. It includes the sign-in demonstration, dashboard, investigation screens, maps, charts, and local report exports.
-
-From the repository root:
+The browser application lives directly in **`frontend/`** and uses React, TypeScript, and Vite.
 
 ```powershell
-cd app/mobile
+cd frontend
 npm.cmd install
-npm.cmd start
+npm.cmd run dev
 ```
 
-Use `npm.cmd run web` for a browser preview or `npm.cmd run android` for an Android emulator. On macOS, `npm run ios` starts the iOS simulator. See [the frontend README](app/mobile/README.md) for the complete setup, supported workflows, and demonstration limitations.
+Open the local URL printed by Vite (normally `http://localhost:5173`). On macOS/Linux, use `npm` instead of `npm.cmd`.
 
 ```powershell
-cd app/mobile
 npm.cmd run typecheck
 npm.cmd test
-npm.cmd run build:web
+npm.cmd run test:ui
+npm.cmd run build
 ```
+
+See [frontend setup and functionality](frontend/README.md) for details.
 
 ## Repository structure
 
-- `app/mobile/` — React Native frontend, its dependencies, assets, and frontend tests.
+- `frontend/` — React browser interface, assets, and frontend tests.
 - `backend/` — API, database, jobs, and service structure.
 - `data/` — Raw, interim, processed, and exported research data.
 - `pipeline/` — Satellite ingestion, quality control, harmonization, and analysis.
@@ -33,4 +33,4 @@ npm.cmd run build:web
 - `deployment/`, `visualization/` — Deployment and research visualization structure.
 - `tests/` — Repository-level data quality, integration, and unit test structure.
 
-The frontend currently uses bundled synthetic data and device-local persistence. Moving it into this repository structure does not connect it to a backend or live satellite feeds.
+The frontend uses synthetic data and browser-local persistence. Backend integration and live satellite feeds are not connected.
