@@ -3,12 +3,12 @@ import { createClient } from "@supabase/supabase-js";
 function fail(status, message) {
   throw Object.assign(new Error(message), { status });
 }
-function databaseError(error) {
+function databaseError(error, resource = "workspace storage") {
   if (!error) return;
   console.error("Supabase database error:", error.code || "unknown");
   fail(
     503,
-    "Supabase workspace storage is unavailable. Check the connection and run the SQL migration.",
+    `Supabase ${resource} is unavailable. Check the connection and run the SQL migration.`,
   );
 }
 
@@ -48,6 +48,10 @@ export function createSupabaseStore({
         },
       });
       if (error) {
+        console.error("Supabase Auth signup failed:", {
+          status: error.status ?? null,
+          code: error.code || "unknown",
+        });
         if (error.status === 429)
           fail(429, "Too many signup requests. Please try again later.");
         if (!error.status || error.status >= 500)
@@ -111,6 +115,75 @@ export function createSupabaseStore({
     async logout(context) {
       const { error } = await context.supabase.auth.signOut({ scope: "local" });
       if (error) fail(503, "Could not sign out of Supabase. Try again.");
+    },
+    async currentAtmosphereRun(context) {
+      const result = await context.supabase
+        .from("cstar_atmosphere_runs")
+        .select("run_id,model_name,anomaly_interpretation,start_month,end_month,total_cell_months,published_at,manifest")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      databaseError(result.error, "atmospheric data");
+      return result.data;
+    },
+    async listDemoDatasets(context) {
+      const result = await context.supabase
+        .from("cstar_demo_dataset_catalog")
+        .select("name,product,scale,status,description")
+        .order("sort_order", { ascending: true });
+      databaseError(result.error, "sample dataset catalog");
+      return result.data.map(({ name, product, scale, status, description }) => [
+        name,
+        product,
+        scale,
+        status,
+        description,
+      ]);
+    },
+    async listDemoSeries(context) {
+      const result = await context.supabase
+        .from("cstar_demo_monthly_series")
+        .select("period_start,radiance,adjusted,no2,counter")
+        .order("period_start", { ascending: true });
+      databaseError(result.error, "sample chart series");
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      return result.data.map((row) => ({
+        month: months[Number(row.period_start.slice(5, 7)) - 1],
+        radiance: row.radiance,
+        adjusted: row.adjusted,
+        no2: row.no2,
+        counter: row.counter,
+      }));
+    },
+    async listAtmosphereCells(context, { runId, month, limit, offset, status }) {
+      let query = context.supabase
+        .from("cstar_atmosphere_cells")
+        .select(
+          "month,cell_id,latitude,longitude,observation_status,qa_mean,valid_orbit_count,valid_pixel_count,coverage_fraction,source_product,expected_no2_umol_m2,observed_no2_umol_m2,anomaly_umol_m2,interval_lower_umol_m2,interval_upper_umol_m2,significant_anomaly",
+          { count: "exact" },
+        )
+        .eq("run_id", runId)
+        .eq("month", month);
+      if (status) query = query.eq("observation_status", status);
+      const result = await query
+        .order("cell_id", { ascending: true })
+        .range(offset, offset + limit - 1);
+      databaseError(result.error, "atmospheric data");
+      return { rows: result.data || [], total: result.count ?? 0 };
     },
     async load(context, initial) {
       const table = () => context.supabase.from("cstar_workspaces");

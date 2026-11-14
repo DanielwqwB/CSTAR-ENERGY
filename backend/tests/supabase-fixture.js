@@ -1,6 +1,19 @@
 // Protocol fixture for the real Supabase SDK. It does not replace testing RLS in PostgreSQL.
 import assert from "node:assert/strict";
-export function supabaseFixture({ confirmationRequired = false } = {}) {
+import { readFileSync } from "node:fs";
+const demoDatasets = JSON.parse(
+  readFileSync(
+    new URL("../../frontend/src/data/datasets.json", import.meta.url),
+    "utf8",
+  ),
+);
+const demoSeries = JSON.parse(
+  readFileSync(
+    new URL("../../frontend/src/data/series.json", import.meta.url),
+    "utf8",
+  ),
+);
+export function supabaseFixture({ confirmationRequired = false, atmosphere = null } = {}) {
   const rows = new Map();
   const sessions = new Map();
   const users = new Map();
@@ -33,10 +46,10 @@ export function supabaseFixture({ confirmationRequired = false } = {}) {
       token_type: "bearer",
     };
   }
-  const response = (data, status = 200) =>
+  const response = (data, status = 200, extraHeaders = {}) =>
     new Response(data === null ? null : JSON.stringify(data), {
       status,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...extraHeaders },
     });
   return {
     expiredToken: () => jwt({ id: "expired-user" }, 1),
@@ -85,6 +98,55 @@ export function supabaseFixture({ confirmationRequired = false } = {}) {
       if (url.pathname === "/auth/v1/logout") {
         sessions.delete(entry[0]);
         return response(null, 204);
+      }
+      if (url.pathname === "/rest/v1/cstar_atmosphere_runs") {
+        const published = atmosphere?.run?.status === "published" ? atmosphere.run : null;
+        return response(
+          headers.get("Accept")?.includes("vnd.pgrst.object")
+            ? published
+            : published ? [published] : [],
+        );
+      }
+      if (url.pathname === "/rest/v1/cstar_atmosphere_cells") {
+        const runId = url.searchParams.get("run_id")?.replace("eq.", "");
+        const month = url.searchParams.get("month")?.replace("eq.", "");
+        const status = url.searchParams.get("observation_status")?.replace("eq.", "");
+        const matching = (atmosphere?.run?.status === "published" ? atmosphere.rows : [])
+          .filter((row) => row.run_id === runId && row.month === month)
+          .filter((row) => !status || row.observation_status === status)
+          .sort((a, b) => a.cell_id.localeCompare(b.cell_id));
+        const start = Number(url.searchParams.get("offset") || 0);
+        const limit = Number(url.searchParams.get("limit") || 1000);
+        const page = matching.slice(start, start + limit).map(({ run_id, ...row }) => row);
+        const range = matching.length
+          ? `${start}-${start + page.length - 1}/${matching.length}`
+          : "*/0";
+        return response(page, 200, { "Content-Range": range });
+      }
+      if (url.pathname === "/rest/v1/cstar_demo_dataset_catalog") {
+        return response(
+          demoDatasets.map(
+            ([name, product, scale, status, description], index) => ({
+              sort_order: index + 1,
+              name,
+              product,
+              scale,
+              status,
+              description,
+            }),
+          ),
+        );
+      }
+      if (url.pathname === "/rest/v1/cstar_demo_monthly_series") {
+        return response(
+          demoSeries.map((row, index) => ({
+            period_start: `2024-${String(index + 1).padStart(2, "0")}-01`,
+            radiance: row.radiance,
+            adjusted: row.adjusted,
+            no2: row.no2,
+            counter: row.counter,
+          })),
+        );
       }
       assert.equal(url.pathname, "/rest/v1/cstar_workspaces");
       const owner = url.searchParams.get("user_id")?.replace("eq.", "");
