@@ -109,7 +109,7 @@ export const pageTitles: Record<Page, [string, string]> = {
   ],
   analytics: [
     "Model Evaluation and Research Analytics",
-    "Illustrative framework; no validated performance results",
+    "Committed model evaluations; no combined CCTF attribution verdict",
   ],
   alerts: [
     "Research Alerts",
