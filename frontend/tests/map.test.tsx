@@ -26,6 +26,7 @@ vi.mock("mapbox-gl", () => ({
       resize = vi.fn();
       fitBounds = vi.fn();
       setLayoutProperty = vi.fn();
+      setPaintProperty = vi.fn();
       addLayer = vi.fn();
       handlers: Record<string, () => void> = {};
       constructor(public options: any) {
@@ -94,6 +95,8 @@ it("keeps interactive markers in the map and updates layers without rebuilding i
       onSelect={onSelect}
       cells={false}
       plume={false}
+      cellOpacity={0.7}
+      plumeOpacity={0.4}
     />,
   );
   await waitFor(() =>
@@ -108,6 +111,8 @@ it("keeps interactive markers in the map and updates layers without rebuilding i
     "visibility",
     "none",
   );
+  expect(state.maps[0].setPaintProperty).toHaveBeenCalledWith("lighting-cells", "fill-opacity", 0.7);
+  expect(state.maps[0].setPaintProperty).toHaveBeenCalledWith("atmospheric-footprints", "fill-opacity", 0.4);
   expect(state.maps).toHaveLength(1);
   expect(
     screen

@@ -9,9 +9,13 @@ import { statuses } from "../utils/events";
 export function EventList({
   events,
   editable = false,
+  sortKey, descending = false, onSort,
 }: {
   events: TransitionEvent[];
   editable?: boolean;
+  sortKey?: keyof TransitionEvent;
+  descending?: boolean;
+  onSort?: (key: keyof TransitionEvent) => void;
 }) {
   const { select, go, update } = useWorkspace();
   const { width } = useViewport();
@@ -82,19 +86,14 @@ export function EventList({
       <table className="event-table">
         <thead>
           <tr>
-            {[
-              "Event",
-              "Location / Zone",
-              "Candidate mechanism",
-              "Onset",
-              "Adequacy",
-              "Review status",
-              "Open",
-            ].map((label) => (
-              <th key={label} scope="col">
-                {label}
+            {([
+              ["Event ID", "id"], ["Location / Zone", "location"], ["Candidate mechanism", "mechanism"],
+              ["Observation period", "onset"], ["Adequacy", "adequacy"], ["Review status", "status"],
+            ] as [string, keyof TransitionEvent][]).map(([label, key]) => (
+              <th key={key} scope="col" aria-sort={onSort && sortKey === key ? descending ? "descending" : "ascending" : undefined}>
+                {onSort ? <button className="column-sort" onClick={() => onSort(key)}>{label} <span aria-hidden="true">{sortKey === key ? descending ? "\u2193" : "\u2191" : "\u2195"}</span></button> : label}
               </th>
-            ))}
+            ))}<th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>

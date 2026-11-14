@@ -136,10 +136,10 @@ export function Distribution({ events }: { events: TransitionEvent[] }) {
   let offset = 0;
   return (
     <div
-      className="stack"
+      className="stack distribution-chart"
       style={css([ui.row, { flexWrap: "wrap", justifyContent: "center" }])}
     >
-      <svg width={146} height={146} viewBox="0 0 146 146">
+      <svg className="distribution-donut" width={146} height={146} viewBox="0 0 146 146">
         <circle
           cx={73}
           cy={73}

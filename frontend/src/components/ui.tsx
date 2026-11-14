@@ -1,3 +1,4 @@
+import logo from "../../assets/cstar-logo.png";
 import React, { useId } from "react";
 import type { CSSProperties } from "react";
 import { colors, ui } from "../theme";
@@ -249,43 +250,10 @@ export function Notice({
   );
 }
 export function Brand({ inverse = false }: { inverse?: boolean }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <div
-        style={{
-          display: "flex",
-          backgroundColor: colors.cyan,
-          borderRadius: 11,
-          padding: 9,
-        }}
-      >
-        <Icon name="planet-outline" color={colors.bg} size={22} />
-      </div>
-      <div className="stack">
-        <span
-          style={{
-            color: inverse ? "#e7efea" : colors.text,
-            fontSize: 15,
-            fontWeight: 800,
-            letterSpacing: 1,
-            whiteSpace: "nowrap",
-          }}
-        >
-          CSTAR<span style={{ color: inverse ? "#9ad0d5" : colors.cyan }}>—ENERGY</span>
-        </span>
-        <span
-          style={{
-            color: inverse ? "#b8c9c3" : colors.dim,
-            fontSize: 8,
-            letterSpacing: 2,
-            marginTop: 5,
-          }}
-        >
-          SATELLITE INTELLIGENCE
-        </span>
-      </div>
-    </div>
-  );
+  return <div className="brand" style={{ color: inverse ? "#e7efea" : colors.text }}>
+    <img src={logo} alt="" width={52} height={52} />
+    <span>CSTAR<span style={{ color: inverse ? "#9ad0d5" : colors.cyan }}>-Energy</span></span>
+  </div>;
 }
 const styles: Record<string, CSSProperties> = {
   button: {

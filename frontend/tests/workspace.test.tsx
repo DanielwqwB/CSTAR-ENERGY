@@ -8,6 +8,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
+import { navigation } from "../src/data/navigation";
 import seed from "../src/data/events.json";
 import type { WorkspaceData } from "../src/api";
 
@@ -60,6 +61,12 @@ beforeEach(() => {
   Object.defineProperty(window, "innerWidth", { value: 1440, writable: true });
 });
 afterEach(cleanup);
+async function navigateTo(user: ReturnType<typeof userEvent.setup>, name: string) {
+  const group = navigation.find(group => group.items.some(item => item.label === name))!;
+  const nav = await screen.findByRole("navigation", { name: "Workspace navigation" });
+  await user.click(within(nav).getByRole("button", { name: group.group[0] + group.group.slice(1).toLowerCase(), exact: true }));
+  await user.click(within(nav).getByRole("button", { name, exact: true }));
+}
 async function openWorkspace() {
   const user = userEvent.setup();
   render(<App />);
@@ -72,6 +79,32 @@ async function openWorkspace() {
   return user;
 }
 describe("browser workspace", () => {
+  it("searches pages and events, opens results, and handles empty matches", async () => {
+    const user = await openWorkspace();
+    const search = screen.getByRole("searchbox", { name: "Search pages and events" });
+    await user.type(search, "Data Explorer");
+    await user.click(screen.getByRole("button", { name: "Data Explorer", exact: true }));
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Earth Observation Data Explorer");
+    await user.type(search, "DEMO-002");
+    await user.click(screen.getByRole("button", { name: /DEMO-002 Eastport/ }));
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Event Investigation");
+    await user.type(search, "zzzz-no-match");
+    expect(screen.getByText(/No matches. Try/)).toBeTruthy();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText(/No matches. Try/)).toBeNull();
+  });
+  it("dismisses top navigation with Escape and restores focus", async () => {
+    const user = await openWorkspace();
+    const monitor = screen.getByRole("button", { name: "Monitor", exact: true });
+    await user.click(monitor);
+    expect(monitor.getAttribute("aria-expanded")).toBe("true");
+    await user.tab();
+    await user.keyboard("{Escape}");
+    expect(monitor.getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(monitor);
+    expect(screen.queryByRole("button", { name: "Transition Map", exact: true })).toBeNull();
+  });
+
   it("validates signup passwords and shows the email confirmation step", async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -100,6 +133,7 @@ describe("browser workspace", () => {
   });
   it("opens the profile, persists edits, and logs out from the profile page", async () => {
     const user = await openWorkspace();
+    await user.click(screen.getByRole("button", { name: /Research Analyst/ }));
     await user.click(screen.getByRole("button", { name: "View profile" }));
     expect(
       screen.getByRole("heading", { level: 1, name: "My profile" }),
@@ -110,9 +144,8 @@ describe("browser workspace", () => {
     await waitFor(() => expect(saved.profile.name).toBe("Updated Analyst"));
     cleanup();
     render(<App />);
-    await user.click(
-      await screen.findByRole("button", { name: "View profile" }),
-    );
+    await user.click(await screen.findByRole("button", { name: /Research Analyst/ }));
+    await user.click(screen.getByRole("button", { name: "View profile" }));
     expect((screen.getByLabelText("Name") as HTMLInputElement).value).toBe(
       "Updated Analyst",
     );
@@ -151,7 +184,7 @@ describe("browser workspace", () => {
   });
   it("opens every workspace section without a runtime error", async () => {
     const user = await openWorkspace();
-    const nav = screen.getByRole("navigation");
+
     for (const name of [
       "Transition Map",
       "Event Catalogue",
@@ -168,20 +201,16 @@ describe("browser workspace", () => {
       "Administration",
       "Intelligence Overview",
     ]) {
-      await user.click(within(nav).getByRole("button", { name, exact: true }));
+      await navigateTo(user, name);
       expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
     }
   });
   it("filters catalogue rows and saves notes through the API across reloads", async () => {
     const user = await openWorkspace();
-    await user.click(
-      screen.getByRole("button", { name: "Event Catalogue", exact: true }),
-    );
+    await navigateTo(user, "Event Catalogue");
     await user.type(screen.getByPlaceholderText(/Search event ID/), "Eastport");
     expect(screen.getByText("1 of 4 synthetic candidates")).toBeTruthy();
-    await user.click(
-      screen.getByRole("button", { name: "Event Investigation", exact: true }),
-    );
+    await navigateTo(user, "Event Investigation");
     await user.type(
       screen.getByLabelText("Investigation notes"),
       "Verify the commissioning date.",
@@ -194,16 +223,12 @@ describe("browser workspace", () => {
     );
     cleanup();
     render(<App />);
-    await user.click(
-      await screen.findByRole("button", {
-        name: "Event Investigation",
-        exact: true,
-      }),
-    );
+    await navigateTo(user, "Event Investigation");
     expect(
       (screen.getByLabelText("Investigation notes") as HTMLTextAreaElement)
         .value,
     ).toBe("Verify the commissioning date.");
+    await user.click(screen.getByRole("button", { name: /Research Analyst/ }));
     await user.click(screen.getByRole("button", { name: "Sign out" }));
     expect(
       await screen.findByRole("heading", { name: "Welcome back" }),

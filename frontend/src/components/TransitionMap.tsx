@@ -26,6 +26,11 @@ export function TransitionMap({
   plume = true,
   cells = true,
   height = 340,
+  compact = false,
+  candidates = true,
+  cellOpacity = 0.3,
+  plumeOpacity = 0.13,
+  markerOpacity = 1,
 }: {
   events: TransitionEvent[];
   selected?: string;
@@ -33,6 +38,11 @@ export function TransitionMap({
   plume?: boolean;
   cells?: boolean;
   height?: number;
+  compact?: boolean;
+  candidates?: boolean;
+  cellOpacity?: number;
+  plumeOpacity?: number;
+  markerOpacity?: number;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const sdk = useRef<typeof import("mapbox-gl").default | null>(null);
@@ -168,10 +178,11 @@ export function TransitionMap({
       "visibility",
       plume ? "visible" : "none",
     );
-    const markers: Marker[] = events.map((event) => {
+    const markers: Marker[] = (candidates ? events : []).map((event) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "map-event-marker";
+      button.style.opacity = String(markerOpacity);
       button.style.setProperty("--event-color", markerColor(event));
       button.setAttribute(
         "aria-label",
@@ -193,11 +204,16 @@ export function TransitionMap({
         .addTo(map);
     });
     return () => markers.forEach((marker) => marker.remove());
-  }, [map, events, selected, cells, plume]);
+  }, [map, events, selected, cells, plume, candidates, markerOpacity]);
   useEffect(() => {
     if (!map) return;
     map.fitBounds(BICOL_VIEW_BOUNDS, { padding: 36, duration: 0 });
   }, [map]);
+  useEffect(() => {
+    if (!map) return;
+    map.setPaintProperty("lighting-cells", "fill-opacity", cellOpacity);
+    map.setPaintProperty("atmospheric-footprints", "fill-opacity", plumeOpacity);
+  }, [map, cellOpacity, plumeOpacity]);
   return (
     <div className="transition-map">
       <div className="map-frame" style={{ height }}>
@@ -238,6 +254,7 @@ export function TransitionMap({
         Mapbox basemap · Fictional Aurelia events placed in Bicol Region for
         demonstration. Positions and overlays are not verified observations.
       </p>
+      <details open={compact ? undefined : true} className="map-event-details"><summary>Demonstration events ({events.length})</summary>
       <div className="map-event-list" aria-label="Map events">
         {events.map((event) => (
           <button
@@ -252,6 +269,7 @@ export function TransitionMap({
           </button>
         ))}
       </div>
+      </details>
     </div>
   );
 }

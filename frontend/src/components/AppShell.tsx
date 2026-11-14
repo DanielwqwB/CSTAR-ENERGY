@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useWorkspace } from "../context/WorkspaceContext";
 import { navigation, pageTitles } from "../data/navigation";
-import { useViewport } from "../hooks/useViewport";
+import { Monitor, Search, Layers, BarChart3, UserRound } from "lucide-react";
 import { Badge, Brand, Button, Card, Icon } from "./ui";
 import { colors, ui } from "../theme";
+import { WorkspaceSearch } from "./WorkspaceSearch";
 import type { Page } from "../types";
 
 const tour: { title: string; body: string; page: Page }[] = [
@@ -40,212 +41,80 @@ const tour: { title: string; body: string; page: Page }[] = [
 ];
 export function AppShell({ children }: { children: ReactNode }) {
   const { page, go, logout, profile, toast, select } = useWorkspace();
-  const { width } = useViewport();
-  const wide = width >= 1050;
-  const [drawer, setDrawer] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [step, setStep] = useState<number | null>(null);
   const scroll = useRef<HTMLElement>(null);
-  const dialog = useRef<HTMLDialogElement>(null);
+  const header = useRef<HTMLElement>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     if (scroll.current) scroll.current.scrollTop = 0;
   }, [page]);
   useEffect(() => {
-    if (drawer && !wide) dialog.current?.showModal();
-    else if (dialog.current?.open) dialog.current.close();
-  }, [drawer, wide]);
-  const navigate = (next: Page) => {
-    go(next);
-    setDrawer(false);
-  };
+    const outside = (event: PointerEvent) => {
+      if (!header.current?.contains(event.target as Node)) setOpenMenu(null);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setOpenMenu(null); trigger.current?.focus(); }
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+    };
+  }, []);
+  const navigate = (next: Page) => { go(next); setOpenMenu(null); };
+  const groupIcons = [Monitor, Search, Layers, BarChart3];
+  const activeGroup = navigation.find(group => group.items.some(item => item.id === page));
   const tourStep = (index: number) => {
     setStep(index);
     select("DEMO-002");
     navigate(tour[index].page);
   };
-  const compact = wide && collapsed;
-  const sidebar = (
-    <aside
-      className={`sidebar ${compact ? "compact" : ""}`}
-      style={{ height: "100%" }}
-    >
-      <div
-        className="sidebar-brand"
-        style={{
-          padding: compact ? 15 : 22,
-          borderBottom: `1px solid ${colors.border}`,
-        }}
-      >
-        {compact ? (
-          <Icon name="planet" color={colors.cyan} size={30} />
-        ) : (
-          <Brand />
-        )}
-      </div>
-      <nav aria-label="Workspace navigation">
-        {navigation.map((group) => (
-          <div className="sidebar-group" key={group.group}>
-            {!compact && (
-              <p
-                style={{
-                  ...ui.label,
-                  color: colors.dim,
-                  fontSize: 9,
-                  padding: 10,
-                }}
-              >
-                {group.group}
-              </p>
-            )}
-            {group.items.map((item) => (
-              <button
-                type="button"
-                title={item.label}
-                aria-label={item.label}
-                aria-current={page === item.id ? "page" : undefined}
-                className="nav-button"
-                key={item.id}
-                onClick={() => navigate(item.id)}
-              >
-                <Icon
-                  name={item.icon}
-                  size={17}
-                  color={page === item.id ? colors.cyan : colors.muted}
-                />
-                {!compact && <span>{item.label}</span>}
-              </button>
-            ))}
-          </div>
-        ))}
-      </nav>
-      <div
-        className="stack"
-        style={{
-          padding: 14,
-          borderTop: `1px solid ${colors.border}`,
-          gap: 10,
-        }}
-      >
-        {compact ? (
-          <>
-            <button
-              type="button"
-              className="sidebar-icon-button"
-              title="Guided demonstration"
-              aria-label="Guided demonstration"
-              onClick={() => tourStep(0)}
-            >
-              <Icon name="play-outline" size={20} />
-            </button>
-            <button
-              type="button"
-              className="sidebar-icon-button"
-              title="Expand sidebar"
-              aria-label="Expand sidebar"
-              aria-expanded={false}
-              onClick={() => setCollapsed(false)}
-            >
-              <Icon name="arrow-forward" size={20} />
-            </button>
-          </>
-        ) : (
-          <>
-            <Button
-              label={compact ? "Demo" : "Guided demonstration"}
-              secondary
-              onClick={() => tourStep(0)}
-            />
-            {wide ? (
-              <Button
-                label={compact ? "Expand" : "Collapse sidebar"}
-                secondary
-                onClick={() => setCollapsed(!collapsed)}
-              />
-            ) : (
-              <Button
-                label="Close menu"
-                secondary
-                onClick={() => setDrawer(false)}
-              />
-            )}
-          </>
-        )}
-      </div>
-    </aside>
-  );
   return (
     <div className="app-shell">
-      {wide && sidebar}
-      <dialog
-        ref={dialog}
-        className="dialog"
-        aria-label="Navigation menu"
-        onCancel={() => setDrawer(false)}
-        onClose={() => setDrawer(false)}
-        style={{
-          margin: 0,
-          height: "100dvh",
-          width: Math.min(300, width - 45),
-        }}
-      >
-        {!wide && sidebar}
-      </dialog>
       <div className="workspace">
-        <header className="topbar">
-          {!wide && (
-            <button
-              type="button"
-              aria-label="Open navigation"
-              onClick={() => setDrawer(true)}
-              style={{ padding: 8 }}
-            >
-              <Icon name="menu-outline" size={24} />
-            </button>
-          )}
-          <span style={{ ...ui.small, flex: 1 }}>
-            {wide ? `Workspace › ${pageTitles[page][0]}` : "CSTAR—ENERGY"}
-          </span>
-          {width > 600 && <Badge tone="amber">DEMONSTRATION</Badge>}
-          <button
-            type="button"
-            aria-label="Research alerts"
-            onClick={() => navigate("alerts")}
-            style={{ padding: 8 }}
-          >
-            <Icon name="notifications-outline" />
-          </button>
-          <button
-            type="button"
-            aria-label="View profile"
-            title="My profile"
-            className="profile-control"
-            onClick={() => navigate("profile")}
-          >
-            <Icon name="person-outline" size={24} color={colors.cyan} />
-            {wide && (
-              <div className="stack">
-                <span style={{ ...ui.text, fontSize: 11 }}>{profile.name}</span>
-                <span style={{ ...ui.small, fontSize: 9 }}>
-                  Research Analyst
-                </span>
-              </div>
-            )}
-          </button>
-          <button
-            type="button"
-            aria-label="Sign out"
-            title="Log out"
-            onClick={logout}
-            style={{
-              padding: 8,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <Icon name="log-out-outline" />
-            {wide && <span style={ui.muted}>Log out</span>}
-          </button>
+        <header ref={header} className="topbar" onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpenMenu(null);
+        }}>
+          <button className="brand-home" aria-label="CSTAR-Energy home" onClick={() => navigate("overview")}><Brand /></button>
+          <nav className="top-navigation" aria-label="Workspace navigation">
+            {navigation.map((group, index) => {
+              const Glyph = groupIcons[index];
+              const expanded = openMenu === group.group;
+              return <div className="nav-dropdown" key={group.group}>
+                <button className="nav-trigger" data-active={activeGroup === group} aria-expanded={expanded}
+                  aria-controls={`nav-${group.group}`} onClick={(event) => {
+                    trigger.current = event.currentTarget;
+                    setOpenMenu(expanded ? null : group.group);
+                  }}>
+                  <Glyph size={24} /><span>{group.group[0] + group.group.slice(1).toLowerCase()}</span><Icon name="chevron-down" size={16} color="currentColor" />
+                </button>
+                {expanded && <div className="nav-dropdown-panel" id={`nav-${group.group}`}>
+                  <span className="dropdown-label">{group.group}</span>
+                  {group.items.map(item => <button className="nav-button" key={item.id} aria-current={page === item.id ? "page" : undefined} onClick={() => navigate(item.id)}>
+                    <Icon name={item.icon} color="currentColor" /><span>{item.label}</span>
+                  </button>)}
+                </div>}
+              </div>;
+            })}
+          </nav>
+          <WorkspaceSearch />
+          <div className="topbar-account">
+            <button className="alert-button" aria-label="Research alerts" onClick={() => navigate("alerts")}><Icon name="notifications-outline" size={23} color={colors.cyan} /></button>
+            <div className="nav-dropdown">
+              <button className="profile-trigger" aria-expanded={openMenu === "profile"} aria-controls="profile-menu" onClick={(event) => {
+                trigger.current = event.currentTarget; setOpenMenu(openMenu === "profile" ? null : "profile");
+              }}><span className="avatar"><UserRound size={23} /></span><span className="profile-copy"><strong>{profile.name}</strong><small>Research Analyst</small></span><Icon name="chevron-down" color="currentColor" size={16} /></button>
+              {openMenu === "profile" && <div className="nav-dropdown-panel profile-menu" id="profile-menu">
+                <Badge tone="amber">DEMONSTRATION</Badge>
+                <button className="nav-button" onClick={() => navigate("profile")}>View profile</button>
+                <button className="nav-button" onClick={() => navigate("settings")}>Account settings</button>
+                <button className="nav-button" onClick={() => { setOpenMenu(null); tourStep(0); }}>Guided demonstration</button>
+                <button className="nav-button" onClick={logout}>Sign out</button>
+              </div>}
+            </div>
+          </div>
         </header>
         <main
           ref={scroll}
@@ -253,14 +122,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           style={{ paddingBottom: step === null ? 36 : 290 }}
         >
           <div className="workspace-content">
-            <div className="stack" style={{ gap: 8 }}>
+            {page !== "overview" && <div className="page-heading stack" style={{ gap: 8 }}>
+              <span className="page-eyebrow">{activeGroup?.group}</span>
               <h1
-                style={{ ...ui.heading, fontSize: wide ? 25 : 23, margin: 0 }}
+                style={{ ...ui.heading, fontSize: "clamp(23px, 2.2vw, 30px)", margin: 0 }}
               >
                 {pageTitles[page][0]}
               </h1>
               <span style={ui.muted}>{pageTitles[page][1]}</span>
             </div>
+            }
             {children}
             <footer
               style={{
