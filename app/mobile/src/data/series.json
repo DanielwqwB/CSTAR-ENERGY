@@ -1,0 +1,86 @@
+[
+  {
+    "month": "Jan",
+    "radiance": 45,
+    "adjusted": 44,
+    "no2": 18,
+    "counter": 44
+  },
+  {
+    "month": "Feb",
+    "radiance": 46,
+    "adjusted": 45,
+    "no2": 17,
+    "counter": 45
+  },
+  {
+    "month": "Mar",
+    "radiance": 47,
+    "adjusted": 45,
+    "no2": 19,
+    "counter": 46
+  },
+  {
+    "month": "Apr",
+    "radiance": 50,
+    "adjusted": 49,
+    "no2": 21,
+    "counter": 47
+  },
+  {
+    "month": "May",
+    "radiance": 54,
+    "adjusted": 52,
+    "no2": 23,
+    "counter": 48
+  },
+  {
+    "month": "Jun",
+    "radiance": 58,
+    "adjusted": 56,
+    "no2": 24,
+    "counter": 49
+  },
+  {
+    "month": "Jul",
+    "radiance": 61,
+    "adjusted": 59,
+    "no2": 26,
+    "counter": 50
+  },
+  {
+    "month": "Aug",
+    "radiance": 64,
+    "adjusted": 62,
+    "no2": 27,
+    "counter": 51
+  },
+  {
+    "month": "Sep",
+    "radiance": 65,
+    "adjusted": 63,
+    "no2": 25,
+    "counter": 52
+  },
+  {
+    "month": "Oct",
+    "radiance": 66,
+    "adjusted": 64,
+    "no2": 28,
+    "counter": 53
+  },
+  {
+    "month": "Nov",
+    "radiance": 67,
+    "adjusted": 65,
+    "no2": 26,
+    "counter": 54
+  },
+  {
+    "month": "Dec",
+    "radiance": 68,
+    "adjusted": 66,
+    "no2": 27,
+    "counter": 55
+  }
+]

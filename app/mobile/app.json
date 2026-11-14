@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "CSTAR Energy",
+    "slug": "cstar-energy",
+    "version": "1.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.cstar.energy" },
+    "android": { "package": "com.cstar.energy" },
+    "web": { "bundler": "metro", "name": "CSTAR — ENERGY" }
+  }
+}
