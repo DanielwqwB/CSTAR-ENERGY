@@ -1,0 +1,37 @@
+[
+  [
+    "NASA Black Marble",
+    "VNP46A2",
+    "~500 m grid product",
+    "Ready",
+    "Nighttime radiance and quality flags"
+  ],
+  [
+    "Sentinel-5P TROPOMI",
+    "L2 NO₂",
+    "Kilometer-scale atmospheric footprint",
+    "Partial",
+    "Tropospheric column; not street-level"
+  ],
+  [
+    "NASA MERRA-2 / GEOS-FP",
+    "Meteorology",
+    "Gridded reanalysis / forecast",
+    "Ready",
+    "Wind and meteorological context"
+  ],
+  [
+    "Sentinel-2",
+    "L2A",
+    "10–20 m context layers",
+    "Ready",
+    "Land cover and construction context"
+  ],
+  [
+    "Verified local records",
+    "Registry v0.4",
+    "Document-level",
+    "Review",
+    "Illustrative intervention records"
+  ]
+]
