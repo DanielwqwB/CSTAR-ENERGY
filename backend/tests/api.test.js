@@ -108,6 +108,8 @@ test("Supabase SDK auth, workspace saves, validation, conflicts, and reloads", a
   let client = await start(fixture);
   try {
     assert.equal((await client.request("/workspace")).status, 401);
+    assert.equal((await client.request("/datasets")).status, 401);
+    assert.equal((await client.request("/series")).status, 401);
     assert.equal((await client.request("/health")).data.database, "supabase");
     assert.equal(
       (
@@ -161,7 +163,14 @@ test("Supabase SDK auth, workspace saves, validation, conflicts, and reloads", a
       data.events[0].notes,
     );
     assert.equal((await client.request("/events/missing")).status, 404);
-    assert.equal((await client.request("/datasets")).data.length, 5);
+    const datasets = await client.request("/datasets");
+    assert.equal(datasets.data.length, 5);
+    assert.equal(datasets.data[0][0], "NASA Black Marble");
+    const series = await client.request("/series");
+    assert.equal(series.status, 200);
+    assert.equal(series.data.length, 12);
+    assert.equal(series.data[0].month, "Jan");
+    assert.equal(series.data[11].month, "Dec");
     assert.equal((await client.request("/session", "DELETE")).status, 200);
     assert.equal(client.cookies.size, 0);
     assert.equal((await client.request("/workspace")).status, 401);

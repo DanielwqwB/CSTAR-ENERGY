@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { createSupabaseStore } from "./supabase.js";
+import { parseAtmosphereQuery } from "./atmosphere.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -194,6 +195,34 @@ export function createApp({
         return send(200, { ok: true });
       }
       sessionCookies(res, context.session, savedCookies.cstar_remember === "1");
+      if (req.method === "GET" && path.startsWith("/api/atmosphere/")) {
+        if (!["/api/atmosphere/manifest", "/api/atmosphere/no2"].includes(path))
+          fail(404, "Route not found");
+        const run = await store.currentAtmosphereRun(context);
+        if (!run) fail(503, "No published atmospheric export is available");
+        if (path === "/api/atmosphere/manifest") return send(200, run);
+        const query = parseAtmosphereQuery(url.searchParams);
+        if (query.month < run.start_month || query.month > run.end_month)
+          fail(400, "Month outside the published atmospheric export");
+        const result = await store.listAtmosphereCells(context, {
+          runId: run.run_id,
+          ...query,
+        });
+        return send(200, {
+          run_id: run.run_id,
+          model_name: run.model_name,
+          anomaly_interpretation: run.anomaly_interpretation,
+          month: query.month.slice(0, 7),
+          limit: query.limit,
+          offset: query.offset,
+          total: result.total,
+          rows: result.rows,
+        });
+      }
+      if (req.method === "GET" && path === "/api/datasets")
+        return send(200, await store.listDemoDatasets(context));
+      if (req.method === "GET" && path === "/api/series")
+        return send(200, await store.listDemoSeries(context));
       const current = await store.load(context, initialWorkspace(context.user));
       if (path === "/api/workspace" && req.method === "GET")
         return send(200, current);
@@ -273,10 +302,6 @@ export function createApp({
       }
       if (req.method === "GET" && path === "/api/records")
         return send(200, current.records);
-      if (req.method === "GET" && path === "/api/datasets")
-        return send(200, readData("datasets"));
-      if (req.method === "GET" && path === "/api/series")
-        return send(200, readData("series"));
       fail(404, "Route not found");
     } catch (error) {
       if (!error.status) console.error(error);
