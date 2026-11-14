@@ -205,6 +205,17 @@ describe("browser workspace", () => {
       expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
     }
   });
+  it("paginates catalogue events and resets to the first page when filtered", async () => {
+    const user = await openWorkspace();
+    await navigateTo(user, "Event Catalogue");
+    expect(screen.getByText("Showing 1–3 of 4 events")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Next catalogue page" }));
+    expect(screen.getByText("Showing 4–4 of 4 events")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Next catalogue page" }).hasAttribute("disabled")).toBe(true);
+    await user.type(screen.getByRole("textbox", { name: "Search catalogue" }), "Eastport");
+    expect(screen.getByText("Showing 1–1 of 1 events")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Catalogue page 1" }).getAttribute("aria-current")).toBe("page");
+  });
   it("filters catalogue rows and saves notes through the API across reloads", async () => {
     const user = await openWorkspace();
     await navigateTo(user, "Event Catalogue");

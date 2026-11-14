@@ -105,7 +105,7 @@ export function Card({
           {action}
         </header>
       )}
-      <div className="stack" style={{ padding: 18, gap: 14 }}>
+      <div className="stack" style={{ padding: "clamp(16px, 1.5vw, 22px)", gap: 16 }}>
         {children}
       </div>
     </section>
@@ -273,7 +273,7 @@ const styles: Record<string, CSSProperties> = {
   card: {
     backgroundColor: colors.panel,
     border: `1px solid ${colors.border}`,
-    borderRadius: 12,
+    borderRadius: 18,
     overflow: "hidden",
     minWidth: 0,
   },

@@ -8,6 +8,8 @@ import {
   BICOL_VIEW_BOUNDS,
   demoPosition,
   lightingCells,
+  illustrativeNightLights,
+  plumeHeatPoints,
 } from "../data/mapGeometry";
 import { Button } from "./ui";
 
@@ -31,6 +33,12 @@ export function TransitionMap({
   cellOpacity = 0.3,
   plumeOpacity = 0.13,
   markerOpacity = 1,
+  showLegend = true,
+  showDetails = true,
+  basemapStyle = "mapbox://styles/mapbox/light-v11",
+  showPlumeHeatmap = false,
+  comparisonYear,
+  comparisonMode = "night",
 }: {
   events: TransitionEvent[];
   selected?: string;
@@ -43,6 +51,12 @@ export function TransitionMap({
   cellOpacity?: number;
   plumeOpacity?: number;
   markerOpacity?: number;
+  showLegend?: boolean;
+  showDetails?: boolean;
+  basemapStyle?: string;
+  showPlumeHeatmap?: boolean;
+  comparisonYear?: number;
+  comparisonMode?: "night" | "change" | "no2";
 }) {
   const container = useRef<HTMLDivElement>(null);
   const sdk = useRef<typeof import("mapbox-gl").default | null>(null);
@@ -77,7 +91,7 @@ export function TransitionMap({
         instance = new mapbox.Map({
           container: container.current,
           accessToken: token,
-          style: "mapbox://styles/mapbox/light-v11",
+          style: basemapStyle,
           center: DEMO_CENTER,
           zoom: 7,
           attributionControl: true,
@@ -135,6 +149,38 @@ export function TransitionMap({
               "fill-outline-color": "#fbbf24",
             },
           });
+          instance.addSource("illustrative-plume-heat", {
+            type: "geojson",
+            data: plumeHeatPoints([]),
+          });
+          instance.addLayer({
+            id: "illustrative-plume-heat",
+            type: "heatmap",
+            source: "illustrative-plume-heat",
+            paint: {
+              "heatmap-weight": ["get", "weight"],
+              "heatmap-intensity": 1.3,
+              "heatmap-radius": 55,
+              "heatmap-opacity": 0.8,
+              "heatmap-color": ["interpolate", ["linear"], ["heatmap-density"], 0, "rgba(90,45,220,0)", 0.15, "#6032cb", 0.4, "#b545d0", 0.65, "#f59e0b", 1, "#ffe026"],
+            },
+          });
+          instance.addSource("illustrative-night-lights", {
+            type: "geojson",
+            data: illustrativeNightLights(2016),
+          });
+          instance.addLayer({
+            id: "illustrative-night-lights",
+            type: "heatmap",
+            source: "illustrative-night-lights",
+            paint: {
+              "heatmap-weight": ["get", "weight"],
+              "heatmap-intensity": 1.5,
+              "heatmap-radius": 18,
+              "heatmap-opacity": 0.9,
+              "heatmap-color": ["interpolate", ["linear"], ["heatmap-density"], 0, "rgba(255,180,0,0)", .2, "#d07b00", .5, "#ffbd19", .8, "#fff08a", 1, "#fffde8"],
+            },
+          });
           setStatus("");
           setFailed(false);
           setMap(instance);
@@ -159,7 +205,7 @@ export function TransitionMap({
       observer?.disconnect();
       instance?.remove();
     };
-  }, [attempt]);
+  }, [attempt, basemapStyle]);
   useEffect(() => {
     if (!map || !sdk.current) return;
     (map.getSource("lighting-cells") as GeoJSONSource).setData(
@@ -167,6 +213,9 @@ export function TransitionMap({
     );
     (map.getSource("atmospheric-footprints") as GeoJSONSource).setData(
       atmosphericFootprints(events),
+    );
+    (map.getSource("illustrative-plume-heat") as GeoJSONSource).setData(
+      plumeHeatPoints(events),
     );
     map.setLayoutProperty(
       "lighting-cells",
@@ -178,6 +227,8 @@ export function TransitionMap({
       "visibility",
       plume ? "visible" : "none",
     );
+    map.setLayoutProperty("illustrative-plume-heat", "visibility", plume && showPlumeHeatmap ? "visible" : "none");
+    map.setLayoutProperty("illustrative-night-lights", "visibility", comparisonYear === undefined ? "none" : "visible");
     const markers: Marker[] = (candidates ? events : []).map((event) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -204,7 +255,17 @@ export function TransitionMap({
         .addTo(map);
     });
     return () => markers.forEach((marker) => marker.remove());
-  }, [map, events, selected, cells, plume, candidates, markerOpacity]);
+  }, [map, events, selected, cells, plume, candidates, markerOpacity, showPlumeHeatmap, comparisonYear]);
+  useEffect(() => {
+    if (!map || comparisonYear === undefined) return;
+    (map.getSource("illustrative-night-lights") as GeoJSONSource).setData(illustrativeNightLights(comparisonYear));
+    const palette = comparisonMode === "change"
+      ? ["rgba(0,170,240,0)", "#087caf", "#38bdf8", "#fff0a0", "#fff"]
+      : comparisonMode === "no2"
+        ? ["rgba(135,60,200,0)", "#6032cb", "#b545d0", "#f59e0b", "#ffe026"]
+        : ["rgba(255,180,0,0)", "#d07b00", "#ffbd19", "#fff08a", "#fffde8"];
+    map.setPaintProperty("illustrative-night-lights", "heatmap-color", ["interpolate", ["linear"], ["heatmap-density"], 0, palette[0], .2, palette[1], .5, palette[2], .8, palette[3], 1, palette[4]]);
+  }, [map, comparisonYear, comparisonMode]);
   useEffect(() => {
     if (!map) return;
     map.fitBounds(BICOL_VIEW_BOUNDS, { padding: 36, duration: 0 });
@@ -236,7 +297,7 @@ export function TransitionMap({
           </div>
         )}
       </div>
-      <div className="map-legend">
+      {showLegend && <div className="map-legend">
         {cells && (
           <span>
             <i style={{ background: "#38bdf8" }} />
@@ -249,12 +310,12 @@ export function TransitionMap({
             Illustrative atmospheric footprint
           </span>
         )}
-      </div>
+      </div>}
       <p className="map-disclaimer">
         Mapbox basemap · Fictional Aurelia events placed in Bicol Region for
         demonstration. Positions and overlays are not verified observations.
       </p>
-      <details open={compact ? undefined : true} className="map-event-details"><summary>Demonstration events ({events.length})</summary>
+      {showDetails && <details open={compact ? undefined : true} className="map-event-details"><summary>Demonstration events ({events.length})</summary>
       <div className="map-event-list" aria-label="Map events">
         {events.map((event) => (
           <button
@@ -269,7 +330,7 @@ export function TransitionMap({
           </button>
         ))}
       </div>
-      </details>
+      </details>}
     </div>
   );
 }

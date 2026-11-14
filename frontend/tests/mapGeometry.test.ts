@@ -5,6 +5,8 @@ import {
   demoPosition,
   lightingCells,
   atmosphericFootprints,
+  plumeHeatPoints,
+  illustrativeNightLights,
 } from "../src/data/mapGeometry.ts";
 import type { TransitionEvent } from "../src/types.ts";
 const events = JSON.parse(
@@ -24,6 +26,8 @@ test("map geometry uses closed geographic polygons and respects event filters", 
   }
   assert.equal(atmosphericFootprints(events).features.length, 1);
   assert.equal(atmosphericFootprints([events[0]]).features.length, 0);
+  assert.equal(plumeHeatPoints(events).features.length, 18);
+  assert.equal(plumeHeatPoints([events[0]]).features.length, 0);
   assert.equal(lightingCells([]).features.length, 0);
   assert.equal(demoPosition(events[0]).length, 2);
 });
@@ -35,4 +39,11 @@ test("demonstration anchors stay separated at the regional scale", () => {
       assert.ok(Math.hypot(positions[i][0] - positions[j][0], positions[i][1] - positions[j][1]) > 0.5);
     }
   }
+});
+
+test("illustrative night-light comparison changes intensity across years", () => {
+  const baseline = illustrativeNightLights(2016);
+  const comparison = illustrativeNightLights(2026);
+  assert.equal(baseline.features.length, comparison.features.length);
+  assert.ok(comparison.features[0].properties!.weight > baseline.features[0].properties!.weight);
 });

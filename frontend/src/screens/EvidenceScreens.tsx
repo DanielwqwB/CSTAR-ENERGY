@@ -1,235 +1,43 @@
-import { css } from "../styles";
-import React, { useState } from "react";
-import { Badge, Button, Card, Notice, Select, Status } from "../components/ui";
-import { TrendChart } from "../components/Charts";
-import { TransitionMap } from "../components/TransitionMap";
+import { useState } from "react";
+import { Select } from "../components/ui";
+export { SourcePlumeScreen as PlumeScreen } from "./SourcePlumeScreen";
+export { CounterfactualScreen } from "./CounterfactualScreen";
+export { AttributionScreen } from "./AttributionScreen";
 import { EventPicker } from "./InvestigationScreen";
 import { useWorkspace } from "../context/WorkspaceContext";
-import { colors, ui } from "../theme";
+import { Activity, CalendarCheck, Database, Factory, Layers, TrendingUp, Waves } from "lucide-react";
+import { TimelineChart } from "../components/TimelineChart";
+import series from "../data/series.json";
 export function TimelineScreen() {
   const { selected } = useWorkspace();
   const [period, setPeriod] = useState("Monthly · Jan–Dec 2024");
-  return (
-    <div className="stack" style={css(ui.stack)}>
-      <EventPicker />
-      <Select
-        value={period}
-        options={["Monthly · Jan–Dec 2024", "Quarterly view"]}
-        onChange={setPeriod}
-      />
-      <Card
-        title="A · Historical Nighttime Radiance"
-        subtitle="Illustrative radiance units; brightness is not electricity consumption"
-      >
-        <TrendChart
-          quarterly={period === "Quarterly view"}
-          variant={Number(selected.id.slice(-1)) - 1}
-        />
-      </Card>
-      <Card
-        title="B · Atmospheric NO₂"
-        subtitle="Illustrative tropospheric column signal; not a measured event series"
-      >
-        <TrendChart mode="no2" quarterly={period === "Quarterly view"} />
-        <Status value={selected.atmosphere} />
-      </Card>
-      <Card title="C · Contextual evidence">
-        <span style={css(ui.text)}>{selected.record}</span>
-        <span style={css(ui.muted)}>Candidate onset: {selected.onset}</span>
-        <Notice warning>{selected.uncertainty}</Notice>
-      </Card>
-    </div>
-  );
-}
-export function PlumeScreen() {
-  const { selected, events, select } = useWorkspace();
-  const [pass, setPass] = useState("Overpass 1 · Compatible");
-  const compatible = pass.includes("Compatible");
-  return (
-    <div className="stack" style={css(ui.stack)}>
-      <EventPicker />
-      <Card
-        title="Source–plume screening view"
-        subtitle="Illustrative footprint geometry; not a facility emission estimate"
-      >
-        <TransitionMap
-          events={events}
-          selected={selected.id}
-          onSelect={(e) => select(e.id)}
-          plume={compatible}
-          height={370}
-        />
-      </Card>
-      <Card title="Observation controls">
-        <Select
-          label="Quality-screened sample overpass"
-          value={pass}
-          options={[
-            "Overpass 1 · Compatible",
-            "Overpass 2 · Compatible",
-            "Overpass 3 · Compatible",
-            "Overpass 4 · Inconclusive",
-            "Overpass 5 · Insufficient coverage",
-          ]}
-          onChange={setPass}
-        />
-        <div className="stack" style={css(ui.wrap)}>
-          <Badge tone={compatible ? "green" : "amber"}>
-            {compatible ? "Wind alignment compatible" : "No reliable alignment"}
-          </Badge>
-          <Badge tone="dim">Illustrative winds · NE</Badge>
-        </div>
-      </Card>
-      <Card title="Screening indicators">
-        <span style={css(ui.muted)}>{selected.wind}</span>
-        <span style={css(ui.muted)}>
-          Competing source context: {selected.uncertainty}
-        </span>
-      </Card>
-      <Notice warning>
-        An atmospheric NO₂ enhancement located downwind may be consistent with a
-        source, but wind alignment alone does not establish that the source
-        caused the pollution.
-      </Notice>
-    </div>
-  );
-}
-export function CounterfactualScreen() {
-  const { selected } = useWorkspace();
-  const [control, setControl] = useState("Matched industrial zones A + C");
-  return (
-    <div className="stack" style={css(ui.stack)}>
-      <EventPicker />
-      <Card title="Comparison configuration">
-        <Select
-          label="Comparison cohort"
-          value={control}
-          options={[
-            "Matched industrial zones A + C",
-            "Road-adjacent controls B + D",
-            "Regional synthetic control",
-          ]}
-          onChange={setControl}
-        />
-        <Notice>
-          Selected cohort: {control}. This prototype uses one shared
-          illustrative comparison trajectory; cohort-specific model estimates
-          are not available.
-        </Notice>
-      </Card>
-      <Card
-        title="Observed vs matched comparison"
-        subtitle="Illustrative trajectories; no causal estimate"
-      >
-        <TrendChart
-          mode="comparison"
-          variant={Number(selected.id.slice(-1)) - 1}
-        />
-      </Card>
-      <Notice warning>
-        Post-event deviation is shown for inspection only. Matching assumptions
-        have not been scientifically validated.
-      </Notice>
-    </div>
-  );
-}
-export function AttributionScreen() {
-  const { selected, update, notify } = useWorkspace();
-  const [expanded, setExpanded] = useState<string | null>(null);
-  const rows = [
-    [
-      "Radiance change",
-      selected.adequacy === "Insufficient" ? "Inconclusive" : "Supporting",
-      selected.radiance,
-    ],
-    [
-      "Change persistence",
-      selected.adequacy === "Insufficient" ? "Missing" : "Supporting",
-      "Observed across multiple illustrative monthly composites",
-    ],
-    ["Transition timing", "Supporting", selected.onset],
-    ["Atmospheric NO₂ response", "Inconclusive", selected.atmosphere],
-    [
-      "Wind compatibility",
-      selected.shortType === "Industrial" ? "Supporting" : "Inconclusive",
-      selected.wind,
-    ],
-    [
-      "Spatial structure",
-      "Inconclusive",
-      "Industrial and road context may both contribute",
-    ],
-    [
-      "Construction evidence",
-      "Inconclusive",
-      "Illustrative Sentinel-2 context; primary documents required",
-    ],
-    ["Counterfactual deviation", "Inconclusive", "Descriptive comparison only"],
-    ["Independent records", "Missing", selected.record],
-    [
-      "Observation quality",
-      selected.adequacy === "Good" ? "Supporting" : "Inconclusive",
-      selected.adequacy,
-    ],
+  const [activeMonth, setActiveMonth] = useState(6);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const radianceChange = Math.round((series.at(-1)!.radiance / series[0].radiance - 1) * 100);
+  const no2Change = Math.round((series.at(-1)!.no2 / series[0].no2 - 1) * 100);
+  const milestones = [
+    { index: 0, title: "Baseline Period", description: "Reference radiance and NO₂ levels.", icon: Database, tone: "blue" },
+    { index: 6, title: "Transition Window", description: "Illustrative onset of sustained change.", icon: Factory, tone: "amber" },
+    { index: 9, title: "Peak Enhancement", description: "Elevated radiance and NO₂ in the sample series.", icon: TrendingUp, tone: "blue" },
+    { index: 11, title: "Review & Verification", description: "Interpretation and field validation remain open.", icon: CalendarCheck, tone: "green" },
   ];
   return (
-    <div className="stack" style={css(ui.stack)}>
-      <EventPicker />
-      <Card
-        title="CCTF evidence fingerprint"
-        subtitle="Select a row to inspect evidence details"
-      >
-        {rows.map(([label, status, detail]) => (
-          <button
-            className="stack"
-            type="button"
-            role="button"
-            aria-expanded={expanded === label}
-            key={label}
-            onClick={() => setExpanded(expanded === label ? null : label)}
-            style={css({
-              gap: 10,
-              paddingBlock: 10,
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
-            })}
-          >
-            <div className="stack" style={css(ui.row)}>
-              <span style={css([ui.text, { flex: 1 }])}>{label}</span>
-              <Status value={status} />
-            </div>
-            {expanded === label && <span style={css(ui.muted)}>{detail}</span>}
-          </button>
-        ))}
-      </Card>
-      <Card
-        title="Competing mechanisms"
-        subtitle="Choose the working explanation—not a confirmed cause"
-      >
-        <Select
-          value={selected.mechanism}
-          options={[
-            "Lighting-system modernization",
-            "Combustion-associated industrial expansion",
-            "Mixed/unresolved transition",
-            "Unresolved",
-          ]}
-          onChange={(mechanism) => {
-            update(selected.id, { mechanism });
-            notify("Working explanation saved. This is not a confirmed cause.");
-          }}
-        />
-        <span style={css(ui.muted)}>{selected.summary}</span>
-        <Notice warning>{selected.uncertainty}</Notice>
-        <Button
-          secondary
-          label="Flag missing evidence"
-          onClick={() => {
-            update(selected.id, { status: "Additional Evidence Required" });
-            notify("Event flagged for additional evidence.");
-          }}
-        />
-      </Card>
+    <div className="evidence-timeline-screen">
+      <div className="timeline-controls"><div><span>Selected event</span><EventPicker /></div><div><span>Observation period</span><Select value={period} options={["Monthly · Jan–Dec 2024", "Quarterly view"]} onChange={setPeriod} /></div></div>
+      <div className="timeline-metrics">
+        <div className="timeline-metric blue"><span className="timeline-metric-icon"><TrendingUp /></span><div><small>Mean Radiance Change</small><strong>+{radianceChange}%</strong><span>Jan–Dec synthetic sample</span></div></div>
+        <div className="timeline-metric green"><span className="timeline-metric-icon"><Waves /></span><div><small>Atmospheric NO₂ Change</small><strong>+{no2Change}%</strong><span>Jan–Dec synthetic sample</span></div></div>
+        <div className="timeline-metric amber"><span className="timeline-metric-icon"><Layers /></span><div><small>Transition Period</small><strong>Jul 2024</strong><span>Illustrative transition window</span></div></div>
+        <div className="timeline-metric rose"><span className="timeline-metric-icon"><CalendarCheck /></span><div><small>Evidence Status</small><strong>{selected.status}</strong><span>{selected.verification}</span></div></div>
+      </div>
+      <div className="timeline-chart-grid">
+        <section className="timeline-panel"><header><span className="timeline-panel-icon"><TrendingUp /></span><div><h2>A · Historical Nighttime Radiance</h2><p>Illustrative radiance units; brightness is not electricity consumption</p></div></header><TimelineChart mode="radiance" quarterly={period === "Quarterly view"} /></section>
+        <section className="timeline-panel"><header><span className="timeline-panel-icon"><Waves /></span><div><h2>B · Atmospheric NO₂</h2><p>Illustrative tropospheric column signal; not a measured event series</p></div></header><TimelineChart mode="no2" quarterly={period === "Quarterly view"} /></section>
+      </div>
+      <section className="timeline-panel timeline-events"><header><span className="timeline-panel-icon"><Layers /></span><div><h2>C · Evidence Timeline</h2><p>Integrated view of key evidence, records, and contextual events</p></div><button type="button" className="timeline-details-button" aria-expanded={detailsOpen} onClick={() => setDetailsOpen(value => !value)}>{detailsOpen ? "Hide Details" : "View Details"} →</button></header>
+        <div className="timeline-track" aria-label="2024 evidence months"><div className="timeline-milestones">{milestones.map(milestone => { const Glyph = milestone.icon; return <button type="button" className={`timeline-milestone ${milestone.tone}`} key={milestone.title} onClick={() => { setActiveMonth(milestone.index); setDetailsOpen(true); }}><Glyph size={22} /><span><strong>{milestone.title}</strong><small>{milestone.description}</small></span></button>; })}</div><div className="timeline-months">{series.map((item, index) => <button type="button" key={item.month} className={index === activeMonth ? "active" : ""} aria-pressed={index === activeMonth} onClick={() => { setActiveMonth(index); setDetailsOpen(true); }}><i /><span>{item.month} 2024</span></button>)}</div></div>
+        {detailsOpen && <div className="timeline-selected-detail" role="status"><Activity size={20} /><div><strong>{series[activeMonth].month} 2024 · Illustrative observation</strong><span>Radiance {series[activeMonth].radiance} units · NO₂ {series[activeMonth].no2} units. {activeMonth === 6 ? `Candidate onset: ${selected.onset}. ` : ""}{selected.record}</span></div></div>}
+      </section>
     </div>
   );
 }
