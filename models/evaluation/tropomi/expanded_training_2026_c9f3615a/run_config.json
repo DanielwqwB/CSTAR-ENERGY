@@ -1,0 +1,21 @@
+{
+  "tropomi_path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\tropomi\\forward_holdout_2026\\combined_2019-2026-through-09.csv.gz",
+  "tropomi_sha256": "c7f7c5f8efd9e727f45b17bf9bb99f0bf658e51a482813566c8332488729c3cb",
+  "merra_dir": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra",
+  "boundary_path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\tropomi\\philippines_adm0.geojson",
+  "minimum_valid_orbits": 5,
+  "random_state": 42,
+  "split": {
+    "train": "2019-2023",
+    "validation": "2024",
+    "test": "2025"
+  },
+  "residual_model_train": "2020-2023; training priors use earlier years only",
+  "selection_period": "2024-01 through 2024-06",
+  "calibration_period": "2024-07 through 2024-09",
+  "interval_check_period": "2024-10 through 2024-12",
+  "forward_test_year": 2026,
+  "compare_climatology_windows": false,
+  "compare_expanded_training": true,
+  "training_seconds": 81.67678329999035
+}

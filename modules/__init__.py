@@ -1,2 +1,1 @@
-"""Internal CSTAR-Energy analytical modules."""
-
+"""Project feature modules."""

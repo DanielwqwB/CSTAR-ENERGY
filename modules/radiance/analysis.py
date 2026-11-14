@@ -70,7 +70,7 @@ def write_map_points(granule_path: str | Path, output: str | Path) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=Path("BlackMarbles"))
+    parser.add_argument("--input", type=Path, default=Path("data/raw/black_marble"))
     parser.add_argument(
         "--output",
         type=Path,

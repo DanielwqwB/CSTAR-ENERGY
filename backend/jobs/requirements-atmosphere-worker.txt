@@ -1,0 +1,20 @@
+# Exact dependency closure validated with the local CPython 3.10.11 worker.
+affine==3.0.1
+attrs==26.1.0
+certifi==2026.1.4
+click==8.3.1
+click-plugins==1.1.1.2
+cligj==0.7.2
+colorama==0.4.6
+joblib==1.5.3
+numpy==2.2.6
+pandas==2.2.3
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+pytz==2025.2
+rasterio==1.4.3
+scikit-learn==1.7.2
+scipy==1.15.3
+six==1.17.0
+threadpoolctl==3.6.0
+tzdata==2025.3

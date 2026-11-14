@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "task": "Philippines monthly TROPOMI expected NO2 and residual anomalies",
+  "source_path": "data/raw/tropomi/tropomi_no2_2019-01-01_2025-12-31.csv.gz",
+  "source_sha256": "0f39af1d032c0f16549e51ccf74550f1cd9f30e9994ba66e7bb010df28d4805d",
+  "boundary_path": "data/raw/tropomi/philippines_adm0.geojson",
+  "boundary_sha256": "7c3a7a39dacb5fb0c14d150061306fa5839455fbf93231854af3c6d74a1fa24f",
+  "checkpoint_path": "models/checkpoints/tropomi/best_model.joblib",
+  "checkpoint_sha256": "4b42bc465dec3695d02e1e9afc7396911c9fc411cc561ef0220f2fb1ff6d8b27",
+  "output_path": "data/exports/atmosphere/tropomi_no2_anomalies_2025.csv.gz",
+  "output_sha256": "e637e31473271c0e345d2ce4a911361771481270329b1058cea20ff5fbda1b26",
+  "start_month": "2025-01",
+  "end_month": "2025-12",
+  "qa_threshold": 0.75,
+  "minimum_valid_orbits": 5,
+  "selected_model": "spatial_seasonal_climatology",
+  "anomaly_interpretation": "climatology residual",
+  "total_cell_months": 29580,
+  "philippines_cells": 2465,
+  "valid_observations": 24854,
+  "observation_status_counts": {
+    "valid": 24854,
+    "low_coverage": 4362,
+    "no_observation": 364
+  },
+  "significant_anomalies": 3084,
+  "note": "Only quality-valid observed NO2 values produce anomalies. Missing and rejected observations remain blank, while expected NO2 is model output."
+}

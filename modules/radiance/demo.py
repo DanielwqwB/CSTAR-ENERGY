@@ -158,7 +158,7 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("data/processed/radiance/radiance_demo_monthly_2016_2026.csv"),
+        default=Path("data/demo/blackmarble/radiance_demo_monthly_2016_2026.csv"),
     )
     parser.add_argument("--seed", type=int, default=46)
     args = parser.parse_args()

@@ -225,11 +225,11 @@ def main() -> None:
     parser.add_argument("--start-year", type=int, default=2016)
     parser.add_argument("--end-year", type=int, default=date.today().year)
     parser.add_argument("--tile", default="h30v07")
-    parser.add_argument("--output", type=Path, default=Path("BlackMarbles"))
+    parser.add_argument("--output", type=Path, default=Path("data/raw/black_marble"))
     parser.add_argument(
         "--inventory-output",
         type=Path,
-        default=Path("data/processed/radiance/nasa_archive_inventory.json"),
+        default=Path("data/raw/black_marble/nasa_archive_inventory.json"),
     )
     parser.add_argument(
         "--list-only",

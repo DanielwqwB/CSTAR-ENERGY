@@ -1,0 +1,41 @@
+{
+  "task": "next-observation radiance regression",
+  "selected_alpha": 1.0,
+  "feature_names": [
+    "lag_radiance",
+    "elapsed_days",
+    "year_offset",
+    "month_sin",
+    "month_cos"
+  ],
+  "split_counts": {
+    "train": 8,
+    "validation": 3,
+    "test": 3
+  },
+  "validation_mae": 0.17704624388399895,
+  "test_metrics": {
+    "mae": 0.1338592048124641,
+    "rmse": 0.13886661374241202,
+    "mape_percent": 49.31922754032769
+  },
+  "persistence_baseline_test_metrics": {
+    "mae": 0.0629666788452902,
+    "rmse": 0.07945356464834903,
+    "mape_percent": 21.60745844004269
+  },
+  "classification_metrics": {
+    "accuracy": null,
+    "precision": null,
+    "recall": null,
+    "specificity": null,
+    "f1": null,
+    "reason": "No independently verified binary transition labels are available."
+  },
+  "limitations": [
+    "Only sparse, irregular VNP46A3 observations are available.",
+    "Observation months differ, so seasonal effects may confound the forecast.",
+    "The sample is too small for claims about generalization or 90% accuracy.",
+    "This is not the multimodal ST-GNN."
+  ]
+}

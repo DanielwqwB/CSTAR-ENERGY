@@ -43,7 +43,7 @@ frontend/
 
 - Responsive sidebar, navigation menu for narrow windows, and guided tour.
 - Regional overview, interactive Mapbox basemap, selectable event markers, event search and filters.
-- Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment.
+- Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment. The Evidence Timeline keeps its synthetic charts separate from the authenticated published TROPOMI grid, showing QA, coverage, observation status, expected values, and residuals.
 - Data explorer, persisted intervention records, alerts, reports, and profile preferences.
 - JSON, CSV, and text file downloads through browser APIs.
 - Persistence through `/api/workspace` in Supabase PostgreSQL, with one private workspace per Auth user. Sign-out clears the cookie session while preserving research work. Old localStorage and SQLite data are not automatically imported.
@@ -64,7 +64,7 @@ The production site is written to `dist/`. UI tests use React Testing Library an
 
 ## Data scope
 
-The four events, five dataset entries, and historical series are synthetic reference data. Mapbox provides a real geographic basemap, but the fictional Aurelia events are placed in Bicol Region only for demonstration. Their positions, lighting cells, and atmospheric footprints are not verified observations. Comparison selectors do not run scientific models. Cookie sessions and optional configured account sign-in are connected. Live satellite feeds, multi-user account administration, and scientific processing remain unconnected.
+The four events, five dataset entries, and historical series are synthetic reference data. Mapbox provides a real geographic basemap, but the fictional Aurelia events are placed in Bicol Region only for demonstration. Their positions, lighting cells, and atmospheric footprints are not verified observations. Comparison selectors do not run scientific models. Cookie sessions and optional configured account sign-in are connected. The Evidence Timeline reads the authenticated published TROPOMI export from Supabase; its spatial seasonal climatology residuals are precomputed and are not source attribution. Live satellite feeds, on-demand inference, multi-user account administration, and interactive scientific processing remain unconnected.
 
 ## Mapbox configuration
 

@@ -2,6 +2,7 @@ import {
   WorkspaceProvider,
   useWorkspace,
 } from "./src/context/WorkspaceContext";
+import { ResearchDataProvider } from "./src/context/ResearchDataContext";
 import { AppShell } from "./src/components/AppShell";
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { OverviewScreen } from "./src/screens/OverviewScreen";
@@ -47,9 +48,11 @@ function Workspace() {
   if (!authenticated) return <LoginScreen />;
   const Screen = screens[page];
   return (
-    <AppShell>
-      <Screen />
-    </AppShell>
+    <ResearchDataProvider>
+      <AppShell>
+        <Screen />
+      </AppShell>
+    </ResearchDataProvider>
   );
 }
 export default function App() {

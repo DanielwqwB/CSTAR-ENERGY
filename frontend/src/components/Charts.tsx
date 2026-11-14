@@ -1,6 +1,6 @@
 import { css } from "../styles";
 import React from "react";
-import series from "../data/series.json";
+import { useResearchData } from "../context/ResearchDataContext";
 import { colors, ui } from "../theme";
 import type { TransitionEvent } from "../types";
 export function TrendChart({
@@ -12,6 +12,14 @@ export function TrendChart({
   quarterly?: boolean;
   variant?: number;
 }) {
+  const { series: resource } = useResearchData();
+  if (resource.loading)
+    return <p role="status">Loading synthetic sample series…</p>;
+  if (resource.error)
+    return <p role="alert">Sample series unavailable: {resource.error}</p>;
+  if (!resource.data)
+    return <p role="alert">The backend returned no sample series.</p>;
+  const series = resource.data;
   const data = quarterly ? series.filter((_, i) => i % 3 === 2) : series;
   const max = mode === "no2" ? 40 : 80;
   const value = (n: number) =>

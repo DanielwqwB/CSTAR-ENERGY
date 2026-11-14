@@ -1,0 +1,67 @@
+{
+  "purpose": "post-hoc development comparison; not an independent test",
+  "year": 2026,
+  "rows": 19900,
+  "months": [
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08",
+    "2026-09"
+  ],
+  "training_data_through_year": 2025,
+  "original_climatology_metrics": {
+    "mae_umol_m2": 2.957521677017212,
+    "median_ae_umol_m2": 2.3875484466552734,
+    "rmse_umol_m2": 3.9527026768836615,
+    "r2": 0.7408651113510132,
+    "bias_umol_m2": -2.3047218322753906
+  },
+  "best_development_candidate": "climatology_2023_2025",
+  "candidates": {
+    "climatology_2019_2025": {
+      "training_start_year": 2019,
+      "training_end_year": 2025,
+      "training_rows": 187000,
+      "metrics": {
+        "mae_umol_m2": 2.9794551796957047,
+        "median_ae_umol_m2": 2.4612159729003906,
+        "rmse_umol_m2": 3.910599137214162,
+        "r2": 0.7463562512872624,
+        "bias_umol_m2": -2.39517328175323
+      },
+      "mae_improvement_over_original_climatology_percent": -0.7416176472665348
+    },
+    "climatology_2021_2025": {
+      "training_start_year": 2021,
+      "training_end_year": 2025,
+      "training_rows": 131787,
+      "metrics": {
+        "mae_umol_m2": 3.0942222147375045,
+        "median_ae_umol_m2": 2.5825436115264893,
+        "rmse_umol_m2": 4.071099895536415,
+        "r2": 0.7251086455398152,
+        "bias_umol_m2": -2.4952582257488114
+      },
+      "mae_improvement_over_original_climatology_percent": -4.6221313873229475
+    },
+    "climatology_2023_2025": {
+      "training_start_year": 2023,
+      "training_end_year": 2025,
+      "training_rows": 78196,
+      "metrics": {
+        "mae_umol_m2": 2.9704312234912265,
+        "median_ae_umol_m2": 2.408923625946045,
+        "rmse_umol_m2": 3.9311901753107144,
+        "r2": 0.7436781254777433,
+        "bias_umol_m2": -2.1781533384245724
+      },
+      "mae_improvement_over_original_climatology_percent": -0.4364987947285099
+    }
+  },
+  "note": "The 2026 observations were used to compare recency windows. Do not report this comparison as an untouched test or update the production model without a later holdout."
+}

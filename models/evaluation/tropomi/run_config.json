@@ -1,0 +1,17 @@
+{
+  "tropomi_path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\tropomi\\tropomi_no2_2019-01-01_2025-12-31.csv.gz",
+  "merra_dir": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra",
+  "boundary_path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\tropomi\\philippines_adm0.geojson",
+  "minimum_valid_orbits": 5,
+  "random_state": 42,
+  "split": {
+    "train": "2019-2023",
+    "validation": "2024",
+    "test": "2025"
+  },
+  "residual_model_train": "2020-2023; training priors use earlier years only",
+  "selection_period": "2024-01 through 2024-06",
+  "calibration_period": "2024-07 through 2024-09",
+  "interval_check_period": "2024-10 through 2024-12",
+  "training_seconds": 33.9628709000026
+}

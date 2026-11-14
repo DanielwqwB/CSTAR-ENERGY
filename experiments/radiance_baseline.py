@@ -110,7 +110,14 @@ def regression_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, f
     }
 
 
-def train(source: Path, output_directory: Path) -> dict[str, object]:
+def train(
+    source: Path,
+    output_directory: Path,
+    checkpoint_directory: Path | None = None,
+) -> dict[str, object]:
+    """Fit on observed radiance and save evaluation separately from the model."""
+
+    checkpoint_directory = checkpoint_directory or output_directory
     examples = load_examples(source)
     train_rows, validation_rows, test_rows = split_examples(examples)
     x_train, y_train = arrays(train_rows)
@@ -163,7 +170,8 @@ def train(source: Path, output_directory: Path) -> dict[str, object]:
     }
 
     output_directory.mkdir(parents=True, exist_ok=True)
-    joblib.dump(selected_model, output_directory / "radiance_ridge.joblib")
+    checkpoint_directory.mkdir(parents=True, exist_ok=True)
+    joblib.dump(selected_model, checkpoint_directory / "best_model.joblib")
     (output_directory / "metrics.json").write_text(
         json.dumps(results, indent=2, allow_nan=False), encoding="utf-8"
     )
@@ -191,12 +199,19 @@ def main() -> None:
         default=Path("data/processed/radiance/radiance_time_series.csv"),
     )
     parser.add_argument(
-        "--output",
-        type=Path,
-        default=Path("artifacts/radiance_baseline"),
+        "--evaluation-dir", type=Path, default=Path("models/evaluation/blackmarble")
     )
+    parser.add_argument(
+        "--checkpoint-dir", type=Path, default=Path("models/checkpoints/blackmarble")
+    )
+    parser.add_argument("--output", type=Path, default=None, help=argparse.SUPPRESS)
     args = parser.parse_args()
-    results = train(args.input, args.output)
+    # Keep the former --output interface for existing collaborator commands.
+    results = train(
+        args.input,
+        args.output or args.evaluation_dir,
+        args.output or args.checkpoint_dir,
+    )
     print(json.dumps(results, indent=2))
 
 

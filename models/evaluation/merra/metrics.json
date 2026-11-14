@@ -1,0 +1,33 @@
+{
+  "task": "next-hour T2M regression",
+  "selected_model": "hist_gradient_boosting",
+  "test": {
+    "mae_kelvin": 0.013291343789801874,
+    "rmse_kelvin": 0.01909300998121721,
+    "r2": 0.999744488772787
+  },
+  "persistence_test": {
+    "mae_kelvin": 0.10010165425809821,
+    "rmse_kelvin": 0.12582924688755673,
+    "r2": 0.9889025196874803
+  },
+  "mae_improvement_over_persistence_percent": 86.72215370633936,
+  "change_direction_diagnostic": {
+    "accuracy": 0.9423328108672936,
+    "balanced_accuracy": 0.9303408947632765,
+    "macro_f1": 0.9270420689324816,
+    "threshold_kelvin": 0.1,
+    "labels": [
+      "cooling",
+      "stable",
+      "warming"
+    ],
+    "scope_note": "Derived next-hour temperature-change classes; not transition mechanism or TROPOMI accuracy."
+  },
+  "acceptance_gate": {
+    "r2_at_least_0_80": true,
+    "mae_improvement_at_least_10_percent": true,
+    "passed": true
+  },
+  "training_pipeline_seconds": 12.314976299996488
+}

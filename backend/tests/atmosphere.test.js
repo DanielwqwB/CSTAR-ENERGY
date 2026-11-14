@@ -85,6 +85,7 @@ test("atmosphere endpoints require authentication and page only published rows",
   const client = await start({ run, rows });
   try {
     assert.equal((await client.request("/atmosphere/manifest")).status, 401);
+    assert.equal((await client.request("/cctf/assessment")).status, 401);
     const login = await client.request("/session", "POST", {
       email: "analyst@example.com", password: "test-password",
     });
@@ -93,6 +94,15 @@ test("atmosphere endpoints require authentication and page only published rows",
     assert.equal(manifest.status, 200);
     assert.equal(manifest.data.run_id, run.run_id);
     assert.equal(manifest.data.anomaly_interpretation, "climatology residual");
+    const assessment = await client.request("/cctf/assessment");
+    assert.equal(assessment.status, 200);
+    assert.equal(assessment.data.status, "unresolved");
+    assert.equal(assessment.data.candidate_mechanism, null);
+    assert.equal(assessment.data.pilot_event.event_id, "ph-sorsogon-gubat-benguet-sbdp-solar-lights-2021");
+    assert.equal(assessment.data.gate.eligible, false);
+    assert.equal(assessment.data.evidence.find((item) => item.key === "event_record").state, "available");
+    assert.equal(assessment.data.evidence.find((item) => item.key === "treatment_window").state, "missing");
+    assert.equal(assessment.data.provenance.atmosphere_run_id, run.run_id);
     const first = await client.request("/atmosphere/no2?month=2025-01&limit=1");
     assert.equal(first.status, 200);
     assert.equal(first.data.total, 3);

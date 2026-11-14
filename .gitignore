@@ -14,9 +14,29 @@ backend/storage/
 # Raw radiance downloads are large, reproducible inputs.
 BlackMarbles/
 data/raw/radiance/
+data/raw/black_marble/*.h5
+data/raw/black_marble/*.h5.part
+data/raw/black_marble/*.crdownload
 
 # Large generated radiance products.
 data/processed/radiance/*.csv.gz
 
 # Trained models and run artifacts are reproducible outputs.
 artifacts/
+
+# Local Earth-observation exports and trained model binaries.
+data/raw/merra/*.csv
+data/raw/tropomi/*.csv
+data/raw/tropomi/*.csv.gz
+data/raw/tropomi/*.json
+data/raw/tropomi/*.log
+data/raw/tropomi/*.nc
+data/raw/tropomi/*.tif
+data/raw/tropomi/*.geojson
+data/raw/tropomi/monthly/
+data/raw/tropomi/SHA256SUMS.txt
+models/checkpoints/merra/*.joblib
+models/checkpoints/tropomi/*.joblib
+models/checkpoints/blackmarble/*.joblib
+models/evaluation/tropomi/weather_training.log
+models/evaluation/tropomi/band_training.log

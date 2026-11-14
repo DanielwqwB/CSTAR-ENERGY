@@ -1,11 +1,197 @@
 import { css } from "../styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge, Button, Card, Notice, Select, Status } from "../components/ui";
 import { TrendChart } from "../components/Charts";
 import { TransitionMap } from "../components/TransitionMap";
 import { EventPicker } from "./InvestigationScreen";
 import { useWorkspace } from "../context/WorkspaceContext";
+import {
+  api,
+  type AtmosphereCellPage,
+  type AtmosphereManifest,
+  type CctfAssessment,
+} from "../api";
 import { colors, ui } from "../theme";
+
+function monthsBetween(start: string, end: string) {
+  const [startYear, startMonth] = start.slice(0, 7).split("-").map(Number);
+  const [endYear, endMonth] = end.slice(0, 7).split("-").map(Number);
+  const first = startYear * 12 + startMonth - 1;
+  const last = endYear * 12 + endMonth - 1;
+  return Array.from({ length: last - first + 1 }, (_, index) => {
+    const value = first + index;
+    return `${Math.floor(value / 12)}-${String((value % 12) + 1).padStart(2, "0")}`;
+  });
+}
+
+function formatMetric(value: number | null) {
+  return value === null ? "—" : value.toFixed(2);
+}
+
+function PublishedAtmosphereCard() {
+  const [manifest, setManifest] = useState<AtmosphereManifest>();
+  const [manifestError, setManifestError] = useState("");
+  const [month, setMonth] = useState("");
+  const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState<AtmosphereCellPage>();
+  const [pageLoading, setPageLoading] = useState(false);
+  const [pageError, setPageError] = useState("");
+  const limit = 20;
+
+  useEffect(() => {
+    let active = true;
+    api<AtmosphereManifest>("/atmosphere/manifest")
+      .then((data) => {
+        if (!active) return;
+        setManifest(data);
+        setMonth(data.start_month.slice(0, 7));
+      })
+      .catch((error: unknown) => {
+        if (active)
+          setManifestError(
+            error instanceof Error ? error.message : "The backend request failed.",
+          );
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!month) return;
+    let active = true;
+    setPage(undefined);
+    setPageLoading(true);
+    setPageError("");
+    api<AtmosphereCellPage>(
+      `/atmosphere/no2?month=${encodeURIComponent(month)}&limit=${limit}&offset=${offset}`,
+    )
+      .then((data) => {
+        if (active) setPage(data);
+      })
+      .catch((error: unknown) => {
+        if (active)
+          setPageError(
+            error instanceof Error ? error.message : "The backend request failed.",
+          );
+      })
+      .finally(() => {
+        if (active) setPageLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [month, offset]);
+
+  const months = manifest
+    ? monthsBetween(manifest.start_month, manifest.end_month)
+    : [];
+  return (
+    <Card
+      title="C · Published TROPOMI NO₂ grid"
+      subtitle="Quality-screened observed values and the selected model baseline"
+    >
+      {manifestError ? (
+        <p role="alert">Published atmospheric data unavailable: {manifestError}</p>
+      ) : !manifest ? (
+        <p role="status">Loading published atmospheric run…</p>
+      ) : (
+        <>
+          <div className="stack" style={css(ui.wrap)}>
+            <Badge tone="dim">Model: {manifest.model_name}</Badge>
+            <Badge tone="amber">
+              Interpretation: {manifest.anomaly_interpretation}
+            </Badge>
+            <Badge tone="dim">
+              {manifest.total_cell_months.toLocaleString()} cell-months
+            </Badge>
+          </div>
+          <Notice warning>
+            Expected NO₂ is the climatology baseline; residual equals observed
+            minus expected. Missing or rejected observations remain blank. This
+            is not an emissions estimate or source attribution.
+          </Notice>
+          <Select
+            label="Published data month"
+            value={month}
+            options={months}
+            onChange={(value) => {
+              setMonth(value);
+              setOffset(0);
+            }}
+          />
+          {pageLoading ? (
+            <p role="status">Loading {month} cell data…</p>
+          ) : pageError ? (
+            <p role="alert">Atmospheric cells unavailable: {pageError}</p>
+          ) : page ? (
+            <>
+              <div
+                className="overview-table-scroll"
+                role="region"
+                aria-label="Published TROPOMI cell-month data"
+                tabIndex={0}
+              >
+                <table className="overview-table">
+                  <thead>
+                    <tr>
+                      {[
+                        "Cell",
+                        "Quality status",
+                        "QA mean",
+                        "Valid orbits",
+                        "Coverage",
+                        "Expected (µmol/m²)",
+                        "Observed (µmol/m²)",
+                        "Residual (µmol/m²)",
+                      ].map((label) => (
+                        <th key={label}>{label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {page.rows.map((row) => (
+                      <tr key={row.cell_id}>
+                        <td>{row.cell_id}</td>
+                        <td>{row.observation_status.replaceAll("_", " ")}</td>
+                        <td>{formatMetric(row.qa_mean)}</td>
+                        <td>{row.valid_orbit_count}</td>
+                        <td>{(row.coverage_fraction * 100).toFixed(1)}%</td>
+                        <td>{formatMetric(row.expected_no2_umol_m2)}</td>
+                        <td>{formatMetric(row.observed_no2_umol_m2)}</td>
+                        <td>{formatMetric(row.anomaly_umol_m2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="stack" style={css(ui.row)}>
+                <span style={css(ui.small)}>
+                  {page.total
+                    ? `Showing ${page.offset + 1}–${Math.min(page.offset + page.rows.length, page.total)} of ${page.total.toLocaleString()} cells`
+                    : "No cells for this month"}
+                </span>
+                <Button
+                  secondary
+                  label="Previous cells"
+                  disabled={offset === 0 || pageLoading}
+                  onClick={() => setOffset(Math.max(0, offset - limit))}
+                />
+                <Button
+                  secondary
+                  label="Next cells"
+                  disabled={offset + limit >= page.total || pageLoading}
+                  onClick={() => setOffset(offset + limit)}
+                />
+              </div>
+            </>
+          ) : null}
+        </>
+      )}
+    </Card>
+  );
+}
+
 export function TimelineScreen() {
   const { selected } = useWorkspace();
   const [period, setPeriod] = useState("Monthly · Jan–Dec 2024");
@@ -33,7 +219,8 @@ export function TimelineScreen() {
         <TrendChart mode="no2" quarterly={period === "Quarterly view"} />
         <Status value={selected.atmosphere} />
       </Card>
-      <Card title="C · Contextual evidence">
+      <PublishedAtmosphereCard />
+      <Card title="D · Contextual evidence">
         <span style={css(ui.text)}>{selected.record}</span>
         <span style={css(ui.muted)}>Candidate onset: {selected.onset}</span>
         <Notice warning>{selected.uncertainty}</Notice>
@@ -133,7 +320,7 @@ export function CounterfactualScreen() {
     </div>
   );
 }
-export function AttributionScreen() {
+function LegacyAttributionScreen() {
   const { selected, update, notify } = useWorkspace();
   const [expanded, setExpanded] = useState<string | null>(null);
   const rows = [
@@ -229,6 +416,56 @@ export function AttributionScreen() {
             notify("Event flagged for additional evidence.");
           }}
         />
+      </Card>
+    </div>
+  );
+}
+
+export function AttributionScreen() {
+  const { selected } = useWorkspace();
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [assessment, setAssessment] = useState<CctfAssessment>();
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    api<CctfAssessment>("/cctf/assessment")
+      .then((data) => active && setAssessment(data))
+      .catch((reason: unknown) => {
+        if (active) setError(reason instanceof Error ? reason.message : "The CCTF request failed.");
+      });
+    return () => { active = false; };
+  }, [selected.id]);
+
+  return (
+    <div className="stack" style={css(ui.stack)}>
+      <EventPicker />
+      <Card title="CCTF evidence fingerprint" subtitle="Conservative screening result for the selected event">
+        {error ? <p role="alert">CCTF assessment unavailable: {error}</p> : !assessment ? <p role="status">Loading CCTF assessment…</p> : <>
+          <div className="stack" style={css(ui.row)}>
+            <Status value={assessment.label} />
+            <span style={css(ui.muted)}>No confidence score is reported.</span>
+          </div>
+          <Notice warning>
+            {assessment.pilot_event
+              ? `Pilot configured: ${assessment.pilot_event.title} (${assessment.pilot_event.barangay}, ${assessment.pilot_event.municipality}). The engine remains unresolved until the evidence gate is met.`
+              : "No pilot event is configured. The engine abstains from mechanism attribution until event geometry, a treatment window, a source record, radiance change, and matched wind evidence are supplied."}
+          </Notice>
+          {(assessment.evidence ?? []).map((item) => (
+            <button className="stack" type="button" aria-expanded={expanded === item.key} key={item.key} onClick={() => setExpanded(expanded === item.key ? null : item.key)} style={css({ gap: 10, paddingBlock: 10, borderBottomWidth: 1, borderBottomColor: colors.border })}>
+              <div className="stack" style={css(ui.row)}>
+                <span style={css([ui.text, { flex: 1 }])}>{item.label}</span>
+                <Status value={item.state === "available" ? "Available" : item.state === "conflicting" ? "Conflicting" : "Missing"} />
+              </div>
+              {expanded === item.key && <span style={css(ui.muted)}>{item.detail}</span>}
+            </button>
+          ))}
+          {(assessment.limitations ?? []).map((limitation) => <span key={limitation} style={css(ui.muted)}>• {limitation}</span>)}
+        </>}
+      </Card>
+      <Card title="Assessment state" subtitle="Mechanism selection is disabled until the evidence gate is met">
+        <span style={css(ui.text)}>Selected workspace record: {selected.id}</span>
+        <span style={css(ui.muted)}>{assessment?.pilot_event ? "The configured pilot is record-assisted; mechanism attribution remains disabled while the gate is incomplete." : "No verified pilot event is configured, so the system cannot produce a candidate mechanism verdict."}</span>
       </Card>
     </div>
   );

@@ -10,7 +10,7 @@ import {
   Status,
 } from "../components/ui";
 import { useWorkspace } from "../context/WorkspaceContext";
-import datasets from "../data/datasets.json";
+import { useResearchData } from "../context/ResearchDataContext";
 import { colors, ui } from "../theme";
 import { exportText } from "../utils/export";
 import { toCsv } from "../utils/events";
@@ -19,7 +19,9 @@ import { regions } from "./OverviewScreen";
 export function DataScreen() {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState("");
-  const matches = datasets.filter((row) =>
+  const { datasets: datasetResource } = useResearchData();
+  const datasets = datasetResource.data;
+  const matches = (datasets ?? []).filter((row) =>
     row.join(" ").toLowerCase().includes(search.toLowerCase()),
   );
   return (
@@ -33,7 +35,13 @@ export function DataScreen() {
         Sample products only. No live satellite downloads, processing jobs, or
         API credentials are configured.
       </Notice>
-      {matches.map(([name, product, scale, status, description]) => (
+      {datasetResource.loading && (
+        <p role="status">Loading sample dataset catalog…</p>
+      )}
+      {datasetResource.error && (
+        <p role="alert">Dataset catalog unavailable: {datasetResource.error}</p>
+      )}
+      {datasets && matches.map(([name, product, scale, status, description]) => (
         <Card
           key={name}
           title={name}
@@ -56,7 +64,7 @@ export function DataScreen() {
           )}
         </Card>
       ))}
-      {!matches.length && (
+      {datasets && !matches.length && (
         <span style={css(ui.muted)}>No datasets match this search.</span>
       )}
       <Card title="Sample processing history">

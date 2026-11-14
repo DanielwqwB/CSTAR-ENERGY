@@ -606,14 +606,14 @@ def main() -> None:
     parser.add_argument(
         "--radiance",
         type=Path,
-        default=Path("data/processed/radiance/radiance_demo_monthly_2016_2026.csv"),
+        default=Path("data/demo/blackmarble/radiance_demo_monthly_2016_2026.csv"),
     )
     parser.add_argument(
         "--tropomi",
         type=Path,
-        default=Path("TROPOMI NO₂/tropomi_no2_2019-01-01_2025-12-31.csv.gz"),
+        default=Path("data/raw/tropomi/tropomi_no2_2019-01-01_2025-12-31.csv.gz"),
     )
-    parser.add_argument("--giovanni", type=Path, default=Path("Giovani"))
+    parser.add_argument("--giovanni", type=Path, default=Path("data/raw/merra"))
     parser.add_argument(
         "--output", type=Path, default=Path("artifacts/radiance_multimodal_demo")
     )

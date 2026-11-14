@@ -1,0 +1,21 @@
+{
+  "format_version": 1,
+  "bucket": "cstar-atmosphere-inputs",
+  "artifacts": {
+    "source": {
+      "object_path": "data/raw/tropomi/tropomi_no2_2019-01-01_2025-12-31.csv.gz",
+      "sha256": "0f39af1d032c0f16549e51ccf74550f1cd9f30e9994ba66e7bb010df28d4805d",
+      "size_bytes": 45151732
+    },
+    "boundary": {
+      "object_path": "data/raw/tropomi/philippines_adm0.geojson",
+      "sha256": "7c3a7a39dacb5fb0c14d150061306fa5839455fbf93231854af3c6d74a1fa24f",
+      "size_bytes": 17401908
+    },
+    "checkpoint": {
+      "object_path": "data/raw/tropomi/best_model.joblib",
+      "sha256": "4b42bc465dec3695d02e1e9afc7396911c9fc411cc561ef0220f2fb1ff6d8b27",
+      "size_bytes": 588238
+    }
+  }
+}

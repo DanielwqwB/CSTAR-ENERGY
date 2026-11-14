@@ -1,0 +1,113 @@
+{
+  "raw_rows": 94224,
+  "supervised_rows": 94055,
+  "start_time": "2016-01-01T00:30:00+00:00",
+  "end_time": "2026-09-30T23:30:00+00:00",
+  "duplicate_timestamps": 0,
+  "non_hourly_intervals": 0,
+  "missing_values": {
+    "time": 0,
+    "cldtmp": 0,
+    "ps": 0,
+    "t2m": 0,
+    "to3": 0,
+    "tqv": 0,
+    "ts": 0,
+    "u10m": 0,
+    "u50m": 0,
+    "v10m": 0,
+    "v50m": 0
+  },
+  "sources": [
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_CLDTMP.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "cldtmp",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 1000000000000000.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_PS.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "ps",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_T2M.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "t2m",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 1000000000000000.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_TO3.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "to3",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_TQV.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "tqv",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_TS.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "ts",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_U10M.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "u10m",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_U50M.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "u50m",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_V10M.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "v10m",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    },
+    {
+      "path": "C:\\Vault\\Projects\\NASAcompe\\data\\raw\\merra\\GIOVANNI-areaAvgTimeSeries.M2T1NXSLV_5_12_4_V50M.20160101-20261001.116E_4N_127E_22N.csv",
+      "variable": "v50m",
+      "product": "M2T1NXSLV_5_12_4",
+      "user_start_date": "2016-01-01T00:00:00.000Z",
+      "user_end_date": "2026-10-01T00:00:00.000Z",
+      "bounding_box": "116, 4, 127, 22",
+      "fill_value": 999999986991104.0
+    }
+  ]
+}

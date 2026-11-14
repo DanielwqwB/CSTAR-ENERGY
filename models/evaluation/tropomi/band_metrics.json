@@ -1,0 +1,49 @@
+{
+  "task": "TROPOMI three-band NO2 classification",
+  "data_sources": [
+    "TROPOMI monthly cell means"
+  ],
+  "band_thresholds_umol_m2": [
+    8.001909255981445,
+    12.183274269104004
+  ],
+  "best_candidate_by_2024_validation": "annual_blend_25",
+  "selected_model": "spatial_seasonal_climatology",
+  "target_90_percent_accuracy_met": false,
+  "baseline_test": {
+    "accuracy": 0.6847589925162951,
+    "balanced_accuracy": 0.6931359280948511,
+    "macro_f1": 0.6893301601749956
+  },
+  "best_candidate_test": {
+    "accuracy": 0.6819425444596443,
+    "balanced_accuracy": 0.6904095313666557,
+    "macro_f1": 0.6862988650408471
+  },
+  "selected_test": {
+    "accuracy": 0.6847589925162951,
+    "balanced_accuracy": 0.6931359280948511,
+    "macro_f1": 0.6893301601749956
+  },
+  "validation_accuracy": {
+    "spatial_seasonal_climatology": 0.7151014274981217,
+    "annual_persistence": 0.6420360631104433,
+    "annual_blend_25": 0.7060480841472577,
+    "annual_blend_50": 0.6878662659654395,
+    "annual_blend_75": 0.6652892561983471,
+    "logistic_annual": 0.6681442524417731,
+    "hgb_annual": 0.6803155522163786,
+    "xgb_annual": 0.690007513148009,
+    "hgb_all_history": 0.6634861006761833,
+    "xgb_all_history": 0.685687453042825,
+    "hgb_ordinal_regression": 0.6797896318557476
+  },
+  "train_rows": 107803,
+  "validation_rows": 26620,
+  "test_rows": 24854,
+  "test_history_through_year": 2024,
+  "test_labels_used_as_features": false,
+  "random_state": 42,
+  "training_seconds": 35.00861879999866,
+  "weather_adjusted_anomaly_claim": false
+}

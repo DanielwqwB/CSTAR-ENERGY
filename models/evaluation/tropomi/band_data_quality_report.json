@@ -1,0 +1,24 @@
+{
+  "raw_rows": 1661839,
+  "boundary_rows": 205911,
+  "observed_model_rows": 187000,
+  "cell_count": 2465,
+  "explicit_zero_count_cell_months": 1149,
+  "excluded_low_coverage_rows": 18911,
+  "minimum_valid_orbits": 5,
+  "validation_history_through_year": 2023,
+  "test_history_through_year": 2024,
+  "test_labels_used_as_features": false,
+  "missing_feature_values": {
+    "no2_lag1m": 57432,
+    "no2_lag3m": 55432,
+    "no2_lag12m": 36335,
+    "no2_lag24m": 61736,
+    "no2_lag36m": 86934,
+    "no2_prior3m_mean": 43050,
+    "no2_prior3m_count": 0,
+    "no2_prior_annual_mean": 29874,
+    "no2_prior_annual_count": 0,
+    "no2_annual_change": 67240
+  }
+}
