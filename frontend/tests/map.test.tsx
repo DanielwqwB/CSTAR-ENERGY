@@ -7,7 +7,12 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { TransitionMap } from "../src/components/TransitionMap";
-import { parseBlackMarbleCellCsv } from "../src/data/blackMarble";
+import {
+  parseBlackMarbleCellCsv,
+  parseBlackMarbleForecast,
+  parseBlackMarbleGrid,
+  parseBlackMarbleObservations,
+} from "../src/data/blackMarble";
 import seed from "../src/data/events.json";
 import type { TransitionEvent } from "../src/types";
 
@@ -21,7 +26,7 @@ vi.mock("mapbox-gl", () => ({
     supported: () => state.supported,
     Map: class {
       sources: Record<string, any> = {};
-      scrollZoom = { disable: vi.fn() };
+      scrollZoom = { disable: vi.fn(), enable: vi.fn() };
       addControl = vi.fn();
       remove = vi.fn();
       resize = vi.fn();
@@ -171,6 +176,52 @@ it("parses Black Marble coordinates into longitude-latitude map points", () => {
   ).toThrow(/Invalid Black Marble cell row/);
 });
 
+it("parses fixed-grid observations and forecast probabilities", () => {
+  const gridBuffer = new ArrayBuffer(16);
+  const gridView = new DataView(gridBuffer);
+  [122.9, 14.5, 123, 14.6].forEach((value, index) =>
+    gridView.setFloat32(index * 4, value, true),
+  );
+  const coordinates = parseBlackMarbleGrid(gridBuffer, 2);
+
+  const observationBuffer = new ArrayBuffer(12);
+  const observationView = new DataView(observationBuffer);
+  observationView.setFloat32(0, 1.25, true);
+  observationView.setFloat32(4, Number.NaN, true);
+  observationView.setUint16(8, 4, true);
+  observationView.setUint16(10, 0, true);
+  const observed = parseBlackMarbleObservations(
+    observationBuffer,
+    coordinates,
+  );
+  expect(observed.features).toHaveLength(1);
+  expect(observed.features[0].properties).toMatchObject({
+    gridIndex: 0,
+    latitude: 14.5,
+    radiance: 1.25,
+    observationCount: 4,
+  });
+  expect(observed.features[0].properties.longitude).toBeCloseTo(122.9, 5);
+
+  const forecastBuffer = new ArrayBuffer(16);
+  const forecastView = new DataView(forecastBuffer);
+  forecastView.setFloat32(0, 1.5, true);
+  forecastView.setFloat32(4, Number.NaN, true);
+  forecastView.setFloat32(8, 0.75, true);
+  forecastView.setFloat32(12, Number.NaN, true);
+  const forecast = parseBlackMarbleForecast(forecastBuffer, coordinates);
+  expect(forecast.features).toHaveLength(1);
+  expect(forecast.features[0].properties).toMatchObject({
+    gridIndex: 0,
+    radiance: 1.5,
+    increaseProbability: 0.75,
+    isForecast: true,
+  });
+  expect(() => parseBlackMarbleGrid(gridBuffer, 3)).toThrow(
+    /unexpected size/,
+  );
+});
+
 it("renders observed Black Marble cells and reports the clicked cell", async () => {
   const cells = parseBlackMarbleCellCsv(
     "latitude,longitude,radiance,observation_count\n14.5,122.9,1.25,4",
@@ -192,21 +243,8 @@ it("renders observed Black Marble cells and reports the clicked cell", async () 
       expect.objectContaining({ id: "blackmarble-radiance-cells" }),
     ),
   );
-  const clickCell = state.maps[0].handlers[
-    "click:blackmarble-radiance-cells"
-  ];
-  clickCell({
-    features: [
-      {
-        geometry: { type: "Point", coordinates: [122.9, 14.5] },
-        properties: {
-          latitude: 14.5,
-          longitude: 122.9,
-          radiance: 1.25,
-          observationCount: 4,
-        },
-      },
-    ],
+  state.maps[0].handlers.click({
+    lngLat: { lat: 14.5, lng: 122.9 },
   });
   expect(onObservedCellSelect).toHaveBeenCalledWith({
     latitude: 14.5,
@@ -214,4 +252,5 @@ it("renders observed Black Marble cells and reports the clicked cell", async () 
     radiance: 1.25,
     observationCount: 4,
   });
+  expect(state.maps[0].scrollZoom.enable).toHaveBeenCalledOnce();
 });

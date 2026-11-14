@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type {
   GeoJSONSource,
   Map as MapInstance,
-  MapLayerMouseEvent,
+  MapMouseEvent,
   Marker,
 } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -21,6 +21,8 @@ import {
   plumeHeatPoints,
 } from "../data/mapGeometry";
 import { Button } from "./ui";
+
+const synchronizedMapGroups = new Map<string, Set<MapInstance>>();
 
 function markerColor(event: TransitionEvent) {
   const palette: Record<string, string> = {
@@ -52,6 +54,7 @@ export function TransitionMap({
   observedRadianceCells,
   showObservedRadianceCells = false,
   onObservedCellSelect,
+  syncGroup,
   mapCaption = "BICOL REGION - DEMONSTRATION",
   mapAriaLabel = "Mapbox demonstration event map",
   disclaimerText = "Mapbox basemap · Fictional Aurelia events placed in Bicol Region for demonstration. Positions and overlays are not verified observations.",
@@ -76,7 +79,8 @@ export function TransitionMap({
   comparisonMode?: "night" | "change" | "no2";
   observedRadianceCells?: BlackMarbleCellCollection;
   showObservedRadianceCells?: boolean;
-  onObservedCellSelect?: (cell: BlackMarbleCell) => void;
+  onObservedCellSelect?: (cell: BlackMarbleCell | null) => void;
+  syncGroup?: string;
   mapCaption?: string;
   mapAriaLabel?: string;
   disclaimerText?: string;
@@ -91,6 +95,10 @@ export function TransitionMap({
   callback.current = onSelect;
   const cellCallback = useRef(onObservedCellSelect);
   cellCallback.current = onObservedCellSelect;
+  const observedCells = useRef(observedRadianceCells);
+  observedCells.current = observedRadianceCells;
+  const showObservedCells = useRef(showObservedRadianceCells);
+  showObservedCells.current = showObservedRadianceCells;
   useEffect(() => {
     let disposed = false;
     let instance: MapInstance | undefined;
@@ -127,7 +135,7 @@ export function TransitionMap({
           new mapbox.ScaleControl({ unit: "metric" }),
           "bottom-left",
         );
-        instance.scrollZoom.disable();
+        instance.scrollZoom.enable();
         timeout = setTimeout(() => {
           if (!disposed) {
             setStatus(
@@ -152,6 +160,36 @@ export function TransitionMap({
           if (disposed || !instance) return;
           loaded = true;
           clearTimeout(timeout);
+          if (syncGroup) {
+            let group = synchronizedMapGroups.get(syncGroup);
+            if (!group) {
+              group = new Set();
+              synchronizedMapGroups.set(syncGroup, group);
+            }
+            group.add(instance);
+            instance.on("move", () => {
+              const center = instance?.getCenter();
+              if (!instance || !center) return;
+              const view = {
+                center,
+                zoom: instance.getZoom(),
+                bearing: instance.getBearing(),
+                pitch: instance.getPitch(),
+              };
+              for (const other of group ?? []) {
+                if (other === instance) continue;
+                const otherCenter = other.getCenter();
+                if (
+                  Math.abs(otherCenter.lng - center.lng) > 0.00001 ||
+                  Math.abs(otherCenter.lat - center.lat) > 0.00001 ||
+                  Math.abs(other.getZoom() - view.zoom) > 0.0001 ||
+                  Math.abs(other.getBearing() - view.bearing) > 0.001 ||
+                  Math.abs(other.getPitch() - view.pitch) > 0.001
+                )
+                  other.jumpTo(view);
+              }
+            });
+          }
           instance.addSource("lighting-cells", {
             type: "geojson",
             data: lightingCells([]),
@@ -222,9 +260,76 @@ export function TransitionMap({
             },
           });
           instance.addLayer({
+            id: "blackmarble-radiance-heat",
+            type: "heatmap",
+            source: "blackmarble-radiance-cells",
+            filter: [">", ["get", "radiance"], 0],
+            layout: {
+              visibility:
+                showObservedRadianceCells && observedRadianceCells
+                  ? "visible"
+                  : "none",
+            },
+            paint: {
+              "heatmap-weight": [
+                "interpolate",
+                ["linear"],
+                ["get", "radiance"],
+                0,
+                0,
+                0.5,
+                0.18,
+                5,
+                0.62,
+                30,
+                1,
+              ],
+              "heatmap-intensity": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                5,
+                0.9,
+                8,
+                1.5,
+              ],
+              "heatmap-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                5,
+                5,
+                7,
+                13,
+                10,
+                24,
+              ],
+              "heatmap-opacity": 0.86,
+              "heatmap-color": [
+                "interpolate",
+                ["linear"],
+                ["heatmap-density"],
+                0,
+                "rgba(255,176,35,0)",
+                0.12,
+                "#8f3500",
+                0.35,
+                "#e77b18",
+                0.62,
+                "#ffbe50",
+                0.84,
+                "#fff0bd",
+                1,
+                "#fffdf2",
+              ],
+            },
+          });
+          instance.addLayer({
             id: "blackmarble-radiance-cells",
             type: "circle",
             source: "blackmarble-radiance-cells",
+            minzoom: 8,
+            filter: [">", ["get", "radiance"], 0],
             layout: {
               visibility:
                 showObservedRadianceCells && observedRadianceCells
@@ -261,32 +366,41 @@ export function TransitionMap({
               "circle-stroke-width": 0.25,
             },
           });
-          instance.on(
-            "click",
-            "blackmarble-radiance-cells",
-            (event: MapLayerMouseEvent) => {
-              const feature = event.features?.[0];
-              const properties = feature?.properties;
-              if (!properties || feature?.geometry.type !== "Point") return;
-              const latitude = Number(properties.latitude);
-              const longitude = Number(properties.longitude);
-              const radiance = Number(properties.radiance);
-              const observationCount = Number(properties.observationCount);
-              if (
-                !Number.isFinite(latitude) ||
-                !Number.isFinite(longitude) ||
-                !Number.isFinite(radiance) ||
-                !Number.isInteger(observationCount)
-              )
-                return;
-              cellCallback.current?.({
-                latitude,
-                longitude,
-                radiance,
-                observationCount,
-              });
-            },
-          );
+          instance.on("click", (event: MapMouseEvent) => {
+            const collection = observedCells.current;
+            if (!showObservedCells.current || !collection) return;
+            const latitudeAtClick = event.lngLat.lat;
+            const longitudeAtClick = event.lngLat.lng;
+            const longitudeScale = Math.cos((latitudeAtClick * Math.PI) / 180);
+            let closest:
+              | BlackMarbleCellCollection["features"][number]
+              | undefined;
+            let closestDistance = Number.POSITIVE_INFINITY;
+            for (const feature of collection.features) {
+              const [longitude, latitude] = feature.geometry.coordinates;
+              const dx = (longitude - longitudeAtClick) * longitudeScale;
+              const dy = latitude - latitudeAtClick;
+              const distance = dx * dx + dy * dy;
+              if (distance < closestDistance) {
+                closest = feature;
+                closestDistance = distance;
+              }
+            }
+            if (closestDistance > 0.005 * 0.005 || !closest) {
+              cellCallback.current?.(null);
+              return;
+            }
+            const properties = closest.properties;
+            cellCallback.current?.({
+              gridIndex: properties.gridIndex,
+              latitude: properties.latitude,
+              longitude: properties.longitude,
+              radiance: properties.radiance,
+              observationCount: properties.observationCount,
+              increaseProbability: properties.increaseProbability,
+              isForecast: properties.isForecast,
+            });
+          });
           instance.on("mouseenter", "blackmarble-radiance-cells", () => {
             if (instance) instance.getCanvas().style.cursor = "pointer";
           });
@@ -327,9 +441,14 @@ export function TransitionMap({
       disposed = true;
       clearTimeout(timeout);
       observer?.disconnect();
+      if (syncGroup && instance) {
+        const group = synchronizedMapGroups.get(syncGroup);
+        group?.delete(instance);
+        if (group?.size === 0) synchronizedMapGroups.delete(syncGroup);
+      }
       instance?.remove();
     };
-  }, [attempt, basemapStyle]);
+  }, [attempt, basemapStyle, syncGroup]);
   useEffect(() => {
     if (!map || !sdk.current) return;
     (map.getSource("lighting-cells") as GeoJSONSource).setData(
@@ -401,6 +520,11 @@ export function TransitionMap({
     );
     map.setLayoutProperty(
       "blackmarble-radiance-cells",
+      "visibility",
+      showObservedRadianceCells && observedRadianceCells ? "visible" : "none",
+    );
+    map.setLayoutProperty(
+      "blackmarble-radiance-heat",
       "visibility",
       showObservedRadianceCells && observedRadianceCells ? "visible" : "none",
     );

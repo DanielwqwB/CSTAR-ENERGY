@@ -33,7 +33,7 @@ See [frontend setup and functionality](frontend/README.md) for details.
 - `deployment/`, `visualization/` — Deployment and research visualization structure.
 - `tests/` — Repository-level data quality, integration, and unit test structure.
 
-The frontend connects to a Node.js API using Supabase Auth and PostgreSQL. Configure your existing Supabase project, apply the SQL migration, and start the API with `cd backend` and `npm.cmd run dev`. See [Supabase setup, configuration, and endpoints](backend/README.md). Live satellite feeds remain unconnected; observations are synthetic.
+The frontend connects to a Node.js API using Supabase Auth and PostgreSQL. Configure your existing Supabase project, apply the SQL migration, and start the API with `cd backend` and `npm.cmd run dev`. See [Supabase setup, configuration, and endpoints](backend/README.md). Historical Black Marble observations are included as static map assets; live satellite feeds remain unconnected, and demonstration events are synthetic.
 
 ## Radiance processing
 
@@ -101,6 +101,26 @@ The experiment uses chronological train/validation/test periods, compares a
 Ridge model with a persistence baseline, and writes metrics and predictions to
 `artifacts/radiance_baseline/`. Classification metrics remain unavailable
 until independently verified transition labels are supplied.
+
+### Spatial Black Marble screening
+
+Train the cell-level Random Forest and regenerate the map's compressed
+observation and forecast grids from genuine, quality-screened VNP46A3 inputs:
+
+```powershell
+python -m experiments.blackmarble_spatial_forecast --input BlackMarbles
+```
+
+The pipeline uses fixed Bicol land-cell coordinates, adjacent observed months,
+and chronological holdout months (2024 onward). It writes map assets under
+`frontend/public/data/blackmarble/`, the fitted model under
+`models/training/blackmarble/`, and holdout metrics under
+`models/evaluation/blackmarble/`. The one-month cell forecasts are exploratory
+radiance screening only: probabilities are not calibrated and do not establish
+causal impacts or the effectiveness of interventions. Available observations
+are irregular; months without any valid cells are excluded and recorded, and
+the map offers only remaining observed months plus explicitly available
+forecast months.
 
 ### Data limitations
 
