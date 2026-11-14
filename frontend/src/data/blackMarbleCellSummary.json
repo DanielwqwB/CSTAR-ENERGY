@@ -1,0 +1,10 @@
+{
+  "month": "2026-06",
+  "product": "VNP46A3 Collection 2",
+  "layer": "AllAngle_Composite_Snow_Free",
+  "units": "nWatts/(cm^2 sr)",
+  "quality": "Direct good-quality land/coastal cells with observations; positive radiance shown",
+  "validCells": 129563,
+  "mappedCells": 31558,
+  "testDataOnly": false
+}

@@ -43,7 +43,7 @@ frontend/
 
 - Responsive sidebar, navigation menu for narrow windows, and guided tour.
 - Regional overview, interactive Mapbox basemap, selectable event markers, event search and filters.
-- Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment. The Evidence Timeline keeps its synthetic charts separate from the authenticated published TROPOMI grid, showing QA, coverage, observation status, expected values, and residuals.
+- Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment.
 - Data explorer, persisted intervention records, alerts, reports, and profile preferences.
 - JSON, CSV, and text file downloads through browser APIs.
 - Persistence through `/api/workspace` in Supabase PostgreSQL, with one private workspace per Auth user. Sign-out clears the cookie session while preserving research work. Old localStorage and SQLite data are not automatically imported.
@@ -64,13 +64,13 @@ The production site is written to `dist/`. UI tests use React Testing Library an
 
 ## Data scope
 
-The four events, five dataset entries, and historical series are synthetic reference data. Mapbox provides a real geographic basemap, but the fictional Aurelia events are placed in Bicol Region only for demonstration. Their positions, lighting cells, and atmospheric footprints are not verified observations. Comparison selectors do not run scientific models. Cookie sessions and optional configured account sign-in are connected. The Evidence Timeline reads the authenticated published TROPOMI export from Supabase; its spatial seasonal climatology residuals are precomputed and are not source attribution. Live satellite feeds, on-demand inference, multi-user account administration, and interactive scientific processing remain unconnected.
+The four sample events, five dataset entries, and historical series are synthetic reference data. The Map screen also includes quality-screened VNP46A3 Black Marble cell observations for Bicol Region (June 2026) and historical held-out predictions from the trained regional-mean model. Selecting a cell displays its observed radiance; the existing model has no location inputs and does not produce cell-level predictions. Event pins and atmospheric footprints elsewhere in the interface remain illustrative. Cookie sessions and optional configured account sign-in are connected. Live satellite feeds and multi-user account administration remain unconnected.
 
 ## Mapbox configuration
 
-Copy `.env.example` to `.env.local` and set `VITE_MAPBOX_ACCESS_TOKEN` to your public Mapbox browser token. Restart Vite after changing it. The supplied token is configured locally; `.env.local` is ignored by Git. For deployment, set the same variable before building. Vite exposes this public token to the browser as required by Mapbox.
+Create `frontend/.env.local` with `VITE_MAPBOX_ACCESS_TOKEN=<your-public-token>`. Restart Vite after changing it. `.env.local` is ignored by Git. For Render or another deployment, set `VITE_MAPBOX_ACCESS_TOKEN` in the hosting service's build environment and redeploy; a local `.env.local` does not configure the hosted site. Restrict the public token to the required URL origins in Mapbox.
 
-The map uses Mapbox's light basemap, zoom/compass controls, metric scale, numbered, clickable demonstration markers, and toggleable GeoJSON overlays. A resize observer keeps the canvas aligned when the sidebar or window changes size. If map resources or WebGL are unavailable, an explanation and selectable event list remain available. Demonstration geometry is defined in `src/data/mapGeometry.ts`; replace it with verified geographic coordinates when available.
+The map uses Mapbox's dark basemap, zoom/compass controls, metric scale, and a clickable observed-radiance cell layer. The regional prediction panel reports historical holdout predictions and metrics; it is not a current forecast or a cell-level result. A resize observer keeps the canvas aligned when the window changes size. If map resources or WebGL are unavailable, an explanation remains available. Demonstration event geometry is defined in `src/data/mapGeometry.ts`.
 
 Development API requests are proxied by Vite to port 3001. Production hosting must route `/api` to the backend under the same origin.
 

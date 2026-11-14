@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import type { Map as MapInstance, Marker, GeoJSONSource } from "mapbox-gl";
+import type {
+  GeoJSONSource,
+  Map as MapInstance,
+  MapLayerMouseEvent,
+  Marker,
+} from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { TransitionEvent } from "../types";
+import type {
+  BlackMarbleCell,
+  BlackMarbleCellCollection,
+} from "../data/blackMarble";
 import {
   atmosphericFootprints,
   DEMO_CENTER,
@@ -39,6 +48,12 @@ export function TransitionMap({
   showPlumeHeatmap = false,
   comparisonYear,
   comparisonMode = "night",
+  observedRadianceCells,
+  showObservedRadianceCells = false,
+  onObservedCellSelect,
+  mapCaption = "BICOL REGION - DEMONSTRATION",
+  mapAriaLabel = "Mapbox demonstration event map",
+  disclaimerText = "Mapbox basemap · Fictional Aurelia events placed in Bicol Region for demonstration. Positions and overlays are not verified observations.",
 }: {
   events: TransitionEvent[];
   selected?: string;
@@ -57,6 +72,12 @@ export function TransitionMap({
   showPlumeHeatmap?: boolean;
   comparisonYear?: number;
   comparisonMode?: "night" | "change" | "no2";
+  observedRadianceCells?: BlackMarbleCellCollection;
+  showObservedRadianceCells?: boolean;
+  onObservedCellSelect?: (cell: BlackMarbleCell) => void;
+  mapCaption?: string;
+  mapAriaLabel?: string;
+  disclaimerText?: string;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const sdk = useRef<typeof import("mapbox-gl").default | null>(null);
@@ -66,6 +87,8 @@ export function TransitionMap({
   const [attempt, setAttempt] = useState(0);
   const callback = useRef(onSelect);
   callback.current = onSelect;
+  const cellCallback = useRef(onObservedCellSelect);
+  cellCallback.current = onObservedCellSelect;
   useEffect(() => {
     let disposed = false;
     let instance: MapInstance | undefined;
@@ -169,6 +192,85 @@ export function TransitionMap({
             type: "geojson",
             data: illustrativeNightLights(2016),
           });
+          instance.addSource("blackmarble-radiance-cells", {
+            type: "geojson",
+            data: observedRadianceCells ?? {
+              type: "FeatureCollection",
+              features: [],
+            },
+          });
+          instance.addLayer({
+            id: "blackmarble-radiance-cells",
+            type: "circle",
+            source: "blackmarble-radiance-cells",
+            layout: {
+              visibility:
+                showObservedRadianceCells && observedRadianceCells
+                  ? "visible"
+                  : "none",
+            },
+            paint: {
+              "circle-color": [
+                "interpolate",
+                ["linear"],
+                ["get", "radiance"],
+                0,
+                "#facc15",
+                0.5,
+                "#fb923c",
+                5,
+                "#f43f5e",
+                30,
+                "#fff7ed",
+              ],
+              "circle-radius": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                6,
+                1,
+                8,
+                2,
+                11,
+                4,
+              ],
+              "circle-opacity": 0.88,
+              "circle-stroke-color": "#fff7ed",
+              "circle-stroke-width": 0.25,
+            },
+          });
+          instance.on(
+            "click",
+            "blackmarble-radiance-cells",
+            (event: MapLayerMouseEvent) => {
+              const feature = event.features?.[0];
+              const properties = feature?.properties;
+              if (!properties || feature?.geometry.type !== "Point") return;
+              const latitude = Number(properties.latitude);
+              const longitude = Number(properties.longitude);
+              const radiance = Number(properties.radiance);
+              const observationCount = Number(properties.observationCount);
+              if (
+                !Number.isFinite(latitude) ||
+                !Number.isFinite(longitude) ||
+                !Number.isFinite(radiance) ||
+                !Number.isInteger(observationCount)
+              )
+                return;
+              cellCallback.current?.({
+                latitude,
+                longitude,
+                radiance,
+                observationCount,
+              });
+            },
+          );
+          instance.on("mouseenter", "blackmarble-radiance-cells", () => {
+            if (instance) instance.getCanvas().style.cursor = "pointer";
+          });
+          instance.on("mouseleave", "blackmarble-radiance-cells", () => {
+            if (instance) instance.getCanvas().style.cursor = "";
+          });
           instance.addLayer({
             id: "illustrative-night-lights",
             type: "heatmap",
@@ -268,6 +370,21 @@ export function TransitionMap({
   }, [map, comparisonYear, comparisonMode]);
   useEffect(() => {
     if (!map) return;
+    const source = map.getSource(
+      "blackmarble-radiance-cells",
+    ) as GeoJSONSource | undefined;
+    if (!source) return;
+    source.setData(
+      observedRadianceCells ?? { type: "FeatureCollection", features: [] },
+    );
+    map.setLayoutProperty(
+      "blackmarble-radiance-cells",
+      "visibility",
+      showObservedRadianceCells && observedRadianceCells ? "visible" : "none",
+    );
+  }, [map, observedRadianceCells, showObservedRadianceCells]);
+  useEffect(() => {
+    if (!map) return;
     map.fitBounds(BICOL_VIEW_BOUNDS, { padding: 36, duration: 0 });
   }, [map]);
   useEffect(() => {
@@ -281,9 +398,9 @@ export function TransitionMap({
         <div
           ref={container}
           className="map-canvas"
-          aria-label="Mapbox demonstration event map"
+          aria-label={mapAriaLabel}
         />
-        <span className="map-caption">BICOL REGION - DEMONSTRATION</span>
+        <span className="map-caption">{mapCaption}</span>
         {status && (
           <div className="map-status" role="status">
             <span>{status}</span>
@@ -311,10 +428,7 @@ export function TransitionMap({
           </span>
         )}
       </div>}
-      <p className="map-disclaimer">
-        Mapbox basemap · Fictional Aurelia events placed in Bicol Region for
-        demonstration. Positions and overlays are not verified observations.
-      </p>
+      <p className="map-disclaimer">{disclaimerText}</p>
       {showDetails && <details open={compact ? undefined : true} className="map-event-details"><summary>Demonstration events ({events.length})</summary>
       <div className="map-event-list" aria-label="Map events">
         {events.map((event) => (

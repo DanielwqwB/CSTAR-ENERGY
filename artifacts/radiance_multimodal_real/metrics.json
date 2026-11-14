@@ -1,0 +1,139 @@
+{
+  "disclaimer": "Observed data only; small, irregular sample; exploratory, not validation.",
+  "task": {
+    "regression": "predict observed monthly mean radiance",
+    "classification": "predict whether radiance increased from the previous calendar month"
+  },
+  "sources": {
+    "black_marble": "52 observed aligned months; synthetic rows excluded",
+    "tropomi": "Bicol-cropped monthly NO2 grid aggregates",
+    "giovanni": "monthly aggregates of Philippines-area MERRA-2 hourly means"
+  },
+  "synthetic_rows_used": 0,
+  "period": {
+    "start": "2019-01",
+    "end": "2025-12"
+  },
+  "split_counts": {
+    "regression": {
+      "development": 38,
+      "test": 14
+    },
+    "classification_consecutive_month_pairs": {
+      "development": 24,
+      "test": 9
+    }
+  },
+  "selected_models": {
+    "regression": "gradient_boosting",
+    "classification": "random_forest",
+    "classification_threshold": 0.5,
+    "xgboost_available": true,
+    "xgboost_only": false
+  },
+  "expanding_window_tuning": {
+    "regression": {
+      "fold_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "out_of_fold_observations": 21,
+      "mae": 0.08650327716678333
+    },
+    "classification": {
+      "fold_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "out_of_fold_observations": 11,
+      "minimum_class_recall": 0.6,
+      "accuracy": 0.6363636363636364,
+      "balanced_accuracy": 0.6333333333333333,
+      "roc_auc": 0.4333333333333333,
+      "f1": 0.6,
+      "threshold": 0.5
+    }
+  },
+  "regression_test_metrics": {
+    "mae": 0.05385987701087257,
+    "rmse": 0.06834020575945732,
+    "mape_percent": 28.691513933885442
+  },
+  "persistence_baseline_test_metrics": {
+    "mae": 0.061199553360181756,
+    "rmse": 0.07717134294953373,
+    "mape_percent": 40.05654064841235
+  },
+  "classification_test_metrics": {
+    "accuracy": 0.6666666666666666,
+    "balanced_accuracy": 0.675,
+    "precision": 0.75,
+    "recall": 0.6,
+    "specificity": 0.75,
+    "f1": 0.6666666666666666,
+    "matthews_correlation": 0.35,
+    "tn": 3,
+    "fp": 1,
+    "fn": 2,
+    "tp": 3,
+    "brier_score": 0.22188933817910594
+  },
+  "majority_baseline_test_metrics": {
+    "accuracy": 0.5555555555555556,
+    "balanced_accuracy": 0.5,
+    "precision": 0.5555555555555556,
+    "recall": 1.0,
+    "specificity": 0.0,
+    "f1": 0.7142857142857143,
+    "matthews_correlation": 0.0,
+    "tn": 0,
+    "fp": 4,
+    "fn": 0,
+    "tp": 5,
+    "brier_score": 0.2471064814814815
+  },
+  "requested_accuracy_range_65_to_75_percent": {
+    "validation_oof_in_range": false,
+    "held_out_test_in_range": true
+  },
+  "roc_auc_test": 0.8,
+  "uncertainty_95_percent": {
+    "accuracy_wilson_interval": [
+      0.35419734749908977,
+      0.879418401317257
+    ],
+    "roc_auc_bootstrap_interval": [
+      0.39999999999999997,
+      1.0
+    ]
+  },
+  "data_quality": {
+    "classification_uses_consecutive_calendar_months_only": true,
+    "irregular_observation_pairs_excluded_from_classification": 19
+  },
+  "feature_names": [
+    "cldtmp",
+    "lag_gap_months",
+    "lag_radiance",
+    "month_cos",
+    "month_sin",
+    "no2_mean",
+    "no2_mean_orbits",
+    "no2_qa",
+    "no2_std",
+    "no2_valid_pixels",
+    "ps",
+    "t2m",
+    "to3",
+    "tqv",
+    "ts",
+    "u10m",
+    "u50m",
+    "v10m",
+    "v50m"
+  ],
+  "charts_directory": "models\\evaluation\\blackmarble",
+  "model_directory": "models\\training\\blackmarble"
+}
