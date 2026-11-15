@@ -7,7 +7,6 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { TransitionMap } from "../src/components/TransitionMap";
-import { IntelligenceGlobe } from "../src/components/IntelligenceGlobe";
 import {
   parseBlackMarbleCellCsv,
   parseBlackMarbleForecast,
@@ -54,8 +53,8 @@ vi.mock("mapbox-gl", () => ({
         this.handlers[layer ? `${name}:${layer}` : name] = handler;
         if (name === "load") queueMicrotask(handler);
       }
-      addSource(name: string) {
-        this.sources[name] = { setData: vi.fn() };
+      addSource(name: string, source: { data?: unknown } = {}) {
+        this.sources[name] = { setData: vi.fn(), data: source.data };
       }
       getSource(name: string) {
         return this.sources[name];
@@ -171,6 +170,38 @@ it("shows configuration guidance without constructing a map if the token is abse
   expect(state.maps).toHaveLength(0);
 });
 
+it("uses the supplied dataset bounds and does not seed illustrative lights", async () => {
+  const regionBounds: [[number, number], [number, number]] = [
+    [122.3, 11.4],
+    [124.7, 14.6],
+  ];
+  render(
+    <TransitionMap
+      events={[]}
+      onSelect={() => {}}
+      regionBounds={regionBounds}
+      showLegend={false}
+      showDetails={false}
+    />,
+  );
+  await waitFor(() =>
+    expect(state.maps[0].fitBounds).toHaveBeenCalledWith(regionBounds, {
+      padding: 36,
+      duration: 0,
+    }),
+  );
+  expect(state.maps[0].options.center).toEqual([123.5, 13]);
+  expect(
+    state.maps[0].sources["illustrative-night-lights"].data.features,
+  ).toEqual([]);
+  expect(state.maps[0].addLayer).toHaveBeenCalledWith(
+    expect.objectContaining({
+      id: "illustrative-night-lights",
+      layout: { visibility: "none" },
+    }),
+  );
+});
+
 it("parses Black Marble coordinates into longitude-latitude map points", () => {
   const cells = parseBlackMarbleCellCsv(
     "latitude,longitude,radiance,observation_count\r\n14.5,122.9,1.25,4\r\n",
@@ -267,24 +298,4 @@ it("renders observed Black Marble cells and reports the clicked cell", async () 
     observationCount: 4,
   });
   expect(state.maps[0].scrollZoom.enable).toHaveBeenCalledOnce();
-});
-
-it("pauses the globe and explains when a click is outside Bicol coverage", async () => {
-  render(<IntelligenceGlobe />);
-  await waitFor(() =>
-    expect(state.maps[0].addLayer).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "globe-blackmarble-glow" }),
-    ),
-  );
-  expect(screen.getByText("AUTOROTATING")).toBeTruthy();
-
-  state.maps[0].handlers.click({
-    lngLat: { lat: 40.7, lng: -73.9 },
-  });
-
-  expect(await screen.findByText("Outside data coverage")).toBeTruthy();
-  expect(screen.getByText("ROTATION PAUSED")).toBeTruthy();
-  expect(
-    screen.getByText(/current Black Marble grid covers Bicol only/i),
-  ).toBeTruthy();
 });

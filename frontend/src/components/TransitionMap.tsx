@@ -13,7 +13,6 @@ import type {
 } from "../data/blackMarble";
 import {
   atmosphericFootprints,
-  DEMO_CENTER,
   BICOL_VIEW_BOUNDS,
   demoPosition,
   lightingCells,
@@ -54,6 +53,7 @@ export function TransitionMap({
   showObservedRadianceCells = false,
   onObservedCellSelect,
   syncGroup,
+  regionBounds,
   mapCaption = "BICOL REGION - DEMONSTRATION",
   mapAriaLabel = "Mapbox demonstration event map",
   disclaimerText = "Mapbox basemap · Fictional Aurelia events placed in Bicol Region for demonstration. Positions and overlays are not verified observations.",
@@ -79,6 +79,7 @@ export function TransitionMap({
   showObservedRadianceCells?: boolean;
   onObservedCellSelect?: (cell: BlackMarbleCell | null) => void;
   syncGroup?: string;
+  regionBounds?: [[number, number], [number, number]];
   mapCaption?: string;
   mapAriaLabel?: string;
   disclaimerText?: string;
@@ -119,11 +120,16 @@ export function TransitionMap({
         if (disposed || !container.current) return;
         if (!mapbox.supported()) throw new Error("WebGL unavailable");
         sdk.current = mapbox;
+        const bounds = regionBounds ?? BICOL_VIEW_BOUNDS;
+        const center: [number, number] = [
+          (bounds[0][0] + bounds[1][0]) / 2,
+          (bounds[0][1] + bounds[1][1]) / 2,
+        ];
         instance = new mapbox.Map({
           container: container.current,
           accessToken: token,
           style: basemapStyle,
-          center: DEMO_CENTER,
+          center,
           zoom: 7,
           attributionControl: true,
         });
@@ -228,7 +234,7 @@ export function TransitionMap({
           });
           instance.addSource("illustrative-night-lights", {
             type: "geojson",
-            data: illustrativeNightLights(2016),
+            data: { type: "FeatureCollection", features: [] },
           });
           instance.addSource("blackmarble-radiance-cells", {
             type: "geojson",
@@ -389,6 +395,7 @@ export function TransitionMap({
             id: "illustrative-night-lights",
             type: "heatmap",
             source: "illustrative-night-lights",
+            layout: { visibility: "none" },
             paint: {
               "heatmap-weight": ["get", "weight"],
               "heatmap-intensity": 1.5,
@@ -426,7 +433,7 @@ export function TransitionMap({
       }
       instance?.remove();
     };
-  }, [attempt, basemapStyle, syncGroup]);
+  }, [attempt, basemapStyle, regionBounds, syncGroup]);
   useEffect(() => {
     if (!map || !sdk.current) return;
     (map.getSource("lighting-cells") as GeoJSONSource).setData(
@@ -509,8 +516,11 @@ export function TransitionMap({
   }, [map, observedRadianceCells, showObservedRadianceCells]);
   useEffect(() => {
     if (!map) return;
-    map.fitBounds(BICOL_VIEW_BOUNDS, { padding: 36, duration: 0 });
-  }, [map]);
+    map.fitBounds(regionBounds ?? BICOL_VIEW_BOUNDS, {
+      padding: 36,
+      duration: 0,
+    });
+  }, [map, regionBounds]);
   useEffect(() => {
     if (!map) return;
     map.setPaintProperty("lighting-cells", "fill-opacity", cellOpacity);

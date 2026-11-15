@@ -1,248 +1,232 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  cleanup,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";
-import { navigation } from "../src/data/navigation";
-import seed from "../src/data/events.json";
-import type { WorkspaceData } from "../src/api";
 
-let saved: WorkspaceData;
-let signedIn = false;
-beforeEach(() => {
-  saved = {
-    events: structuredClone(seed) as WorkspaceData["events"],
-    region: "Aurelia Pilot Locality",
-    records: [],
-    profile: { name: "Demo Analyst", email: "analyst@cstar.demo" },
-    version: 0,
-  };
-  signedIn = false;
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async (path: string, options?: RequestInit) => {
-      const method = options?.method || "GET";
-      const response = (data: unknown, status = 200) => ({
-        ok: status < 400,
-        status,
-        json: async () => structuredClone(data),
-      });
-      if (path === "/api/session" && method === "POST") {
-        signedIn = true;
-        return response(saved);
-      }
-      if (path === "/api/signup" && method === "POST")
-        return response({ confirmationRequired: true });
-      if (!signedIn) return response({ error: "Sign in to continue" }, 401);
-      if (method === "DELETE") {
-        signedIn = false;
-        return response({ ok: true });
-      }
-      if (method === "PUT") {
-        saved = {
-          ...JSON.parse(String(options?.body)),
-          version: saved.version + 1,
-        };
-      }
-      return response(saved);
-    }),
-  );
+const manifest = {
+  formatVersion: 1,
+  region: "Bicol Region",
+  bounds: [122.3, 11.4, 124.7, 14.6] as [number, number, number, number],
+  product: "VNP46A3 Collection 2",
+  layer: "AllAngle_Composite_Snow_Free",
+  units: "nWatts/(cm^2 sr)",
+  quality: "Direct good-quality land/coastal cells with observations.",
+  cellCount: 131440,
+  months: ["2016-01", "2025-12", "2026-10"],
+  forecastMonths: ["2025-12", "2026-11"],
+  latestObservedMonth: "2026-10",
+  futureForecastMonth: "2026-11",
+  observedValueFormat: "float32 radiance and uint16 counts",
+  forecastValueFormat: "float32 radiance and probability",
+  gridValueFormat: "float32 longitude and latitude",
+  model: "Random Forest cell-level one-calendar-month-ahead forecast",
+  metrics: {
+    regression: { mae: 0.1168, rmse: 0.3714 },
+    direction: {
+      accuracy: 0.7189,
+      balanced_accuracy: 0.6728,
+      precision: 0.178,
+      recall: 0.617,
+      f1: 0.2763,
+      roc_auc: 0.7501,
+    },
+    test_samples: 180000,
+    test_pairs: 15,
+    test_period: { start: "2024-09", end: "2026-10" },
+    target: "one-calendar-month-ahead cell radiance and direction",
+    feature_names: [
+      "longitude",
+      "latitude",
+      "previous_month_radiance",
+      "target_month_sin",
+      "target_month_cos",
+    ],
+    disclaimer: "Exploratory cell-level radiance screening.",
+  },
+  disclaimer: "Predictions do not establish causal impact.",
+};
+
+const emptyCells = { type: "FeatureCollection", features: [] };
+const workspace = {
+  events: [],
+  records: [],
+  region: "Bicol Region",
+  profile: { name: "Test Analyst", email: "analyst@example.test" },
+  version: 1,
+};
+const account = (role: "ADMIN" | "RESEARCHER" = "RESEARCHER") => ({
+  profile: {
+    id: "00000000-0000-4000-8000-000000000001",
+    name: "Test Analyst",
+    email: "analyst@example.test",
+    role,
+    status: "ACTIVE",
+    approval_status: "NOT_REQUIRED",
+    jurisdiction_id: null,
+  },
 });
-afterEach(() => vi.unstubAllGlobals());
+
+function response(data: unknown, status = 200) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => data,
+  };
+}
+
+vi.mock("../src/data/blackMarble", () => ({
+  loadBlackMarbleManifest: vi.fn(async () => manifest),
+  loadBlackMarbleMonth: vi.fn(async () => emptyCells),
+  loadBlackMarbleForecast: vi.fn(async () => emptyCells),
+}));
 
 vi.mock("mapbox-gl", () => ({ default: { supported: () => false } }));
 
 beforeEach(() => {
-  Object.defineProperty(window, "innerWidth", { value: 1440, writable: true });
+  window.history.replaceState(null, "", "/");
+  vi.stubGlobal("scrollTo", vi.fn());
+  vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) =>
+    String(input) === "/api/me" ? response(account()) : response(workspace),
+  ));
 });
-afterEach(cleanup);
-async function navigateTo(user: ReturnType<typeof userEvent.setup>, name: string) {
-  const group = navigation.find(group => group.items.some(item => item.label === name))!;
-  const nav = await screen.findByRole("navigation", { name: "Workspace navigation" });
-  await user.click(within(nav).getByRole("button", { name: group.group[0] + group.group.slice(1).toLowerCase(), exact: true }));
-  await user.click(within(nav).getByRole("button", { name, exact: true }));
-}
-async function openWorkspace() {
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
+
+async function openPage(name: string) {
   const user = userEvent.setup();
   render(<App />);
-  await user.type(await screen.findByLabelText('Email address'), 'analyst@example.com');
-  await user.type(screen.getByLabelText('Password'), 'test-password');
-  await user.click(screen.getByRole('button', { name: /Sign in to workspace/ }));
-  await screen.findByRole("heading", {
-    name: "Regional Intelligence Overview",
+  const navigation = await screen.findByRole("navigation", {
+    name: "Dataset workspace navigation",
   });
+  await user.click(within(navigation).getByRole("button", { name }));
   return user;
 }
-describe("browser workspace", () => {
-  it("searches pages and events, opens results, and handles empty matches", async () => {
-    const user = await openWorkspace();
-    const search = screen.getByRole("searchbox", { name: "Search pages and events" });
-    await user.type(search, "Data Explorer");
-    await user.click(screen.getByRole("button", { name: "Data Explorer", exact: true }));
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Earth Observation Data Explorer");
-    await user.type(search, "DEMO-002");
-    await user.click(screen.getByRole("button", { name: /DEMO-002 Eastport/ }));
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Event Investigation");
-    await user.type(search, "zzzz-no-match");
-    expect(screen.getByText(/No matches. Try/)).toBeTruthy();
-    await user.keyboard("{Escape}");
-    expect(screen.queryByText(/No matches. Try/)).toBeNull();
-  });
-  it("dismisses top navigation with Escape and restores focus", async () => {
-    const user = await openWorkspace();
-    const monitor = screen.getByRole("button", { name: "Monitor", exact: true });
-    await user.click(monitor);
-    expect(monitor.getAttribute("aria-expanded")).toBe("true");
-    await user.tab();
-    await user.keyboard("{Escape}");
-    expect(monitor.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(monitor);
-    expect(screen.queryByRole("button", { name: "Transition Map", exact: true })).toBeNull();
-  });
 
-  it("validates signup passwords and shows the email confirmation step", async () => {
+describe("dataset workspace", () => {
+  it("signs out and returns to sign-in so another account can be used", async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === "DELETE") return response({ ok: true });
+      return String(input) === "/api/me" ? response(account()) : response(workspace);
+    });
+    vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     render(<App />);
-    await user.click(
-      await screen.findByRole("button", { name: "New here? Sign up" }),
-    );
-    await user.type(screen.getByLabelText("Full name"), "New Analyst");
-    await user.type(screen.getByLabelText("Email address"), "new@example.com");
-    await user.type(screen.getByLabelText("Password"), "test-password");
-    await user.type(
-      screen.getByLabelText("Confirm password"),
-      "different-password",
-    );
-    await user.click(screen.getByRole("button", { name: "Create account" }));
-    expect(screen.getByRole("alert").textContent).toContain(
-      "both passwords match",
-    );
-    await user.clear(screen.getByLabelText("Confirm password"));
-    await user.type(screen.getByLabelText("Confirm password"), "test-password");
-    await user.click(screen.getByRole("button", { name: "Create account" }));
-    expect(
-      await screen.findByText(/Check your inbox for a confirmation link/),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Welcome back" })).toBeTruthy();
-    expect(signedIn).toBe(false);
-  });
-  it("opens the profile, persists edits, and logs out from the profile page", async () => {
-    const user = await openWorkspace();
-    await user.click(screen.getByRole("button", { name: /Research Analyst/ }));
-    await user.click(screen.getByRole("button", { name: "View profile" }));
-    expect(
-      screen.getByRole("heading", { level: 1, name: "My profile" }),
-    ).toBeTruthy();
-    await user.clear(screen.getByLabelText("Name"));
-    await user.type(screen.getByLabelText("Name"), "Updated Analyst");
-    await user.click(screen.getByRole("button", { name: "Save profile" }));
-    await waitFor(() => expect(saved.profile.name).toBe("Updated Analyst"));
-    cleanup();
-    render(<App />);
-    await user.click(await screen.findByRole("button", { name: /Research Analyst/ }));
-    await user.click(screen.getByRole("button", { name: "View profile" }));
-    expect((screen.getByLabelText("Name") as HTMLInputElement).value).toBe(
-      "Updated Analyst",
-    );
-    await user.click(
-      screen.getByRole("button", { name: "Log out", exact: true }),
-    );
-    expect(
-      await screen.findByRole("heading", { name: "Welcome back" }),
-    ).toBeTruthy();
-    expect(signedIn).toBe(false);
-  });
-  it("validates demo login and toggles password visibility", async () => {
-    const user = userEvent.setup();
-    render(<App />);
-    await user.click(
-      await screen.findByRole("button", { name: /Sign in to workspace/ }),
-    );
-    expect(screen.getByRole("alert").textContent).toContain(
-      "at least 4 characters",
-    );
-    await user.type(screen.getByLabelText("Password"), "demo");
-    await user.type(
-      screen.getByLabelText("Email address"),
-      "analyst@example.com",
-    );
-    await user.click(screen.getByRole("button", { name: "Show password" }));
-    expect(screen.getByLabelText("Password").getAttribute("type")).toBe("text");
-    await user.click(
-      screen.getByRole("button", { name: /Sign in to workspace/ }),
-    );
-    expect(
-      await screen.findByRole("heading", {
-        name: "Regional Intelligence Overview",
-      }),
-    ).toBeTruthy();
-  });
-  it("opens every workspace section without a runtime error", async () => {
-    const user = await openWorkspace();
 
-    for (const name of [
-      "Transition Map",
-      "Event Catalogue",
-      "Event Investigation",
-      "Evidence Timeline",
-      "Source–Plume",
-      "Counterfactual",
-      "CCTF Assessment",
-      "Data Explorer",
-      "Intervention Registry",
-      "Research Analytics",
-      "Research Alerts",
-      "Reports & Exports",
-      "Administration",
-      "Intelligence Overview",
-    ]) {
-      await navigateTo(user, name);
-      expect(screen.getByRole("heading", { level: 1 })).toBeTruthy();
-    }
-  });
-  it("paginates catalogue events and resets to the first page when filtered", async () => {
-    const user = await openWorkspace();
-    await navigateTo(user, "Event Catalogue");
-    expect(screen.getByText("Showing 1–3 of 4 events")).toBeTruthy();
-    await user.click(screen.getByRole("button", { name: "Next catalogue page" }));
-    expect(screen.getByText("Showing 4–4 of 4 events")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Next catalogue page" }).hasAttribute("disabled")).toBe(true);
-    await user.type(screen.getByRole("textbox", { name: "Search catalogue" }), "Eastport");
-    expect(screen.getByText("Showing 1–1 of 1 events")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Catalogue page 1" }).getAttribute("aria-current")).toBe("page");
-  });
-  it("filters catalogue rows and saves notes through the API across reloads", async () => {
-    const user = await openWorkspace();
-    await navigateTo(user, "Event Catalogue");
-    await user.type(screen.getByPlaceholderText(/Search event ID/), "Eastport");
-    expect(screen.getByText("1 of 4 synthetic candidates")).toBeTruthy();
-    await navigateTo(user, "Event Investigation");
-    await user.type(
-      screen.getByLabelText("Investigation notes"),
-      "Verify the commissioning date.",
-    );
-    await user.click(screen.getByRole("button", { name: "Save notes" }));
-    await waitFor(() =>
-      expect(
-        saved.events.find((event) => event.id === "DEMO-002")?.notes,
-      ).toContain("Verify the commissioning date."),
-    );
-    cleanup();
-    render(<App />);
-    await navigateTo(user, "Event Investigation");
-    expect(
-      (screen.getByLabelText("Investigation notes") as HTMLTextAreaElement)
-        .value,
-    ).toBe("Verify the commissioning date.");
-    await user.click(screen.getByRole("button", { name: /Research Analyst/ }));
+    await screen.findByRole("navigation", {
+      name: "Dataset workspace navigation",
+    });
     await user.click(screen.getByRole("button", { name: "Sign out" }));
-    expect(
-      await screen.findByRole("heading", { name: "Welcome back" }),
-    ).toBeTruthy();
+
+    expect(await screen.findByRole("heading", { name: /Beyond monitoring/ })).toBeTruthy();
+    expect(fetchMock.mock.calls.some(([input, init]) =>
+      input === "/api/session" && init?.method === "DELETE",
+    )).toBe(true);
+  });
+
+  it("denies non-admin accounts that visit an admin route", async () => {
+    window.history.replaceState(null, "", "/admin/dashboard");
+    render(<App />);
+
+    expect(await screen.findByRole("heading", { name: "Access denied" })).toBeTruthy();
+  });
+
+  it("routes administrator accounts to the real platform dashboard", async () => {
+    const dashboard = {
+      metrics: {
+        totalUsers: 12,
+        activeLgus: 3,
+        activeResearchers: 2,
+        registeredResidents: 7,
+        pendingApprovals: 1,
+        activeJurisdictions: 4,
+        pendingReports: 2,
+        failedJobs: null,
+      },
+      activity: [],
+    };
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const path = String(input);
+      if (path === "/api/me") return response(account("ADMIN"));
+      if (path === "/api/admin/dashboard") return response(dashboard);
+      if (path === "/api/health") {
+        return response({
+          status: "ok",
+          service: "ok",
+          databaseStatus: "configured",
+          databaseReachable: null,
+        });
+      }
+      if (path === "/api/admin/users") return response({ users: [] });
+      if (path === "/api/admin/jurisdictions") return response({ jurisdictions: [] });
+      return response(workspace);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(await screen.findByRole("heading", { name: "Platform operations" })).toBeTruthy();
+    expect(await screen.findByText("12")).toBeTruthy();
+    const navigation = screen.getByRole("navigation", { name: "Admin navigation" });
+    await user.click(within(navigation).getByRole("button", { name: "User Management" }));
+    expect(await screen.findByRole("heading", { name: "User management" })).toBeTruthy();
+    expect(screen.getByText("No accounts match these filters.")).toBeTruthy();
+    expect(fetchMock.mock.calls.some(([input]) => input === "/api/admin/users")).toBe(true);
+  });
+
+  it("renders overview values from the generated manifest", async () => {
+    const { container } = render(<App />);
+    expect(await screen.findByRole("heading", { name: "Black Marble Intelligence Globe" })).toBeTruthy();
+    expect(container.querySelector(".hud-contextbar")).toBeNull();
+    expect(container.querySelector(".hud-topbar-status")).toBeNull();
+    expect(container.querySelector(".hud-footer")).toBeNull();
+    expect(container.querySelector(".intelligence-globe-map-caption")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Regional radiance intelligence" })).toBeNull();
+    const sourceSummary = await screen.findByText(/131,440 cells/);
+    expect(sourceSummary.textContent).toContain("131,440 cells");
+    expect(screen.getAllByText("71.9%").length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Aurelia|synthetic candidate/i)).toBeNull();
+  });
+
+  it("opens the regional transition map", async () => {
+    await openPage("Transition map");
+    expect(await screen.findByRole("heading", { name: "Regional Black Marble transition map" })).toBeTruthy();
+    expect(screen.getByText("OBSERVED · 2016-01")).toBeTruthy();
+    expect(screen.getByText("OBSERVED · 2026-10")).toBeTruthy();
+    const sidebar = screen.getByRole("complementary", { name: "Transition map details" });
+    expect(within(sidebar).getByRole("region", { name: "Chronological Random Forest validation" })).toBeTruthy();
+    expect(within(sidebar).getByText("Lower measured / predicted radiance")).toBeTruthy();
+    expect(within(sidebar).getByText("Click a cell on either map to inspect its available data.")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Regional radiance intelligence" })).toBeNull();
+  });
+
+  it("derives observation coverage from available months", async () => {
+    await openPage("Coverage");
+    expect(screen.getByRole("heading", { name: "Observed VNP46A3 coverage" })).toBeTruthy();
+    expect(screen.getByRole("table", { name: "Observed month coverage by year" })).toBeTruthy();
+    expect(screen.getByText("3")).toBeTruthy();
+    expect(screen.getByText("2026-11")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Observation coverage" })).toBeNull();
+  });
+
+  it("shows trained-model metrics without changing their values", async () => {
+    await openPage("Evaluation");
+    expect(screen.getByRole("heading", { name: "Held-out screening metrics" })).toBeTruthy();
+    expect(screen.getByText("71.9%")).toBeTruthy();
+    expect(screen.getByText("67.3%")).toBeTruthy();
+    expect(screen.getByText("0.1168")).toBeTruthy();
+    expect(screen.getByText("180,000")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Chronological model evaluation" })).toBeNull();
+  });
+
+  it("shows dataset and model provenance from the same manifest", async () => {
+    await openPage("Provenance");
+    expect(screen.getByRole("heading", { name: "Black Marble spatial asset" })).toBeTruthy();
+    expect(screen.getByText("122.3, 11.4, 124.7, 14.6")).toBeTruthy();
+    expect(screen.getByText("previous month radiance")).toBeTruthy();
+    expect(screen.getByText("Direct good-quality land/coastal cells with observations.")).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Data and model provenance" })).toBeNull();
   });
 });

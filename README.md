@@ -33,7 +33,7 @@ See [frontend setup and functionality](frontend/README.md) for details.
 - `deployment/`, `visualization/` — Deployment and research visualization structure.
 - `tests/` — Repository-level data quality, integration, and unit test structure.
 
-The frontend connects to a Node.js API using Supabase Auth and PostgreSQL. Configure your existing Supabase project, apply the SQL migration, and start the API with `cd backend` and `npm.cmd run dev`. See [Supabase setup, configuration, and endpoints](backend/README.md). Historical Black Marble observations are included as static map assets; live satellite feeds remain unconnected, and demonstration events are synthetic.
+The active frontend is a dataset-driven Black Marble workspace. Its overview globe, regional transition map, observation coverage, evaluation metrics, and provenance views read the generated assets under `frontend/public/data/blackmarble/`; they do not depend on the legacy synthetic event records. The Node.js API and Supabase setup remain available separately for backend development; see [Supabase setup, configuration, and endpoints](backend/README.md). Live satellite feeds remain unconnected.
 
 ## Radiance processing
 

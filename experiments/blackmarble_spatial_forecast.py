@@ -538,6 +538,8 @@ def train_and_export(
 
     manifest = {
         "formatVersion": 1,
+        "region": "Bicol Region",
+        "bounds": list(BICOL_BOUNDS),
         "product": "VNP46A3 Collection 2",
         "layer": RADIANCE_LAYER,
         "units": "nWatts/(cm^2 sr)",

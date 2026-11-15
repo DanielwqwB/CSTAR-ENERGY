@@ -247,18 +247,27 @@ export function BlackMarbleTransition({
   const currentDatasetLabel =
     currentMode === "forecast" ? "Random Forest forecast" : "Observed radiance";
   const comparisonError = manifestError || dataError;
+  const regionBounds = useMemo<
+    [[number, number], [number, number]] | undefined
+  >(() => {
+    if (!manifest) return undefined;
+    return [
+      [manifest.bounds[0], manifest.bounds[1]],
+      [manifest.bounds[2], manifest.bounds[3]],
+    ];
+  }, [manifest]);
 
   return (
     <section
       className={`radiance-transition${compact ? " compact" : ""}${expanded ? " expanded" : ""}`}
-      aria-label="Bicol Black Marble transition comparison"
+      aria-label={`${manifest?.region ?? "Regional"} Black Marble transition comparison`}
     >
       <header className="radiance-transition-header">
         <span className="radiance-transition-icon">
           <MapIcon size={19} />
         </span>
         <div>
-          <h2>Black Marble transition map</h2>
+          <h2>Regional Black Marble transition map</h2>
           <p>
             Quality-screened observed light and cell-level one-month Random
             Forest screening
@@ -355,213 +364,244 @@ export function BlackMarbleTransition({
         </p>
       )}
 
-      <div className="radiance-transition-maps">
-        <div className="radiance-transition-map-panel">
-          <span className="radiance-transition-map-label">
-            OBSERVED · {baselineMonth || "Loading"}
-          </span>
-          <TransitionMap
-            events={EMPTY_EVENTS}
-            onSelect={() => {}}
-            cells={false}
-            plume={false}
-            candidates={false}
-            showLegend={false}
-            showDetails={false}
-            basemapStyle="mapbox://styles/mapbox/dark-v11"
-            observedRadianceCells={baselineCells}
-            showObservedRadianceCells
-            onObservedCellSelect={chooseCell("baseline", baselineMonth)}
-            mapCaption={`BICOL · OBSERVED · ${baselineMonth}`}
-            mapAriaLabel={`Observed Black Marble radiance for ${baselineMonth}`}
-            disclaimerText=""
-            height={compact ? 350 : 600}
-            syncGroup="bicol-radiance-comparison"
-          />
-        </div>
-        <span className="radiance-transition-divider" aria-hidden="true">
-          →
-        </span>
-        <div className="radiance-transition-map-panel">
-          <span className="radiance-transition-map-label">
-            {currentMode === "forecast" ? "RF FORECAST" : "OBSERVED"} ·{" "}
-            {currentMonth || "Loading"}
-          </span>
-          <TransitionMap
-            events={EMPTY_EVENTS}
-            onSelect={() => {}}
-            cells={false}
-            plume={false}
-            candidates={false}
-            showLegend={false}
-            showDetails={false}
-            basemapStyle="mapbox://styles/mapbox/dark-v11"
-            observedRadianceCells={currentCells}
-            showObservedRadianceCells
-            onObservedCellSelect={chooseCell("current", currentMonth)}
-            mapCaption={`BICOL · ${currentDatasetLabel} · ${currentMonth}`}
-            mapAriaLabel={`${currentDatasetLabel} for ${currentMonth}`}
-            disclaimerText=""
-            height={compact ? 350 : 600}
-            syncGroup="bicol-radiance-comparison"
-          />
-          {currentModeError && !comparisonError && (
-            <p className="radiance-transition-loading" role="status">
-              Loading {currentDatasetLabel.toLowerCase()}…
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="radiance-transition-legend">
-        <span>Lower measured / predicted radiance</span>
-        <i />
-        <span>Higher radiance</span>
-        <small>{manifest?.units}</small>
-      </div>
-
-      {manifest && (
-        <section
-          className="radiance-transition-validation"
-          aria-label="Chronological Random Forest validation"
-        >
-          <div className="radiance-transition-validation-heading">
-            <strong>Spatial Random Forest holdout</strong>
-            <span>
-              {manifest.metrics.test_samples.toLocaleString()} cell-months ·{" "}
-              {manifest.metrics.disclaimer}
+      <div className="radiance-transition-dashboard">
+        <div className="radiance-transition-main">
+          <div className="radiance-transition-maps">
+            <div className="radiance-transition-map-panel">
+              <span className="radiance-transition-map-label">
+                OBSERVED · {baselineMonth || "Loading"}
+              </span>
+              {regionBounds ? (
+                <TransitionMap
+                  events={EMPTY_EVENTS}
+                  onSelect={() => {}}
+                  cells={false}
+                  plume={false}
+                  candidates={false}
+                  showLegend={false}
+                  showDetails={false}
+                  basemapStyle="mapbox://styles/mapbox/dark-v11"
+                  observedRadianceCells={baselineCells}
+                  showObservedRadianceCells
+                  onObservedCellSelect={chooseCell("baseline", baselineMonth)}
+                  mapCaption={`${manifest?.region ?? "REGION"} · OBSERVED · ${baselineMonth}`}
+                  mapAriaLabel={`Observed Black Marble radiance for ${baselineMonth}`}
+                  disclaimerText=""
+                  height={compact ? 350 : 600}
+                  syncGroup="bicol-radiance-comparison"
+                  regionBounds={regionBounds}
+                />
+              ) : (
+                <div className="radiance-transition-map-placeholder" role="status">
+                  Waiting for Black Marble region metadata…
+                </div>
+              )}
+            </div>
+            <span className="radiance-transition-divider" aria-hidden="true">
+              →
             </span>
+            <div className="radiance-transition-map-panel">
+              <span className="radiance-transition-map-label">
+                {currentMode === "forecast" ? "RF FORECAST" : "OBSERVED"} ·{" "}
+                {currentMonth || "Loading"}
+              </span>
+              {regionBounds ? (
+                <TransitionMap
+                  events={EMPTY_EVENTS}
+                  onSelect={() => {}}
+                  cells={false}
+                  plume={false}
+                  candidates={false}
+                  showLegend={false}
+                  showDetails={false}
+                  basemapStyle="mapbox://styles/mapbox/dark-v11"
+                  observedRadianceCells={currentCells}
+                  showObservedRadianceCells
+                  onObservedCellSelect={chooseCell("current", currentMonth)}
+                  mapCaption={`${manifest?.region ?? "REGION"} · ${currentDatasetLabel} · ${currentMonth}`}
+                  mapAriaLabel={`${currentDatasetLabel} for ${currentMonth}`}
+                  disclaimerText=""
+                  height={compact ? 350 : 600}
+                  syncGroup="bicol-radiance-comparison"
+                  regionBounds={regionBounds}
+                />
+              ) : (
+                <div className="radiance-transition-map-placeholder" role="status">
+                  Waiting for Black Marble region metadata…
+                </div>
+              )}
+              {currentModeError && !comparisonError && (
+                <p className="radiance-transition-loading" role="status">
+                  Loading {currentDatasetLabel.toLowerCase()}…
+                </p>
+              )}
+            </div>
           </div>
-          <div className="radiance-transition-validation-row">
-            <label htmlFor="radiance-direction-accuracy">
-              Increase-direction accuracy
-            </label>
-            <progress
-              id="radiance-direction-accuracy"
-              max="1"
-              value={manifest.metrics.direction.accuracy}
-            />
-            <strong>
-              {(manifest.metrics.direction.accuracy * 100).toFixed(1)}%
-            </strong>
-          </div>
-          <div className="radiance-transition-validation-row">
-            <label htmlFor="radiance-direction-balanced-accuracy">
-              Balanced accuracy
-            </label>
-            <progress
-              id="radiance-direction-balanced-accuracy"
-              max="1"
-              value={manifest.metrics.direction.balanced_accuracy}
-            />
-            <strong>
-              {(manifest.metrics.direction.balanced_accuracy * 100).toFixed(1)}%
-            </strong>
-          </div>
-          <small>
-            Chronological holdout: {manifest.metrics.test_period.start}–
-            {manifest.metrics.test_period.end}.{" "}
-            {manifest.metrics.direction.accuracy >= 0.75
-              ? "Direction accuracy meets "
-              : "Direction accuracy is below "}
-            the requested 75% target; balanced accuracy accounts for class
-            imbalance. Radiance MAE:{" "}
-            {manifest.metrics.regression.mae.toFixed(3)}{" "}
-            {manifest.units}.
-          </small>
-        </section>
-      )}
 
-      {selectedCell && (
-        <aside className="radiance-transition-selection" aria-live="polite">
-          <header>
-            <MapPin size={17} />
-            <div>
-              <strong>Selected cell · {placeName || "Resolving place name…"}</strong>
-              {placeError && <small>{placeError}</small>}
-            </div>
-          </header>
-          <dl>
-            <div>
-              <dt>Location</dt>
-              <dd>
-                {selectedCell.latitude.toFixed(5)}°,{" "}
-                {selectedCell.longitude.toFixed(5)}°
-              </dd>
-            </div>
-            <div>
-              <dt>Selected layer</dt>
-              <dd>
-                {selectedSide === "baseline" ? "Observed" : currentDatasetLabel}{" "}
-                · {selectedMonth}
-              </dd>
-            </div>
-            <div>
-              <dt>
-                {selectedCell.isForecast ? "Predicted radiance" : "Observed radiance"}
-              </dt>
-              <dd>{selectedCell.radiance.toFixed(4)} {manifest?.units}</dd>
-            </div>
-            {!selectedCell.isForecast && (
-              <div>
-                <dt>Valid observations</dt>
-                <dd>{selectedCell.observationCount.toLocaleString()}</dd>
+        </div>
+
+        <aside className="radiance-transition-sidebar" aria-label="Transition map details">
+          {manifest && (
+            <section
+              className="radiance-transition-validation"
+              aria-label="Chronological Random Forest validation"
+            >
+              <div className="radiance-transition-validation-heading">
+                <strong>Spatial Random Forest holdout</strong>
+                <span>
+                  {manifest.metrics.test_samples.toLocaleString()} cell-months ·{" "}
+                  {manifest.metrics.disclaimer}
+                </span>
               </div>
-            )}
-            {selectedForecast && (
-              <>
-                <div>
-                  <dt>RF forecast · {currentMonth}</dt>
-                  <dd>
-                    {selectedForecast.radiance.toFixed(4)} {manifest?.units}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Model probability of increase</dt>
-                  <dd>
-                    {((selectedForecast.increaseProbability ?? 0) * 100).toFixed(1)}%
-                    <small> · exploratory, not calibrated</small>
-                  </dd>
-                </div>
-              </>
-            )}
-            {(selectedCell.isForecast || selectedForecast) && previousCell && (
-              <div>
-                <dt>Change vs previous observed month</dt>
-                <dd>
-                  {(selectedForecast?.radiance ?? selectedCell.radiance) -
-                    previousCell.radiance >=
-                  0 ? (
-                    <ArrowUpRight size={14} aria-label="increase" />
-                  ) : (
-                    <ArrowDownRight size={14} aria-label="decrease" />
-                  )}
-                  {(
-                    (selectedForecast?.radiance ?? selectedCell.radiance) -
-                    previousCell.radiance
-                  ).toFixed(4)}{" "}
-                  {manifest?.units}
-                </dd>
+              <div className="radiance-transition-validation-row">
+                <label htmlFor="radiance-direction-accuracy">
+                  Increase-direction accuracy
+                </label>
+                <progress
+                  id="radiance-direction-accuracy"
+                  max="1"
+                  value={manifest.metrics.direction.accuracy}
+                />
+                <strong>
+                  {(manifest.metrics.direction.accuracy * 100).toFixed(1)}%
+                </strong>
               </div>
-            )}
-          </dl>
-          {selectedForecast && (
-            <p className="radiance-transition-action">
-              {selectedForecast.increaseProbability !== undefined &&
-              selectedForecast.increaseProbability >= 0.5
-                ? "Review this cell against local lighting or construction records and corroborating imagery before taking action."
-                : "Continue routine monitoring; verify any decision with independent imagery or local records."}
-              {" "}This is a screening prompt, not a causal impact finding.
-            </p>
+              <div className="radiance-transition-validation-row">
+                <label htmlFor="radiance-direction-balanced-accuracy">
+                  Balanced accuracy
+                </label>
+                <progress
+                  id="radiance-direction-balanced-accuracy"
+                  max="1"
+                  value={manifest.metrics.direction.balanced_accuracy}
+                />
+                <strong>
+                  {(manifest.metrics.direction.balanced_accuracy * 100).toFixed(1)}%
+                </strong>
+              </div>
+              <small>
+                Chronological holdout: {manifest.metrics.test_period.start}–
+                {manifest.metrics.test_period.end}.{" "}
+                {manifest.metrics.direction.accuracy >= 0.75
+                  ? "Direction accuracy meets "
+                  : "Direction accuracy is below "}
+                the requested 75% target; balanced accuracy accounts for class
+                imbalance. Radiance MAE:{" "}
+                {manifest.metrics.regression.mae.toFixed(3)}{" "}
+                {manifest.units}.
+              </small>
+            </section>
           )}
-        </aside>
-      )}
 
-      <p className="radiance-transition-note">
-        {manifest?.disclaimer ??
-          "Observed maps use quality-screened NASA VNP46A3 cells. Forecasts are exploratory and do not establish causal impact."}
-        {" "}Map extent uses the available Bicol grid bounds, not an administrative boundary.
-      </p>
+          <div className="radiance-transition-legend">
+            <span>Lower measured / predicted radiance</span>
+            <i />
+            <span>Higher radiance</span>
+            <small>{manifest?.units}</small>
+          </div>
+
+          {selectedCell ? (
+            <section className="radiance-transition-selection" aria-live="polite">
+              <header>
+                <MapPin size={17} />
+                <div>
+                  <strong>Selected cell · {placeName || "Resolving place name…"}</strong>
+                  {placeError && <small>{placeError}</small>}
+                </div>
+              </header>
+              <dl>
+                <div>
+                  <dt>Location</dt>
+                  <dd>
+                    {selectedCell.latitude.toFixed(5)}°,{" "}
+                    {selectedCell.longitude.toFixed(5)}°
+                  </dd>
+                </div>
+                <div>
+                  <dt>Selected layer</dt>
+                  <dd>
+                    {selectedSide === "baseline" ? "Observed" : currentDatasetLabel}{" "}
+                    · {selectedMonth}
+                  </dd>
+                </div>
+                <div>
+                  <dt>
+                    {selectedCell.isForecast ? "Predicted radiance" : "Observed radiance"}
+                  </dt>
+                  <dd>{selectedCell.radiance.toFixed(4)} {manifest?.units}</dd>
+                </div>
+                {!selectedCell.isForecast && (
+                  <div>
+                    <dt>Valid observations</dt>
+                    <dd>{selectedCell.observationCount.toLocaleString()}</dd>
+                  </div>
+                )}
+                {selectedForecast && (
+                  <>
+                    <div>
+                      <dt>RF forecast · {currentMonth}</dt>
+                      <dd>
+                        {selectedForecast.radiance.toFixed(4)} {manifest?.units}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Model probability of increase</dt>
+                      <dd>
+                        {((selectedForecast.increaseProbability ?? 0) * 100).toFixed(1)}%
+                        <small> · exploratory, not calibrated</small>
+                      </dd>
+                    </div>
+                  </>
+                )}
+                {(selectedCell.isForecast || selectedForecast) && previousCell && (
+                  <div>
+                    <dt>Change vs previous observed month</dt>
+                    <dd>
+                      {(selectedForecast?.radiance ?? selectedCell.radiance) -
+                        previousCell.radiance >=
+                      0 ? (
+                        <ArrowUpRight size={14} aria-label="increase" />
+                      ) : (
+                        <ArrowDownRight size={14} aria-label="decrease" />
+                      )}
+                      {(
+                        (selectedForecast?.radiance ?? selectedCell.radiance) -
+                        previousCell.radiance
+                      ).toFixed(4)}{" "}
+                      {manifest?.units}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              {selectedForecast && (
+                <p className="radiance-transition-action">
+                  {selectedForecast.increaseProbability !== undefined &&
+                  selectedForecast.increaseProbability >= 0.5
+                    ? "Review this cell against local lighting or construction records and corroborating imagery before taking action."
+                    : "Continue routine monitoring; verify any decision with independent imagery or local records."}
+                  {" "}This is a screening prompt, not a causal impact finding.
+                </p>
+              )}
+            </section>
+          ) : (
+            <section className="radiance-transition-selection radiance-transition-selection-empty" aria-live="polite">
+              <header>
+                <MapPin size={17} />
+                <div>
+                  <strong>Selected cell</strong>
+                  <small>Click a cell on either map to inspect its available data.</small>
+                </div>
+              </header>
+            </section>
+          )}
+
+          <p className="radiance-transition-note">
+            {manifest?.disclaimer ??
+              "Observed maps use quality-screened NASA VNP46A3 cells. Forecasts are exploratory and do not establish causal impact."}
+            {" "}Map extent uses the available {manifest?.region ?? "regional"} grid bounds, not an administrative boundary.
+          </p>
+        </aside>
+      </div>
     </section>
   );
 }

@@ -1,0 +1,1186 @@
+{
+  "formatVersion": 1,
+  "product": "MERRA-2 M2T1NXSLV 5.12.4",
+  "source": "NASA Giovanni area-average time series",
+  "sourceCatalog": "https://giovanni.gsfc.nasa.gov/giovanni/",
+  "productMetadata": "https://disc.gsfc.nasa.gov/datasets/M2T1NXSLV_5.12.4/summary",
+  "sourceStart": "2016-01-01T00:00:00.000Z",
+  "sourceEnd": "2026-10-01T00:00:00.000Z",
+  "bounds": [
+    116,
+    4,
+    127,
+    22
+  ],
+  "units": "m s-1",
+  "variables": {
+    "eastward": "U10M",
+    "northward": "V10M"
+  },
+  "months": [
+    "2016-01",
+    "2016-02",
+    "2016-03",
+    "2016-04",
+    "2016-05",
+    "2016-06",
+    "2016-07",
+    "2016-08",
+    "2016-09",
+    "2016-10",
+    "2016-11",
+    "2016-12",
+    "2017-01",
+    "2017-02",
+    "2017-03",
+    "2017-04",
+    "2017-05",
+    "2017-06",
+    "2017-07",
+    "2017-08",
+    "2017-09",
+    "2017-10",
+    "2017-11",
+    "2017-12",
+    "2018-01",
+    "2018-02",
+    "2018-03",
+    "2018-04",
+    "2018-05",
+    "2018-06",
+    "2018-07",
+    "2018-08",
+    "2018-09",
+    "2018-10",
+    "2018-11",
+    "2018-12",
+    "2019-01",
+    "2019-02",
+    "2019-03",
+    "2019-04",
+    "2019-05",
+    "2019-06",
+    "2019-07",
+    "2019-08",
+    "2019-09",
+    "2019-10",
+    "2019-11",
+    "2019-12",
+    "2020-01",
+    "2020-02",
+    "2020-03",
+    "2020-04",
+    "2020-05",
+    "2020-06",
+    "2020-07",
+    "2020-08",
+    "2020-09",
+    "2020-10",
+    "2020-11",
+    "2020-12",
+    "2021-01",
+    "2021-02",
+    "2021-03",
+    "2021-04",
+    "2021-05",
+    "2021-06",
+    "2021-07",
+    "2021-08",
+    "2021-09",
+    "2021-10",
+    "2021-11",
+    "2021-12",
+    "2022-01",
+    "2022-02",
+    "2022-03",
+    "2022-04",
+    "2022-05",
+    "2022-06",
+    "2022-07",
+    "2022-08",
+    "2022-09",
+    "2022-10",
+    "2022-11",
+    "2022-12",
+    "2023-01",
+    "2023-02",
+    "2023-03",
+    "2023-04",
+    "2023-05",
+    "2023-06",
+    "2023-07",
+    "2023-08",
+    "2023-09",
+    "2023-10",
+    "2023-11",
+    "2023-12",
+    "2024-01",
+    "2024-02",
+    "2024-03",
+    "2024-04",
+    "2024-05",
+    "2024-06",
+    "2024-07",
+    "2024-08",
+    "2024-09",
+    "2024-10",
+    "2024-11",
+    "2024-12",
+    "2025-01",
+    "2025-02",
+    "2025-03",
+    "2025-04",
+    "2025-05",
+    "2025-06",
+    "2025-07",
+    "2025-08",
+    "2025-09",
+    "2025-10",
+    "2025-11",
+    "2025-12",
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08",
+    "2026-09"
+  ],
+  "records": [
+    {
+      "month": "2016-01",
+      "u10mMeanMps": -4.178464014233872,
+      "v10mMeanMps": -2.5785885711590057,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-02",
+      "u10mMeanMps": -4.42590321192529,
+      "v10mMeanMps": -3.5948963212557445,
+      "validHourPairs": 696,
+      "expectedHourCount": 696,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-03",
+      "u10mMeanMps": -3.1865632363440857,
+      "v10mMeanMps": -1.861027435833065,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-04",
+      "u10mMeanMps": -2.548226701343055,
+      "v10mMeanMps": 0.37999234896041717,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-05",
+      "u10mMeanMps": -1.7931038548590046,
+      "v10mMeanMps": 1.188984355121909,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-06",
+      "u10mMeanMps": 0.10370995440208329,
+      "v10mMeanMps": 1.780911619005278,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-07",
+      "u10mMeanMps": 0.2547109569829293,
+      "v10mMeanMps": 1.66606238789906,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-08",
+      "u10mMeanMps": 3.0482663369220435,
+      "v10mMeanMps": 2.7996950381172043,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-09",
+      "u10mMeanMps": 1.3508890406597218,
+      "v10mMeanMps": 1.4542299302620831,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-10",
+      "u10mMeanMps": -1.0738370670793016,
+      "v10mMeanMps": 0.10658743539072525,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-11",
+      "u10mMeanMps": -3.863752881020832,
+      "v10mMeanMps": -2.50529602770236,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2016-12",
+      "u10mMeanMps": -4.323792140873656,
+      "v10mMeanMps": -2.918677887450264,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-01",
+      "u10mMeanMps": -4.895330017473124,
+      "v10mMeanMps": -3.3542086731182787,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-02",
+      "u10mMeanMps": -4.469625622247019,
+      "v10mMeanMps": -3.7440753610059505,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-03",
+      "u10mMeanMps": -3.559284179189514,
+      "v10mMeanMps": -2.1825730000145187,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-04",
+      "u10mMeanMps": -2.3157940296083357,
+      "v10mMeanMps": -0.7309605978900827,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-05",
+      "u10mMeanMps": -1.4515419956829305,
+      "v10mMeanMps": 0.8768845311066661,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-06",
+      "u10mMeanMps": 0.2825664724031946,
+      "v10mMeanMps": 2.2596949520388865,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-07",
+      "u10mMeanMps": 0.36541279978763463,
+      "v10mMeanMps": 2.5209756428091388,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-08",
+      "u10mMeanMps": 0.9385434670489247,
+      "v10mMeanMps": 1.9142683740026873,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-09",
+      "u10mMeanMps": -0.14462576522444473,
+      "v10mMeanMps": 1.1345935108719443,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-10",
+      "u10mMeanMps": -0.837699069934541,
+      "v10mMeanMps": -1.2040719656631724,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-11",
+      "u10mMeanMps": -4.3769734823611115,
+      "v10mMeanMps": -2.157992660779168,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2017-12",
+      "u10mMeanMps": -3.8072187760013416,
+      "v10mMeanMps": -3.9200232353494617,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-01",
+      "u10mMeanMps": -4.31398676290323,
+      "v10mMeanMps": -3.115939126926613,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-02",
+      "u10mMeanMps": -3.2225940213452384,
+      "v10mMeanMps": -3.5612811278285674,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-03",
+      "u10mMeanMps": -3.3625202686008113,
+      "v10mMeanMps": -3.015875405296369,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-04",
+      "u10mMeanMps": -3.14026608202778,
+      "v10mMeanMps": -1.504713969531944,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-05",
+      "u10mMeanMps": -2.1795227503037626,
+      "v10mMeanMps": 0.11403906230147841,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-06",
+      "u10mMeanMps": 1.4846378825493067,
+      "v10mMeanMps": 2.7296659088333355,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-07",
+      "u10mMeanMps": 2.43705511793414,
+      "v10mMeanMps": 2.7120977503494643,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-08",
+      "u10mMeanMps": 2.896724582785721,
+      "v10mMeanMps": 3.698657504077956,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-09",
+      "u10mMeanMps": 1.2402073955912505,
+      "v10mMeanMps": 0.32820011613986294,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-10",
+      "u10mMeanMps": -1.848216933673389,
+      "v10mMeanMps": -2.014720043745258,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-11",
+      "u10mMeanMps": -4.041871359722228,
+      "v10mMeanMps": -2.3366350681430563,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2018-12",
+      "u10mMeanMps": -4.328544823803765,
+      "v10mMeanMps": -3.471099860698923,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-01",
+      "u10mMeanMps": -4.966005847177418,
+      "v10mMeanMps": -3.6217002342741953,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-02",
+      "u10mMeanMps": -3.999313061904761,
+      "v10mMeanMps": -1.7311097556250008,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-03",
+      "u10mMeanMps": -3.021325514813175,
+      "v10mMeanMps": -1.4350979887676065,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-04",
+      "u10mMeanMps": -2.669109358145831,
+      "v10mMeanMps": 0.07083633831605567,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-05",
+      "u10mMeanMps": -0.06296127161357493,
+      "v10mMeanMps": 0.8183190793561832,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-06",
+      "u10mMeanMps": 0.5274626957266667,
+      "v10mMeanMps": 2.6853784685416664,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-07",
+      "u10mMeanMps": 1.5231547342150535,
+      "v10mMeanMps": 3.0798305998790316,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-08",
+      "u10mMeanMps": 3.055768541934143,
+      "v10mMeanMps": 3.2577946022002684,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-09",
+      "u10mMeanMps": 1.221142891622222,
+      "v10mMeanMps": 1.3812201183859447,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-10",
+      "u10mMeanMps": -2.500081821301076,
+      "v10mMeanMps": -1.8818980227463702,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-11",
+      "u10mMeanMps": -2.1267317932666674,
+      "v10mMeanMps": -2.2814051908331976,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2019-12",
+      "u10mMeanMps": -3.89563050354839,
+      "v10mMeanMps": -3.3822713308759424,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-01",
+      "u10mMeanMps": -4.131718343471775,
+      "v10mMeanMps": -3.33521343282527,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-02",
+      "u10mMeanMps": -5.011540662787362,
+      "v10mMeanMps": -3.2604400114127836,
+      "validHourPairs": 696,
+      "expectedHourCount": 696,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-03",
+      "u10mMeanMps": -3.3363124300591394,
+      "v10mMeanMps": -1.4307735785309141,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-04",
+      "u10mMeanMps": -3.5046679276305555,
+      "v10mMeanMps": -1.6235386458472627,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-05",
+      "u10mMeanMps": -1.2060745481301072,
+      "v10mMeanMps": 1.3381610354393816,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-06",
+      "u10mMeanMps": -0.9440961471986109,
+      "v10mMeanMps": 1.9117085568166654,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-07",
+      "u10mMeanMps": -1.0499035470201616,
+      "v10mMeanMps": 1.809401659379033,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-08",
+      "u10mMeanMps": 0.4745848120153225,
+      "v10mMeanMps": 2.0721475939064486,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-09",
+      "u10mMeanMps": -0.4094120016195841,
+      "v10mMeanMps": 0.6695930048010423,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-10",
+      "u10mMeanMps": -1.5047387058430104,
+      "v10mMeanMps": -0.7033913456977149,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-11",
+      "u10mMeanMps": -3.629343612168611,
+      "v10mMeanMps": -2.4539852990569435,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2020-12",
+      "u10mMeanMps": -3.8911185383064537,
+      "v10mMeanMps": -2.920318412069894,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-01",
+      "u10mMeanMps": -4.307927332647849,
+      "v10mMeanMps": -4.046921463118278,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-02",
+      "u10mMeanMps": -3.296355523594344,
+      "v10mMeanMps": -3.248327057267863,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-03",
+      "u10mMeanMps": -3.672607977419359,
+      "v10mMeanMps": -2.019716201755105,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-04",
+      "u10mMeanMps": -1.4545374408809715,
+      "v10mMeanMps": -2.211369102152775,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-05",
+      "u10mMeanMps": -2.0554046455598147,
+      "v10mMeanMps": 0.495440231669355,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-06",
+      "u10mMeanMps": 1.0923327917054162,
+      "v10mMeanMps": 2.6319714112916683,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-07",
+      "u10mMeanMps": 1.762368606296102,
+      "v10mMeanMps": 2.467876506510752,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-08",
+      "u10mMeanMps": 0.26602618005215073,
+      "v10mMeanMps": 2.140410993201075,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-09",
+      "u10mMeanMps": -0.5099121933298606,
+      "v10mMeanMps": 0.7320109804363901,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-10",
+      "u10mMeanMps": -2.038098792787633,
+      "v10mMeanMps": -0.7037728004543014,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-11",
+      "u10mMeanMps": -3.801555165930553,
+      "v10mMeanMps": -2.344769749538889,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2021-12",
+      "u10mMeanMps": -4.624780979704299,
+      "v10mMeanMps": -4.084273802271503,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-01",
+      "u10mMeanMps": -4.078671692468417,
+      "v10mMeanMps": -2.9132993509973124,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-02",
+      "u10mMeanMps": -4.691420471279759,
+      "v10mMeanMps": -2.936732995351934,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-03",
+      "u10mMeanMps": -3.392425774125942,
+      "v10mMeanMps": -1.254260057546075,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-04",
+      "u10mMeanMps": -2.6960316440027765,
+      "v10mMeanMps": -1.5093170555448348,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-05",
+      "u10mMeanMps": -1.7211710600366938,
+      "v10mMeanMps": 1.467623714544355,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-06",
+      "u10mMeanMps": -0.8905829758361105,
+      "v10mMeanMps": 2.0173573377936105,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-07",
+      "u10mMeanMps": 0.1602013944157257,
+      "v10mMeanMps": 2.1296170008844086,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-08",
+      "u10mMeanMps": -0.1833009776809142,
+      "v10mMeanMps": 1.8284481648405888,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-09",
+      "u10mMeanMps": 1.4011428579551404,
+      "v10mMeanMps": 1.0077822104941676,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-10",
+      "u10mMeanMps": -1.7609471280412647,
+      "v10mMeanMps": -0.8949273685619618,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-11",
+      "u10mMeanMps": -3.56175424249861,
+      "v10mMeanMps": -1.2143878542255546,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2022-12",
+      "u10mMeanMps": -3.7106795487553756,
+      "v10mMeanMps": -3.9069975125,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-01",
+      "u10mMeanMps": -4.503446564939514,
+      "v10mMeanMps": -3.7266559946505384,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-02",
+      "u10mMeanMps": -4.183127154032742,
+      "v10mMeanMps": -3.4635459520982175,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-03",
+      "u10mMeanMps": -3.334180995967742,
+      "v10mMeanMps": -2.787747511626747,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-04",
+      "u10mMeanMps": -2.249890344012081,
+      "v10mMeanMps": -1.0295467356372223,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-05",
+      "u10mMeanMps": -0.10161882343414023,
+      "v10mMeanMps": 0.45901109866841394,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-06",
+      "u10mMeanMps": 0.3472333188928753,
+      "v10mMeanMps": 2.1814552377361127,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-07",
+      "u10mMeanMps": 0.6977329499313171,
+      "v10mMeanMps": 2.3844822172662643,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-08",
+      "u10mMeanMps": 3.126651438145161,
+      "v10mMeanMps": 2.9464257145161294,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-09",
+      "u10mMeanMps": 0.8260382243694446,
+      "v10mMeanMps": 1.3805598264252783,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-10",
+      "u10mMeanMps": -1.7015507628427435,
+      "v10mMeanMps": -0.48570752546774176,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-11",
+      "u10mMeanMps": -4.25011364041667,
+      "v10mMeanMps": -2.830211361819449,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2023-12",
+      "u10mMeanMps": -4.670369325268817,
+      "v10mMeanMps": -3.2331873413978465,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-01",
+      "u10mMeanMps": -4.894212235215053,
+      "v10mMeanMps": -3.8817069858870927,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-02",
+      "u10mMeanMps": -4.580255911781612,
+      "v10mMeanMps": -2.411544818290232,
+      "validHourPairs": 696,
+      "expectedHourCount": 696,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-03",
+      "u10mMeanMps": -3.8999081659677377,
+      "v10mMeanMps": -1.732692502135319,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-04",
+      "u10mMeanMps": -2.9199768363847216,
+      "v10mMeanMps": 0.4031372441185414,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-05",
+      "u10mMeanMps": -2.433965165903225,
+      "v10mMeanMps": 0.7665651967549738,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-06",
+      "u10mMeanMps": -0.42740056426986084,
+      "v10mMeanMps": 2.1227708230833326,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-07",
+      "u10mMeanMps": 0.05528150090954322,
+      "v10mMeanMps": 2.6742051534668017,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-08",
+      "u10mMeanMps": 1.4164618362253902,
+      "v10mMeanMps": 1.694177044845025,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-09",
+      "u10mMeanMps": 1.0906124758854174,
+      "v10mMeanMps": 2.323023494844584,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-10",
+      "u10mMeanMps": -0.39140142964852265,
+      "v10mMeanMps": -0.2837088522782261,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-11",
+      "u10mMeanMps": -3.4918642196527765,
+      "v10mMeanMps": -2.2382293101619033,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2024-12",
+      "u10mMeanMps": -4.415728111424729,
+      "v10mMeanMps": -3.4390904614247293,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-01",
+      "u10mMeanMps": -4.600714743279565,
+      "v10mMeanMps": -3.716721852305107,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-02",
+      "u10mMeanMps": -4.994658285119054,
+      "v10mMeanMps": -2.8392024387226207,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-03",
+      "u10mMeanMps": -3.92857178561828,
+      "v10mMeanMps": -2.0703722372070295,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-04",
+      "u10mMeanMps": -2.32613828117917,
+      "v10mMeanMps": -0.7999596159833332,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-05",
+      "u10mMeanMps": -2.050948244352147,
+      "v10mMeanMps": 1.1212320133034939,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-06",
+      "u10mMeanMps": 0.3706824136883886,
+      "v10mMeanMps": 2.1973515684722216,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-07",
+      "u10mMeanMps": 3.0123888773965053,
+      "v10mMeanMps": 3.7707865663440905,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-08",
+      "u10mMeanMps": 0.09575688660618288,
+      "v10mMeanMps": 1.9702693697715068,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-09",
+      "u10mMeanMps": -0.7732761852455561,
+      "v10mMeanMps": 1.5754176870034744,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-10",
+      "u10mMeanMps": -1.9869053850309657,
+      "v10mMeanMps": -0.6062164022711026,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-11",
+      "u10mMeanMps": -2.6063090182055575,
+      "v10mMeanMps": -2.1090276241687507,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2025-12",
+      "u10mMeanMps": -4.010369824099464,
+      "v10mMeanMps": -3.492159538844083,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-01",
+      "u10mMeanMps": -3.4170044270443536,
+      "v10mMeanMps": -4.280231516935482,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-02",
+      "u10mMeanMps": -4.143244082797618,
+      "v10mMeanMps": -2.9223234230952393,
+      "validHourPairs": 672,
+      "expectedHourCount": 672,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-03",
+      "u10mMeanMps": -3.578493080860218,
+      "v10mMeanMps": -2.730296060643414,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-04",
+      "u10mMeanMps": -2.1836768630727756,
+      "v10mMeanMps": -0.22370799299333366,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-05",
+      "u10mMeanMps": -1.2471851288279583,
+      "v10mMeanMps": 0.03611474069572581,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-06",
+      "u10mMeanMps": 0.5408876045734027,
+      "v10mMeanMps": 2.7675046184625,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-07",
+      "u10mMeanMps": 0.7051368515363845,
+      "v10mMeanMps": 2.573076912368684,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-08",
+      "u10mMeanMps": 3.433806302392473,
+      "v10mMeanMps": 4.351287254745969,
+      "validHourPairs": 744,
+      "expectedHourCount": 744,
+      "completeMonth": true
+    },
+    {
+      "month": "2026-09",
+      "u10mMeanMps": 0.5210284999777084,
+      "v10mMeanMps": 1.4206802839992367,
+      "validHourPairs": 720,
+      "expectedHourCount": 720,
+      "completeMonth": true
+    }
+  ],
+  "scopeNote": "Monthly means of matched hourly 10 m wind-component area averages over the source bounding box. These are regional context values, not Bicol-specific or cell-level measurements."
+}

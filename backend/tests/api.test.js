@@ -103,6 +103,112 @@ test("signup awaiting email confirmation does not authenticate or create a works
     await client.close();
   }
 });
+test("current-user response uses the database profile and signup cannot select an elevated role", async () => {
+  const client = await start(supabaseFixture());
+  try {
+    assert.equal((await client.request("/me")).status, 401);
+    const signup = await client.request("/signup", "POST", {
+      name: "Ordinary Resident",
+      email: "resident@example.com",
+      password: "test-password",
+      role: "ADMIN",
+    });
+    assert.equal(signup.status, 201);
+    const me = await client.request("/me");
+    assert.equal(me.status, 200);
+    assert.equal(me.data.profile.name, "Ordinary Resident");
+    assert.equal(me.data.profile.role, "RESIDENT");
+    assert.equal(me.data.profile.status, "ACTIVE");
+    assert.equal(me.data.session.token_type, "bearer");
+    assert.equal("access_token" in me.data.session, false);
+    assert.equal("refresh_token" in me.data.session, false);
+    assert.equal((await client.request("/admin/dashboard")).status, 403);
+    assert.equal(
+      (await client.request("/admin/reports", "POST", {
+        title: "Not authorized",
+        description: "A resident cannot write through the admin route",
+      })).status,
+      403,
+    );
+  } finally {
+    await client.close();
+  }
+});
+test("suspended profiles can inspect their current status but cannot use protected APIs", async () => {
+  const client = await start(supabaseFixture({
+    profileOverrides: {
+      "suspended@example.com": { status: "SUSPENDED" },
+    },
+  }));
+  try {
+    assert.equal((await client.request("/session", "POST", {
+      email: "suspended@example.com",
+      password: "test-password",
+    })).status, 403);
+    assert.equal((await client.request("/me")).data.profile.status, "SUSPENDED");
+    assert.equal((await client.request("/workspace")).status, 403);
+    assert.equal((await client.request("/admin/users")).status, 403);
+  } finally {
+    await client.close();
+  }
+});
+test("admin user listing and status changes use persisted profiles", async () => {
+  const fixture = supabaseFixture({
+    profileOverrides: {
+      "admin@example.com": { role: "ADMIN" },
+    },
+  });
+  const resident = await start(fixture);
+  const admin = await start(fixture);
+  try {
+    assert.equal((await resident.request("/signup", "POST", {
+      name: "Portal Resident",
+      email: "portal-resident@example.com",
+      password: "test-password",
+    })).status, 201);
+    const residentId = (await resident.request("/me")).data.profile.id;
+    assert.equal((await admin.request("/session", "POST", {
+      email: "admin@example.com",
+      password: "test-password",
+    })).status, 200);
+    const listing = await admin.request("/admin/users?role=RESIDENT");
+    assert.equal(listing.status, 200);
+    assert.equal(listing.data.users.length, 1);
+    assert.equal(listing.data.users[0].id, residentId);
+    const changed = await admin.request(
+      `/admin/users/${residentId}`,
+      "PATCH",
+      { status: "SUSPENDED" },
+    );
+    assert.equal(changed.status, 200);
+    assert.equal(changed.data.user.status, "SUSPENDED");
+    assert.equal((await resident.request("/workspace")).status, 403);
+  } finally {
+    await resident.close();
+    await admin.close();
+  }
+});
+test("admin dashboard reports persisted counts and does not invent pipeline metrics", async () => {
+  const client = await start(supabaseFixture({
+    profileOverrides: {
+      "admin@example.com": { role: "ADMIN" },
+    },
+  }));
+  try {
+    assert.equal((await client.request("/session", "POST", {
+      email: "admin@example.com",
+      password: "test-password",
+    })).status, 200);
+    const dashboard = await client.request("/admin/dashboard");
+    assert.equal(dashboard.status, 200);
+    assert.equal(dashboard.data.metrics.totalUsers, 1);
+    assert.equal(dashboard.data.metrics.activeLgus, 0);
+    assert.equal(dashboard.data.metrics.failedJobs, null);
+    assert.deepEqual(dashboard.data.activity, []);
+  } finally {
+    await client.close();
+  }
+});
 test("Supabase SDK auth, workspace saves, validation, conflicts, and reloads", async () => {
   const fixture = supabaseFixture();
   let client = await start(fixture);
@@ -110,7 +216,11 @@ test("Supabase SDK auth, workspace saves, validation, conflicts, and reloads", a
     assert.equal((await client.request("/workspace")).status, 401);
     assert.equal((await client.request("/datasets")).status, 401);
     assert.equal((await client.request("/series")).status, 401);
-    assert.equal((await client.request("/health")).data.database, "supabase");
+    const health = await client.request("/health");
+    assert.equal(health.data.database, "supabase");
+    assert.equal(health.data.service, "ok");
+    assert.equal(health.data.databaseStatus, "configured");
+    assert.equal(health.data.databaseReachable, null);
     assert.equal(
       (
         await client.request("/session", "POST", credentials, {

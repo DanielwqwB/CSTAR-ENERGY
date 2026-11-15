@@ -12,11 +12,11 @@ it("updates AI Analytics counts as checklist items are checked and unchecked", a
   const total = within(checklist).getByRole("status");
   const model = within(checklist).getByRole("checkbox", { name: /ST-GNN/ });
 
-  expect(total.textContent).toBe("3 / 8 checked");
+  expect(total.textContent).toBe("1 / 8 checked");
   await user.click(model);
   expect(model.checked).toBe(true);
-  expect(total.textContent).toBe("4 / 8 checked");
+  expect(total.textContent).toBe("2 / 8 checked");
   await user.click(model);
   expect(model.checked).toBe(false);
-  expect(total.textContent).toBe("3 / 8 checked");
+  expect(total.textContent).toBe("1 / 8 checked");
 });

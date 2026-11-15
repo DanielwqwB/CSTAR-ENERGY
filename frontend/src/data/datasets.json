@@ -9,23 +9,23 @@
   [
     "Sentinel-5P TROPOMI",
     "L2 NO₂",
-    "Kilometer-scale atmospheric footprint",
+    "0.1° monthly grid",
     "Partial",
     "Tropospheric column; not street-level"
   ],
   [
-    "NASA MERRA-2 / GEOS-FP",
+    "NASA MERRA-2",
     "Meteorology",
-    "Gridded reanalysis / forecast",
-    "Ready",
-    "Wind and meteorological context"
+    "Area-average wind context",
+    "Partial",
+    "Monthly 10 m wind means over the Giovanni bounding box; not cell-specific"
   ],
   [
     "Sentinel-2",
     "L2A",
     "10–20 m context layers",
-    "Ready",
-    "Land cover and construction context"
+    "Unavailable",
+    "No connected imagery source or local dataset is configured"
   ],
   [
     "Verified local records",

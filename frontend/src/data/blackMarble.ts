@@ -1,4 +1,5 @@
 import type { FeatureCollection, Point } from "geojson";
+import { fetchGzip } from "./fetchGzip";
 
 export interface BlackMarbleCellProperties {
   gridIndex?: number;
@@ -27,14 +28,21 @@ export interface BlackMarbleCell {
 
 export interface BlackMarbleMonthlyManifest {
   formatVersion: number;
+  region: string;
+  bounds: [number, number, number, number];
   product: string;
   layer: string;
   units: string;
+  quality: string;
   cellCount: number;
   months: string[];
   forecastMonths: string[];
   latestObservedMonth: string;
   futureForecastMonth: string;
+  observedValueFormat: string;
+  forecastValueFormat: string;
+  gridValueFormat: string;
+  model: string;
   metrics: {
     regression: { mae: number; rmse: number };
     direction: {
@@ -46,7 +54,10 @@ export interface BlackMarbleMonthlyManifest {
       roc_auc: number | null;
     };
     test_samples: number;
+    test_pairs: number;
     test_period: { start: string; end: string };
+    target: string;
+    feature_names: string[];
     disclaimer: string;
   };
   disclaimer: string;
@@ -87,9 +98,14 @@ function isManifest(value: unknown): value is BlackMarbleMonthlyManifest {
   const { regression, direction, test_period } = metrics;
   return (
     Number.isInteger(value.formatVersion) &&
+    typeof value.region === "string" &&
+    Array.isArray(value.bounds) &&
+    value.bounds.length === 4 &&
+    value.bounds.every(isFiniteNumber) &&
     typeof value.product === "string" &&
     typeof value.layer === "string" &&
     typeof value.units === "string" &&
+    typeof value.quality === "string" &&
     Number.isInteger(value.cellCount) &&
     typeof value.cellCount === "number" &&
     value.cellCount > 0 &&
@@ -99,6 +115,10 @@ function isManifest(value: unknown): value is BlackMarbleMonthlyManifest {
     value.forecastMonths.every(isMonth) &&
     typeof value.latestObservedMonth === "string" &&
     typeof value.futureForecastMonth === "string" &&
+    typeof value.observedValueFormat === "string" &&
+    typeof value.forecastValueFormat === "string" &&
+    typeof value.gridValueFormat === "string" &&
+    typeof value.model === "string" &&
     isFiniteNumber(regression.mae) &&
     isFiniteNumber(regression.rmse) &&
     isFiniteNumber(direction.accuracy) &&
@@ -108,24 +128,15 @@ function isManifest(value: unknown): value is BlackMarbleMonthlyManifest {
     isFiniteNumber(direction.f1) &&
     (direction.roc_auc === null || isFiniteNumber(direction.roc_auc)) &&
     Number.isInteger(metrics.test_samples) &&
+    Number.isInteger(metrics.test_pairs) &&
     typeof test_period.start === "string" &&
     typeof test_period.end === "string" &&
+    typeof metrics.target === "string" &&
+    Array.isArray(metrics.feature_names) &&
+    metrics.feature_names.every((item) => typeof item === "string") &&
     typeof metrics.disclaimer === "string" &&
     typeof value.disclaimer === "string"
   );
-}
-
-async function fetchGzip(url: string): Promise<ArrayBuffer> {
-  const response = await fetch(url);
-  if (!response.ok)
-    throw new Error(`Map data could not be loaded (HTTP ${response.status}).`);
-  if (typeof DecompressionStream === "undefined")
-    throw new Error("This browser cannot decompress the monthly map data.");
-  const compressed = await response.arrayBuffer();
-  const stream = new Blob([compressed])
-    .stream()
-    .pipeThrough(new DecompressionStream("gzip"));
-  return new Response(stream).arrayBuffer();
 }
 
 function readFloat32View(buffer: ArrayBuffer, count: number): Float32Array {

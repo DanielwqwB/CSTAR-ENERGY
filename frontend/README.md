@@ -1,97 +1,95 @@
-# CSTAR—ENERGY frontend
+# CSTAR-Energy frontend
 
-React + TypeScript application connected to the local workspace API built with Vite. The interface is adapted from the supplied [design reference](https://olive-export-07938535.figma.site/).
+The active React and TypeScript workspace presents the generated Black Marble
+dataset and its existing spatial Random Forest outputs. It does not display
+synthetic event records or infer transition causes.
 
 ## Development
 
-Use Node.js 22.18+ or 24. From the repository root:
-
-```sh
+```powershell
 cd frontend
-npm install
-npm run dev
+npm.cmd install
+npm.cmd run dev
 ```
 
-On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm.ps1`. Open the URL printed by Vite. `npm start` is also available.
+Open the local URL printed by Vite. Verify changes with:
 
-Configure Supabase using [backend setup](../backend/README.md), then start the API in a second terminal (`cd backend` then `npm.cmd run dev` from the repository root). Sign in with an email/password account from your Supabase project. **Open demo workspace** requires anonymous sign-ins and `DEMO_ACCESS=true`.
-
-## Project layout
-
-```text
-frontend/
-  index.html                  Browser entry document
-  App.tsx                     App providers and screen selection
-  vite.config.ts              Development and production build
-  assets/city-night.jpg        Bundled sign-in photograph
-  src/
-    main.tsx                  React DOM entry point
-    styles.css                Browser styles and responsive layout
-    styles.ts                 Typed CSS style composition
-    theme.ts                  Shared palette and typography
-    components/               HTML controls, sidebar, SVG charts and map
-    screens/                  Sign-in and all 14 workspace sections
-    context/                  Shared state and API persistence
-    hooks/                    Browser viewport hook
-    data/                     Synthetic events, datasets, sample series
-    utils/                    Filters and browser file exports
-    types.ts                  Domain models
-  tests/                      Data/export tests and browser interaction tests
+```powershell
+npm.cmd run typecheck
+npm.cmd run test:ui
+npm.cmd run build
 ```
 
-## Functionality
+## Workspace views
 
-- Responsive sidebar, navigation menu for narrow windows, and guided tour.
-- Regional overview with a rotating Black Marble globe, location-linked cell details, interactive Mapbox maps, selectable event markers, event search and filters.
-- Event review, persisted analyst notes, evidence charts, plume screening, CCTF assessment.
-- Data explorer, persisted intervention records, alerts, reports, and profile preferences.
-- JSON, CSV, and text file downloads through browser APIs.
-- Persistence through `/api/workspace` in Supabase PostgreSQL, with one private workspace per Auth user. Sign-out clears the cookie session while preserving research work. Old localStorage and SQLite data are not automatically imported.
+- Dashboard pages fit the desktop viewport with side information panels.
+  AI Analytics and Cell Screening can scroll internally when their content
+  exceeds the available space. On narrow screens, panels flow into a single
+  page column.
+- **Intelligence overview:** rotating Mapbox globe, with location-specific
+  observed values and the trained cell-level forecast in side panels. Scroll or
+  pinch to zoom and drag to rotate; the AI Analytics checklist toggles available
+Black Marble, Sentinel-5P TROPOMI, and Random Forest map layers. TROPOMI is
+available for Bicol by month from January 2019 through December 2025 as
+QA-screened 0.1° grid cells; they are not native satellite footprints.
+MERRA-2 hourly U10M/V10M data is available as monthly wind-component context,
+averaged over the supplied Giovanni bounding box; it is not shown as a
+cell-level map layer. Sentinel-2 remains disabled until a real imagery source
+is configured. Unloaded datasets and models are not represented with
+placeholder data. AI Insights distinguish observed radiance from forecasts,
+compare the selected cell with an earlier month when both cell observations
+are available, and state model limitations and verification steps. Basemap
+terrain shading and boundaries add context without creating radiance
+observations.
+- **Regional transition map:** synchronized baseline and current Black Marble
+  maps, observed/forecast selection, month controls, and a fixed right sidebar
+  for model validation and selected-cell details.
+- **Observation coverage:** calendar-month availability from the generated
+  manifest; absent months are not interpolated.
+- **Model evaluation:** holdout metrics and limitations read from the same
+  manifest as the map.
+- **Data provenance:** region bounds, product, quality rule, data formats, and
+  model features from that manifest.
 
-There are no React Native or Expo runtime dependencies. Charts use standard SVG, forms use HTML inputs/selects/textareas, and icons use Lucide React. This project does not produce Android or iOS apps.
+## Admin portal
 
-## Verification and build
+Authenticated accounts with the `ADMIN` role are routed to `/admin/dashboard`.
+The portal loads its dashboard, users, jurisdictions, reports, dataset catalog,
+publication list, health status, and audit history from the backend API. User
+and report changes and jurisdiction creation are submitted to their
+corresponding admin endpoints; backend role guards remain the authorization
+boundary.
 
-```sh
-npm run typecheck
-npm test
-npm run test:ui
-npm run build
-npm run preview
-```
+Controls are shown only for operations supported by the current API. Password
+resets, jurisdiction editing and archiving, satellite ingestion/retries,
+publication workflow changes, and expanded infrastructure monitoring are not
+implemented in the current backend and are not presented as working actions.
+Non-admin roles that visit `/admin/*` receive an access-denied view.
 
-The production site is written to `dist/`. UI tests use React Testing Library and jsdom; they verify browser interactions but do not replace visual inspection in an actual browser.
+## Data and map setup
 
-## Data scope
+The browser reads `/data/blackmarble/manifest.json` and the compressed grid,
+observation, and forecast assets in `public/data/blackmarble/`. Regenerate
+these files from the quality-screened VNP46A3 source data with the spatial
+forecast command documented in the repository root README.
 
-The map uses quality-screened monthly NASA VNP46A3 Collection 2 Black Marble
-observations for Bicol Region (75 usable months from 2016-01 through 2026-10).
-The 2026-11 source granule contains no valid cells and is excluded. Its Random
-Forest makes an exploratory one-calendar-month-ahead
-prediction at each fixed land cell, with chronological held-out results
-included in the map data. This screening model is not a causal impact model,
-its probabilities are not calibrated, and its performance is not a guarantee
-for an individual location. Only months present in the irregular source archive
-are selectable; forecast months are identified in the controls. Click a map
-cell to view its coordinates, radiance, source observation count, and available
-forecast screening values. Event pins and atmospheric footprints elsewhere in
-the interface remain illustrative. Cookie sessions and optional configured
-account sign-in are connected. Live satellite feeds and multi-user account
-administration remain unconnected.
+The TROPOMI globe layer reads its monthly grid from
+`public/data/tropomi/manifest.json` and the compressed GeoJSON files beside it.
+Regenerate these Bicol-only assets from the root `TROPOMI NO₂` monthly exports
+with `node experiments\prepare_tropomi_globe.mjs`. The exports preserve monthly
+NO₂ column means, standard deviations, QA means, and valid observation counts.
+They do not contain native pixel footprints. The workspace has no Sentinel-2
+imagery assets or Copernicus provider configuration, so that layer stays
+unavailable rather than showing unrelated or fabricated data.
 
-## Mapbox configuration
+The MERRA-2 context reads `public/data/merra/manifest.json`, generated from the
+NASA Giovanni U10M/V10M area-average exports in the root `Giovani` folder with
+`node experiments\prepare_merra_context.mjs`. The hourly wind components are
+reduced to monthly regional means over the export bounding box and are never
+represented as local or cell-level measurements.
 
-Create `frontend/.env.local` with `VITE_MAPBOX_ACCESS_TOKEN=<your-public-token>`. Restart Vite after changing it. `.env.local` is ignored by Git. For Render or another deployment, set `VITE_MAPBOX_ACCESS_TOKEN` in the hosting service's build environment and redeploy; a local `.env.local` does not configure the hosted site. Restrict the public token to the required URL origins in Mapbox.
-
-The overview uses a slowly rotating Mapbox globe; clicking pauses it and updates
-the side panels for a selected cell. The full-screen map retains synchronized,
-resizable comparison panels, scroll zoom, zoom/compass controls, a metric scale,
-and connected radiance layers. Month selectors distinguish observations from
-forecasts. The Black Marble cell data covers Bicol only; other globe locations
-show that coverage limitation. If map resources or WebGL are unavailable, an
-explanation remains available. Demonstration event geometry is defined in
-`src/data/mapGeometry.ts`.
-
-Development API requests are proxied by Vite to port 3001. Production hosting must route `/api` to the backend under the same origin.
-
-Sign-in photograph: Dennis Kummer / Unsplash, using the image from the supplied reference.
+Set `VITE_MAPBOX_ACCESS_TOKEN` in `frontend/.env.local` for the interactive
+globe, basemap, and optional reverse geocoding. The map uses only the region,
+months, observations, and forecasts described by the generated manifest.
+Forecasts remain exploratory screening outputs; probabilities are not
+calibrated and do not establish causal impact.

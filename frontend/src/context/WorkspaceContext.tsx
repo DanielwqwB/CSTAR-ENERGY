@@ -9,14 +9,25 @@ import seed from "../data/events.json";
 import { api, type WorkspaceData } from "../api";
 import type { Page, RegistryRecord, TransitionEvent } from "../types";
 
+export interface AccountProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: "ADMIN" | "LGU" | "RESEARCHER" | "RESIDENT";
+  status: "ACTIVE" | "SUSPENDED";
+  approval_status: string;
+  jurisdiction_id: string | null;
+}
+
 interface Workspace {
   ready: boolean;
   authenticated: boolean;
+  account: AccountProfile | null;
   login: (
     remember: boolean,
     credentials?: { email: string; password: string },
   ) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   signup: (
     name: string,
     email: string,
@@ -42,6 +53,7 @@ const Context = createContext<Workspace | null>(null);
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const [account, setAccount] = useState<AccountProfile | null>(null);
   const [page, setPage] = useState<Page>("overview");
   const [events, setEvents] = useState<TransitionEvent[]>(
     seed as TransitionEvent[],
@@ -58,7 +70,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const version = useRef(0);
   const lastSaved = useRef("");
   const saveBlocked = useRef(false);
-  function load(data: WorkspaceData) {
+  function load(data: WorkspaceData, currentAccount: AccountProfile) {
     version.current = data.version;
     setEvents(data.events);
     setRegion(data.region);
@@ -71,11 +83,15 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       profile: data.profile,
     });
     saveBlocked.current = false;
+    setAccount(currentAccount);
     setAuthenticated(true);
   }
   useEffect(() => {
     api<WorkspaceData>("/workspace")
-      .then(load)
+      .then(async (data) => {
+        const current = await api<{ profile: AccountProfile }>("/me");
+        load(data, current.profile);
+      })
       .catch((error) => {
         if (error.status !== 401) notify(error.message);
       })
@@ -112,29 +128,39 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       value={{
         ready,
         authenticated,
+        account,
         login: async (remember, credentials) => {
           const data = await api<WorkspaceData>("/session", "POST", {
             remember,
             ...(credentials || { demo: true }),
           });
-          load(data);
+          const current = await api<{ profile: AccountProfile }>("/me");
+          load(data, current.profile);
         },
         signup: async (name, email, password, remember) => {
           const result = await api<{
             confirmationRequired: boolean;
             workspace?: WorkspaceData;
           }>("/signup", "POST", { name, email, password, remember });
-          if (result.workspace) load(result.workspace);
+          if (result.workspace) {
+            const current = await api<{ profile: AccountProfile }>("/me");
+            load(result.workspace, current.profile);
+          }
           return result.confirmationRequired;
         },
-        logout: () => {
-          void writes.current
-            .then(() => api("/session", "DELETE"))
-            .then(() => {
-              setAuthenticated(false);
-              setPage("overview");
-            })
-            .catch((error) => notify(error.message));
+        logout: async () => {
+          try {
+            await writes.current;
+            await api("/session", "DELETE");
+            setAuthenticated(false);
+            setAccount(null);
+            setPage("overview");
+            window.history.replaceState(null, "", "/");
+          } catch (error) {
+            notify(
+              `Sign out failed: ${error instanceof Error ? error.message : "Request failed"}`,
+            );
+          }
         },
         page,
         go: setPage,
